@@ -1,0 +1,713 @@
+"use client";
+
+import BeatPoliceLayout from "../BeatPoliceLayout";
+
+const beatPoliceInfo = [
+  {
+    beatNumber: 1,
+    villages: ["Gudibande Town", "Rural Gudibande"],
+    kannadaVillages: ["ಗುಡಿಬಂಡೆ ಪಟ್ಟಣದ 11 ವಾರ್ಡ್‌ಗಳು", "ರೂರಲ್ ಗುಡಿಬಂಡೆ ಗ್ರಾಮ"],
+    officers: [
+      {
+        name: "Sri Devaraj",
+        kannadaName: "ಶ್ರೀ ದೇವರಾಜ್",
+        designation: "HC-218",
+        kannadaDesignation: "ಹೆಚ್‌ಸಿ-218",
+        phone: "9902903607",
+      },
+      {
+        name: "Sri Abdul Ghani",
+        kannadaName: "ಶ್ರೀ ಅಬ್ದುಲ್ ಘನಿ",
+        designation: "PC-86",
+        kannadaDesignation: "ಪಿಸಿ-86",
+        phone: "6366733378",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ananda N",
+      kannadaName: "ಶ್ರೀ ಆನಂದ.ಎನ್",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9900096167",
+    },
+  },
+  {
+    beatNumber: 2,
+    villages: [
+      "Haleyagudibande",
+      "Nichchanabandahalli",
+      "Pulavamakalahalli",
+      "Alagadarenahalli",
+      "Gerumaradahalli",
+      "Ullodu",
+      "Chautatimmanahalli",
+      "Kariganatammanahalli",
+      "Idrahalli",
+      "Machavalahalli",
+      "Somalapura",
+      "Lagumenahalli",
+      "Chinnahalli",
+      "Brahmanahalli",
+    ],
+    kannadaVillages: [
+      "ಹಳೇಗುಡಿಬಂಡೆ",
+      "ನಿಚ್ಚನಬಂಡಹಳ್ಳಿ",
+      "ಪುಲವಮಾಕಲಹಳ್ಳಿ",
+      "ಅಲಗದರೇನಹಳ್ಳಿ",
+      "ಗೇರುಮರದಹಳ್ಳಿ",
+      "ಉಲ್ಲೋಡು",
+      "ಚೌಟತಿಮ್ಮನಹಳ್ಳಿ",
+      "ಕರಿಗಾನತಮ್ಮನಹಳ್ಳಿ",
+      "ಇಡ್ರಹಳ್ಳಿ",
+      "ಮಾಚಾವಲಹಳ್ಳಿ",
+      "ಸೋಮಲಾಪುರ",
+      "ಲಗುಮೇನಹಳ್ಳಿ",
+      "ಚಿನ್ನಹಳ್ಳಿ",
+      "ಬ್ರಾಹ್ಮಣರಹಳ್ಳಿ",
+    ],
+    officers: [
+      {
+        name: "Sri Narayanaswamy",
+        kannadaName: "ಶ್ರೀ ನಾರಾಯಣಸ್ವಾಮಿ",
+        designation: "HC-35",
+        kannadaDesignation: "ಹೆಚ್‌ಸಿ-35",
+        phone: "9945665921",
+      },
+      {
+        name: "Sri Mahendra",
+        kannadaName: "ಶ್ರೀ ಮಹೇಂದ್ರ",
+        designation: "PC-478",
+        kannadaDesignation: "ಪಿಸಿ-478",
+        phone: "7019116991",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ananda N",
+      kannadaName: "ಶ್ರೀ ಆನಂದ.ಎನ್",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9900096167",
+    },
+  },
+  {
+    beatNumber: 3,
+    villages: [
+      "Upparahalli",
+      "Kondavalahalli",
+      "Kondareddihalli",
+      "Machahalli",
+      "Pasupalodu",
+      "Garudacharlahalli",
+      "Lakkenahalli",
+      "Benneparti",
+      "Hampasandra",
+      "Nallagondayyagarahalli",
+      "Pulasanivoddu",
+      "Adinarayanahalli",
+      "Korenahalli",
+      "Haleyarrahalli",
+    ],
+    kannadaVillages: [
+      "ಉಪ್ಪಾರಹಳ್ಳಿ",
+      "ಕೊಂಡಾವಲಹಳ್ಳಿ",
+      "ಕೊಂಡರೆಡ್ಡಿಹಳ್ಳಿ",
+      "ಮಾಚಹಳ್ಳಿ",
+      "ಪಸುಪಲೋಡು",
+      "ಗರುಡಾಚಾರ್ಲಹಳ್ಳಿ",
+      "ಲಕ್ಕೇನಹಳ್ಳಿ",
+      "ಬೆಣ್ಣೆಪತಿ",
+      "ಹಂಪಸಂದ್ರ",
+      "ನಲ್ಲಗೊಂಡಯ್ಯಗಾರಹಳ್ಳಿ",
+      "ಪುಲಸಾನಿವೊಡ್ಡು",
+      "ಆದಿನಾರಾಯಣಹಳ್ಳಿ",
+      "ಕೊರೇನಹಳ್ಳಿ",
+      "ಹಳೇಯರ್ರಹಳ್ಳಿ",
+    ],
+    officers: [
+      {
+        name: "Sri Dakshinamurthy",
+        kannadaName: "ಶ್ರೀ ದಕ್ಷಿಣಮೂರ್ತಿ",
+        designation: "HC-28",
+        kannadaDesignation: "ಹೆಚ್.ಸಿ-28",
+        phone: "7259964077",
+      },
+      {
+        name: "Sri Masood Wali Sab",
+        kannadaName: "ಶ್ರೀ ಮಸೂದ್ ವಲಿ ಸಾಬ",
+        designation: "PC-320",
+        kannadaDesignation: "ಪಿಸಿ-320",
+        phone: "9964224220",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ananda N",
+      kannadaName: "ಶ್ರೀ ಆನಂದ.ಎನ್",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9900096167",
+    },
+  },
+  {
+    beatNumber: 4,
+    villages: [
+      "Myalyakere",
+      "Ellodu",
+      "Chautakuntahalli",
+      "Ambapura",
+      "Narasapura",
+      "Bullasandra",
+      "Kambalahalli",
+      "Yarrahalli",
+      "Nuligumba",
+      "Gundlahalli",
+      "Kadehalli",
+      "Obannagarahalli",
+      "Maramenahalli",
+      "Sanjeevarayanhalli",
+    ],
+    kannadaVillages: [
+      "ಮ್ಯಾಳ್ಯಕೆರೆ",
+      "ಎಲ್ಲೋಡು",
+      "ಚೌಟಕುಂಟಹಳ್ಳಿ",
+      "ಅಂಬಾಪುರ",
+      "ನರಸಾಪುರ",
+      "ಬುಳ್ಳಸಂದ್ರ",
+      "ಕಂಬಾಲಹಳ್ಳಿ",
+      "ಯರ್ರಹಳ್ಳಿ",
+      "ನುಲಿಗುಂಬ",
+      "ಗುಂಡ್ಲಹಳ್ಳಿ",
+      "ಕಡೇಹಳ್ಳಿ",
+      "ಓಬನ್ನಗಾರಹಳ್ಳಿ",
+      "ಮರಮೇನಹಳ್ಳಿ",
+      "ಸಂಜೀವರಾಯನಹಳ್ಳಿ",
+    ],
+    officers: [
+      {
+        name: "Sri Murali",
+        kannadaName: "ಶ್ರೀ ಮುರಳಿ",
+        designation: "HC-252",
+        kannadaDesignation: "ಹೆಚ್.ಸಿ-252",
+        phone: "9844810988",
+      },
+      {
+        name: "Kumari Nagaratnamma",
+        kannadaName: "ಕು||ನಾಗರತ್ನಮ್ಮ",
+        designation: "MPC-228",
+        kannadaDesignation: "ಮಪಿಸಿ-228",
+        phone: "9902523969",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ananda N",
+      kannadaName: "ಶ್ರೀ ಆನಂದ.ಎನ್",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9900096167",
+    },
+  },
+  {
+    beatNumber: 5,
+    villages: [
+      "Gandhamnagehalli",
+      "Chenduru",
+      "Dhumakuntahalli",
+      "Gangadharpura",
+      "Tattahalli",
+      "Minchanahalli",
+      "Bogenahalli",
+      "Doddakurubarahalli",
+      "Kambalahalli",
+      "Yarralakkenahalli",
+    ],
+    kannadaVillages: [
+      "ಗಂಧಂನಾಗೇಹಳ್ಳಿ",
+      "ಚೆಂಡೂರು",
+      "ಧೂಮಕುಂಟಹಳ್ಳಿ",
+      "ಗಂಗಾಧರಪುರ",
+      "ತಟ್ಟಹಳ್ಳಿ",
+      "ಮಿಂಚನಹಳ್ಳಿ",
+      "ಬೋಗೇನಹಳ್ಳಿ",
+      "ದೊಡ್ಡಕುರುಬರಹಳ್ಳಿ",
+      "ಕಂಬಾಲಹಳ್ಳಿ",
+      "ಯರ್ರಲಕ್ಕೇನಹಳ್ಳಿ",
+    ],
+    officers: [
+      {
+        name: "Sri Narendra",
+        kannadaName: "ಶ್ರೀ ನರೇಂದ್ರ",
+        designation: "PC-38",
+        kannadaDesignation: "ಪಿಸಿ-38",
+        phone: "9632287841",
+      },
+      {
+        name: "Sri Gangappa",
+        kannadaName: "ಶ್ರೀ ಗಂಗಪ್ಪ",
+        designation: "PC-30",
+        kannadaDesignation: "ಪಿಸಿ-30",
+        phone: "7676151716",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ananda N",
+      kannadaName: "ಶ್ರೀ ಆನಂದ.ಎನ್",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9900096167",
+    },
+  },
+  {
+    beatNumber: 6,
+    villages: [
+      "Myakalahalli",
+      "Bhattalahalli",
+      "Renumakalahalli",
+      "Uppakuntahalli",
+      "Bommaganahalli",
+      "Kommalamari",
+      "Dinnahalli",
+      "Chikkanareppanahalli",
+      "Karagamakalahalli",
+      "Yalakalrallahalli",
+    ],
+    kannadaVillages: [
+      "ಮ್ಯಾಕಲಹಳ್ಳಿ",
+      "ಭತ್ತಲಹಳ್ಳಿ",
+      "ರೇಣುಮಾಕಲಹಳ್ಳಿ",
+      "ಉಪ್ಪಕುಂಟಹಳ್ಳಿ",
+      "ಬೊಮ್ಮಗಾನಹಳ್ಳಿ",
+      "ಕೊಮ್ಮಲಮರಿ",
+      "ದಿನ್ನಹಳ್ಳಿ",
+      "ಚಿಕ್ಕನಾರೆಪ್ಪನಹಳ್ಳಿ",
+      "ಕರಗಮಾಕಲಹಳ್ಳಿ",
+      "ಯಲಕಲರಾಳ್ಳಹಳ್ಳಿ",
+    ],
+    officers: [
+      {
+        name: "Sri Manjunatha",
+        kannadaName: "ಶ್ರೀ ಮಂಜುನಾಥ",
+        designation: "PC-49",
+        kannadaDesignation: "ಪಿಸಿ-49",
+        phone: "8971630585",
+      },
+      {
+        name: "Smt Navya Sri",
+        kannadaName: "ಶ್ರೀಮತಿ ನವ್ಯ ಶ್ರೀ",
+        designation: "MPC-71",
+        kannadaDesignation: "ಮಪಿಸಿ-71",
+        phone: "7259607467",
+      },
+    ],
+    supervisor: {
+      name: "Sri Amaresh Babu",
+      kannadaName: "ಶ್ರೀ ಅಮರೇಶ್ ಬಾಬು",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9686122141",
+    },
+  },
+  {
+    beatNumber: 7,
+    villages: [
+      "Hanumantapura",
+      "Gyadaramakalahalli",
+      "Iragareddihalli",
+      "Daparti",
+      "Gavikuntahalli (Kataigarahalli)",
+      "Pavajenahalli",
+      "Talavaradinne",
+      "Bichagahalli",
+      "Chikkakurubarahalli",
+      "Kondavabanahalli",
+      "Balenahalli",
+      "Ramaganahalli",
+      "Bandarlahalli",
+      "J.P. Nagar",
+      "Jayantigrama",
+    ],
+    kannadaVillages: [
+      "ಹನುಮಂತಪುರ",
+      "ಗ್ಯಾದರಮಾಕಲಹಳ್ಳಿ",
+      "ಇರಗರೆಡ್ಡಿಹಳ್ಳಿ",
+      "ದಪತಿ",
+      "ಗವಿಕುಂಟಹಳ್ಳಿ (ಕಾಟೈಗಾರಹಳ್ಳಿ)",
+      "ಪಾವಜೇನಹಳ್ಳಿ",
+      "ತಲವಾರದಿನ್ನೆ",
+      "ಬೀಚಗಾಹಳ್ಳಿ",
+      "ಚಿಕ್ಕಕುರುಬರಹಳ್ಳಿ",
+      "ಕೊಂಡವಾಬನಹಳ್ಳಿ",
+      "ಬಾಲೇನಹಳ್ಳಿ",
+      "ರಾಮಗಾನಹಳ್ಳಿ",
+      "ಬಂದಾರ್ಲಹಳ್ಳಿ",
+      "ಜೆ.ಪಿ.ನಗರ",
+      "ಜಯಂತಿಗ್ರಾಮ",
+    ],
+    officers: [
+      {
+        name: "Sri Aruna",
+        kannadaName: "ಶ್ರೀ ಅರುಣ",
+        designation: "CPC-18",
+        kannadaDesignation: "ಸಿಪಿಸಿ-18",
+        phone: "9986961533",
+      },
+      {
+        name: "Sri Siddalinga",
+        kannadaName: "ಶ್ರೀ ಸಿದ್ದಲಿಂಗ",
+        designation: "PC-344",
+        kannadaDesignation: "ಪಿಸಿ-344",
+        phone: "7899373776",
+      },
+    ],
+    supervisor: {
+      name: "Sri Amaresh Babu",
+      kannadaName: "ಶ್ರೀ ಅಮರೇಶ್ ಬಾಬು",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9686122141",
+    },
+  },
+  {
+    beatNumber: 8,
+    villages: [
+      "Myakalamaddayyagarahalli",
+      "Chinnappanahalli",
+      "Tirumani",
+      "Katenahalli",
+      "Dinnahalli",
+      "Doddanancherlu",
+      "Kaluvagaddahalli",
+      "Madhugirihalli",
+      "Chadarlahalli",
+      "Kadirasettihalli",
+      "Pemmanahalli",
+      "Puradahalli",
+      "Singanahalli",
+      "Jambigemaradahalli",
+    ],
+    kannadaVillages: [
+      "ಮ್ಯಾಕಲಮದ್ದಯ್ಯಗಾರಹಳ್ಳಿ",
+      "ಚಿನ್ನಪ್ಪನಹಳ್ಳಿ",
+      "ತಿರುಮಣಿ",
+      "ಕಾಟೇನಹಳ್ಳಿ",
+      "ದಿನ್ನಹಳ್ಳಿ",
+      "ದೊಡ್ಡನಂಚೆರ್ಲು",
+      "ಕಾಲುವಗಡ್ಡಹಳ್ಳಿ",
+      "ಮಧುಗಿರಿಹಳ್ಳಿ",
+      "ಚದರ್ಲಹಳ್ಳಿ",
+      "ಕದಿರಶೆಟ್ಟಿಹಳ್ಳಿ",
+      "ಪೆಮ್ಮನಹಳ್ಳಿ",
+      "ಪುರದಹಳ್ಳಿ",
+      "ಸಿಂಗಾನಹಳ್ಳಿ",
+      "ಜಂಬಿಗೆಮರದಹಳ್ಳಿ",
+    ],
+    officers: [
+      {
+        name: "Sri Nagaraj K",
+        kannadaName: "ಶ್ರೀ ನಾಗರಾಜ ಕೆ",
+        designation: "PC-99",
+        kannadaDesignation: "ಪಿಸಿ-99",
+        phone: "9743172173",
+      },
+      {
+        name: "Smt Shantavva",
+        kannadaName: "ಶ್ರೀಮತಿ ಶಾಂತವ್ವ",
+        designation: "MPC-300",
+        kannadaDesignation: "ಮಪಿಸಿ-300",
+        phone: "8971972496",
+      },
+    ],
+    supervisor: {
+      name: "Sri Amaresh Babu",
+      kannadaName: "ಶ್ರೀ ಅಮರೇಶ್ ಬಾಬು",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9686122141",
+    },
+  },
+  {
+    beatNumber: 9,
+    villages: [
+      "Naduvanahalli",
+      "Chikkatammanahalli",
+      "Kelagina Appireddihalli",
+      "Melina Appireddihalli",
+      "Karakamakalahalli",
+      "Bommanahalli",
+      "Giddappanahalli",
+      "Sadashivanahalli",
+      "Polampalli",
+      "Medimakalahalli",
+      "Jangalahalli",
+      "Kammaguttahalli",
+      "Koppakatenahalli",
+    ],
+    kannadaVillages: [
+      "ನಡುವನಹಳ್ಳಿ",
+      "ಚಿಕ್ಕತಮ್ಮನಹಳ್ಳಿ",
+      "ಕೆಳಗಿನ ಅಪ್ಪಿರೆಡ್ಡಿಹಳ್ಳಿ",
+      "ಮೇಲಿನಅಪ್ಪಿರೆಡ್ಡಿಹಳ್ಳಿ",
+      "ಕರಕಮಾಕಲಹಳ್ಳಿ",
+      "ಬೊಮ್ಮನಹಳ್ಳಿ",
+      "ಗಿಡ್ಡಪ್ಪನಹಳ್ಳಿ",
+      "ಸದಾಶಿವನಹಳ್ಳಿ",
+      "ಪೊಲಂಪಲ್ಲಿ",
+      "ಮೇಡಿಮಾಕಲಹಳ್ಳಿ",
+      "ಜಂಗಾಲಹಳ್ಳಿ",
+      "ಕಮ್ಮಗುಟ್ಟಹಳ್ಳಿ",
+      "ಕೊಪ್ಪಕಾಟೇನಹಳ್ಳಿ",
+    ],
+    officers: [
+      {
+        name: "Sri Gangadhara",
+        kannadaName: "ಶ್ರೀ ಗಂಗಾಧರ",
+        designation: "HC-31",
+        kannadaDesignation: "ಹೆಚ್‌ಸಿ-31",
+        phone: "9110215726",
+      },
+      {
+        name: "Sri Murali",
+        kannadaName: "ಶ್ರೀ ಮುರಳಿ",
+        designation: "PC-107",
+        kannadaDesignation: "ಪಿಸಿ-107",
+        phone: "8892664547",
+      },
+    ],
+    supervisor: {
+      name: "Sri Amaresh Babu",
+      kannadaName: "ಶ್ರೀ ಅಮರೇಶ್ ಬಾಬು",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9686122141",
+    },
+  },
+  {
+    beatNumber: 10,
+    villages: [
+      "Balagere",
+      "Idaguru",
+      "Bhimanahalli",
+      "Jakkenahalli",
+      "Shambhukanagara",
+      "Chandanaduru",
+      "Halaganahalli",
+      "Kadirenahalli",
+      "Gandhinagara",
+    ],
+    kannadaVillages: ["ಬಳಗೆರೆ", "ಇಡಗೂರು", "ಭೀಮನಹಳ್ಳಿ", "ಜಕ್ಕೆನಹಳ್ಳಿ", "ಶಂಭೂಕನಗರ", "ಚಂದನದೂರು", "ಹಾಲಗಾನಹಳ್ಳಿ", "ಕದಿರೇನಹಳ್ಳಿ", "ಗಾಂದಿನಗರ"],
+    officers: [
+      {
+        name: "Sri Shetti Yogesh",
+        kannadaName: "ಶ್ರೀ ಶೆಟ್ಟಿಯೋಗೇಶ್",
+        designation: "CPC-342",
+        kannadaDesignation: "ಸಿಪಿಸಿ-342",
+        phone: "9008980616",
+      },
+      {
+        name: "Kumari Ramya Sri",
+        kannadaName: "ಕು. ರಮ್ಯಶ್ರೀ",
+        designation: "MPC-369",
+        kannadaDesignation: "ಮಪಿಸಿ-369",
+        phone: "8080087710",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ramesh Guggari",
+      kannadaName: "ಶ್ರೀ ರಮೇಶಗುಗ್ಗರಿ",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9480802548",
+    },
+  },
+  {
+    beatNumber: 11,
+    villages: [
+      "Huduti",
+      "Nagasandra",
+      "Babenahalli",
+      "Kudumalkunte",
+      "Doddakurugodu",
+      "Yarrahalli",
+      "Ramachandrapura",
+      "Vidurashwatha",
+      "Chennabairenahallli",
+      "Gaudasandra",
+      "Chikkakurugodu",
+    ],
+    kannadaVillages: [
+      "ಹೂದೂತಿ",
+      "ನಾಗಸಂದ್ರ",
+      "ಬಾಬೇನಹಳ್ಳಿ",
+      "ಕುಡುಮಲಕುಂಟೆ",
+      "ದೊಡ್ಡಕುರುಗೋಡು",
+      "ಯರ್ರಹಳ್ಳಿ",
+      "ರಾಮಚಂದ್ರಪುರ",
+      "ವಿದುರಾಶ್ವತ್ಥ",
+      "ಚೆನ್ನಬೈರೇನಹಳ್ಳಿ",
+      "ಗೌಡಸಂದ್ರ",
+      "ಚಿಕ್ಕಕುರುಗೂಡು",
+    ],
+    officers: [
+      {
+        name: "Sri Lambani Ambareesh",
+        kannadaName: "ಶ್ರೀ ಲಂಬಾಣಿಅಂಬರೀಶ್",
+        designation: "CPC-398",
+        kannadaDesignation: "ಸಿಪಿಸಿ-398",
+        phone: "7026105623",
+      },
+      {
+        name: "Sri Basavaraju K.M",
+        kannadaName: "ಶ್ರೀ ಬಸವರಾಜು ಕೆ.ಎಂ",
+        designation: "CPC-423",
+        kannadaDesignation: "ಸಿಪಿಸಿ-423",
+        phone: "9740913472",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ramesh Guggari",
+      kannadaName: "ಶ್ರೀ ರಮೇಶಗುಗ್ಗರಿ",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9480802548",
+    },
+  },
+  {
+    beatNumber: 12,
+    villages: [
+      "Konapura",
+      "Baichapura",
+      "Badimaraluru",
+      "Virupasandra",
+      "Uchchodanahalli",
+      "Saganahalli",
+      "Gangasandra",
+      "Kengenahalli",
+      "Vedalaveni",
+      "Kurubarahalli",
+      "Virlagollahalli",
+      "Sugar Factory",
+      "Cheegatagere",
+    ],
+    kannadaVillages: [
+      "ಕೋನಾಪುರ",
+      "ಬೈಚಾಪುರ",
+      "ಬಾದಿಮರಳೂರು",
+      "ವಿರೂಪಸಂದ್ರ",
+      "ಉಚ್ಚೋದನಹಳ್ಳಿ",
+      "ಸಾಗಾನಹಳ್ಳಿ",
+      "ಗಂಗಸಂದ್ರ",
+      "ಕೆಂಗೆನಹಳ್ಳಿ",
+      "ವೇದಲವೇಣಿ",
+      "ಕುರುಬರಹಳ್ಳಿ",
+      "ವೀರ್ಲಗೊಲ್ಲಹಳ್ಳಿ",
+      "ಸಕ್ಕರೆಕಾರ್ಖಾನೆ",
+      "ಚೀಗಟಗೆರೆ",
+    ],
+    officers: [
+      {
+        name: "Sri Naveen Kumar",
+        kannadaName: "ಶ್ರೀ ನವೀನ್ಕುಮಾರ್",
+        designation: "CPC-175",
+        kannadaDesignation: "ಸಿ.ಪಿ.ಸಿ 175",
+        phone: "948257699",
+      },
+      {
+        name: "Sri Ramesh",
+        kannadaName: "ಶ್ರೀ ರಮೇಶ್",
+        designation: "CPC-408",
+        kannadaDesignation: "ಸಿಪಿಸಿ-408",
+        phone: "9731615140",
+      },
+    ],
+    supervisor: {
+      name: "Sri Ramesh Guggari",
+      kannadaName: "ಶ್ರೀ ರಮೇಶಗುಗ್ಗರಿ",
+      designation: "ASI",
+      kannadaDesignation: "ಎ.ಎಸ್.ಐ",
+      phone: "9480802548",
+    },
+  },
+];
+
+const talukName = {
+  en: "Gudibande",
+  kn: "ಗುಡಿಬಂಡೆ"
+};
+
+const beatData = {
+  beatDetails: beatPoliceInfo.map(beat => ({
+    number: beat.beatNumber,
+    villages: beat.villages.map((village, index) => ({
+      en: village,
+      kn: beat.kannadaVillages[index]
+    })),
+    officers: beat.officers.map(officer => ({
+      name: {
+        en: officer.name,
+        kn: officer.kannadaName
+      },
+      designation: {
+        en: officer.designation,
+        kn: officer.kannadaDesignation
+      },
+      phone: officer.phone
+    })),
+    supervisor: {
+      name: {
+        en: beat.supervisor.name,
+        kn: beat.supervisor.kannadaName
+      },
+      designation: {
+        en: beat.supervisor.designation,
+        kn: beat.supervisor.kannadaDesignation
+      },
+      phone: beat.supervisor.phone
+    }
+  })),
+  supervisingOfficers: [
+    {
+      beats: "1-5",
+      name: {
+        en: "Sri Ananda N",
+        kn: "ಶ್ರೀ ಆನಂದ.ಎನ್"
+      },
+      designation: {
+        en: "ASI",
+        kn: "ಎ.ಎಸ್.ಐ"
+      },
+      phone: "9900096167"
+    },
+    {
+      beats: "6-9",
+      name: {
+        en: "Sri Amaresh Babu",
+        kn: "ಶ್ರೀ ಅಮರೇಶ್ ಬಾಬು"
+      },
+      designation: {
+        en: "ASI",
+        kn: "ಎ.ಎಸ್.ಐ"
+      },
+      phone: "9686122141"
+    },
+    {
+      beats: "10-12",
+      name: {
+        en: "Sri Ramesh Guggari",
+        kn: "ಶ್ರೀ ರಮೇಶಗುಗ್ಗರಿ"
+      },
+      designation: {
+        en: "ASI",
+        kn: "ಎ.ಎಸ್.ಐ"
+      },
+      phone: "9480802548"
+    }
+  ]
+};
+
+export default function GudibandeBeatPolice() {
+  return (
+    <BeatPoliceLayout
+      talukName={talukName}
+      beatData={beatData}
+      backLink="/beat-police"
+    />
+  );
+} 
