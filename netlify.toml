@@ -7,7 +7,7 @@
   NODE_VERSION = "18"
 
 [context.production.environment]
-  NEXT_PUBLIC_API_URL = "https://your-backend-api.netlify.app/.netlify/functions/api"
+  NEXT_PUBLIC_API_URL = "https://your-backend-api.netlify.app"
   NEXT_PUBLIC_IS_PREVIEW = "false"
 
 [context.preview.environment]
@@ -39,7 +39,13 @@
   path = ".next/cache/swc"
   ttl = "7d"
 
-# Redirects for SPA
+# Redirects for SPA and API
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -62,13 +68,7 @@
   node_bundler = "esbuild"
   external_node_modules = ["@prisma/client"]
   included_files = ["server/**/*"]
-
-# Function redirects
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
-  force = true
+  directory = "netlify/functions"
 
 # Additional security headers for API routes
 [[headers]]
@@ -77,4 +77,7 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
-    Access-Control-Max-Age = "86400" 
+    Access-Control-Max-Age = "86400"
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0" 

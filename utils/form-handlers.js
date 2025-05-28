@@ -16,12 +16,21 @@ export const handleFormSubmit = async (
   setNotificationMessage,
   setNotificationType,
   resetForm,
-  endpoint = '/api/submit-form'
+  serviceType
 ) => {
   if (!formData) {
     console.error('No form data provided');
     setError('Form data is missing');
     setNotificationMessage('Error: Form data is missing');
+    setNotificationType('error');
+    setShowNotification(true);
+    return;
+  }
+
+  if (!serviceType) {
+    console.error('No service type provided');
+    setError('Service type is missing');
+    setNotificationMessage('Error: Service type is missing');
     setNotificationType('error');
     setShowNotification(true);
     return;
@@ -40,7 +49,7 @@ export const handleFormSubmit = async (
 
   // Check if we're in preview mode
   if (process.env.NEXT_PUBLIC_IS_PREVIEW === 'true') {
-    console.log('Preview mode: Simulating form submission');
+    console.log('Preview mode: Simulating form submission', { serviceType, formData });
     await sleep(1000); // Simulate network delay
     setSuccess(true);
     setNotificationMessage('Form submitted successfully (Preview Mode)');
@@ -61,12 +70,20 @@ export const handleFormSubmit = async (
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const response = await fetch(`${apiUrl}${endpoint}`, {
+      // Prepare the request payload
+      const payload = {
+        serviceType,
+        details: formData
+      };
+
+      console.log('Submitting form with payload:', payload);
+
+      const response = await fetch(`${apiUrl}/api/service-forms/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
         signal: controller.signal,
         credentials: 'include'
       });
@@ -75,10 +92,16 @@ export const handleFormSubmit = async (
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('Server response error:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorData
+        });
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Server response:', data);
       
       if (data.success) {
         setSuccess(true);
@@ -100,6 +123,7 @@ export const handleFormSubmit = async (
 
       if (retryCount < MAX_RETRIES) {
         retryCount++;
+        console.log(`Retrying in ${RETRY_DELAY * retryCount}ms...`);
         await sleep(RETRY_DELAY * retryCount); // Exponential backoff
         continue;
       }
@@ -117,6 +141,7 @@ export const handleFormSubmit = async (
         errorMessage = error.message;
       }
 
+      console.error('Final error after retries:', errorMessage);
       setError(errorMessage);
       setNotificationMessage(errorMessage);
       setNotificationType('error');
