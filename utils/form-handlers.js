@@ -1,8 +1,13 @@
 // Get API URL from environment variable or use default
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
 
+const MAX_RETRIES = 2;
+const RETRY_DELAY = 1000; // 1 second
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 // Helper function to handle form submission with preview mode
-export const handleFormSubmit = async ({
+export const handleFormSubmit = async (
   formData,
   setLoading,
   setError,
@@ -11,93 +16,119 @@ export const handleFormSubmit = async ({
   setNotificationMessage,
   setNotificationType,
   resetForm,
-  serviceType
-}) => {
-  setLoading(true)
-  setError("")
+  endpoint = '/api/submit-form'
+) => {
+  if (!formData) {
+    console.error('No form data provided');
+    setError('Form data is missing');
+    setNotificationMessage('Error: Form data is missing');
+    setNotificationType('error');
+    setShowNotification(true);
+    return;
+  }
 
-  try {
-    // Check if we're in preview mode
-    if (process.env.NEXT_PUBLIC_IS_PREVIEW === 'true') {
-      // Simulate successful submission in preview
-      console.log('Preview mode: Simulating form submission', formData)
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
-      setSuccess(true)
-      setShowNotification(true)
-      setNotificationMessage(`Form submitted successfully! (Preview Mode)`)
-      setNotificationType("success")
-      resetForm()
-      return
-    }
+  // Validate API URL
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    console.error('API URL not configured');
+    setError('Server configuration error. Please try again later.');
+    setNotificationMessage('Error: Server configuration error');
+    setNotificationType('error');
+    setShowNotification(true);
+    return;
+  }
 
-    // Validate API URL
-    if (!API_URL) {
-      throw new Error('API URL is not configured. Please check your environment variables.')
-    }
+  // Check if we're in preview mode
+  if (process.env.NEXT_PUBLIC_IS_PREVIEW === 'true') {
+    console.log('Preview mode: Simulating form submission');
+    await sleep(1000); // Simulate network delay
+    setSuccess(true);
+    setNotificationMessage('Form submitted successfully (Preview Mode)');
+    setNotificationType('success');
+    setShowNotification(true);
+    resetForm();
+    return;
+  }
 
-    // Add timeout to fetch request
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+  let retryCount = 0;
+  let lastError = null;
 
+  while (retryCount <= MAX_RETRIES) {
     try {
-      const response = await fetch(`${API_URL}/api/service-forms/submit`, {
+      setLoading(true);
+      setError(null);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          serviceType,
-          details: formData
-        }),
-        signal: controller.signal
-      })
+        body: JSON.stringify(formData),
+        signal: controller.signal,
+        credentials: 'include'
+      });
 
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || `Server error: ${response.status} ${response.statusText}`)
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json().catch(() => ({}))
+      const data = await response.json();
       
-      // Check if the response indicates success
-      if (data.success === false) {
-        throw new Error(data.message || 'Form submission failed')
+      if (data.success) {
+        setSuccess(true);
+        setNotificationMessage(data.message || 'Form submitted successfully');
+        setNotificationType('success');
+        setShowNotification(true);
+        resetForm();
+        return;
+      } else {
+        throw new Error(data.message || 'Form submission failed');
+      }
+    } catch (error) {
+      lastError = error;
+      console.error(`Attempt ${retryCount + 1} failed:`, error);
+
+      if (error.name === 'AbortError') {
+        throw new Error('Request timed out. Please try again.');
       }
 
-      setSuccess(true)
-      setShowNotification(true)
-      setNotificationMessage("Form submitted successfully!")
-      setNotificationType("success")
-      resetForm()
-    } catch (fetchError) {
-      if (fetchError.name === 'AbortError') {
-        throw new Error('Request timed out. Please try again.')
+      if (retryCount < MAX_RETRIES) {
+        retryCount++;
+        await sleep(RETRY_DELAY * retryCount); // Exponential backoff
+        continue;
       }
-      throw fetchError
-    }
-  } catch (error) {
-    console.error('Error submitting form:', error)
-    
-    // Handle specific error cases
-    let errorMessage = error.message || "Failed to submit form. Please try again."
-    
-    if (error.message.includes('Failed to fetch')) {
-      errorMessage = "Unable to connect to the server. Please check your internet connection and try again."
-    } else if (error.message.includes('timeout')) {
-      errorMessage = "The request took too long to complete. Please try again."
-    } else if (error.message.includes('API URL is not configured')) {
-      errorMessage = "The application is not properly configured. Please contact support."
-    }
 
-    setError(errorMessage)
-    setShowNotification(true)
-    setNotificationMessage(errorMessage)
-    setNotificationType("error")
-  } finally {
-    setLoading(false)
+      // Handle specific error types
+      let errorMessage = 'An error occurred while submitting the form.';
+      
+      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+        errorMessage = 'Network error. Please check your internet connection and try again.';
+      } else if (error.message.includes('CORS')) {
+        errorMessage = 'Server configuration error. Please try again later.';
+      } else if (error.message.includes('timeout')) {
+        errorMessage = 'Request timed out. Please try again.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      setError(errorMessage);
+      setNotificationMessage(errorMessage);
+      setNotificationType('error');
+      setShowNotification(true);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   }
+
+  // If we've exhausted all retries, throw the last error
+  throw lastError;
 }
 
 // Helper function to validate email

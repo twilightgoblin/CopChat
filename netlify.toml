@@ -7,7 +7,7 @@
   NODE_VERSION = "18"
 
 [context.production.environment]
-  NEXT_PUBLIC_API_URL = "https://your-production-api-url.com"
+  NEXT_PUBLIC_API_URL = "https://your-backend-api.netlify.app/.netlify/functions/api"
   NEXT_PUBLIC_IS_PREVIEW = "false"
 
 [context.preview.environment]
@@ -54,9 +54,27 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: http:;"
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Functions configuration
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["@prisma/client"] 
+  external_node_modules = ["@prisma/client"]
+  included_files = ["server/**/*"]
+
+# Function redirects
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# Additional security headers for API routes
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Max-Age = "86400" 

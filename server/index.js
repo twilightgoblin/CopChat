@@ -10,11 +10,33 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://your-frontend-app.netlify.app',
+  'https://*.netlify.app'
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000', // Your frontend URL
-  methods: ['GET', 'POST', 'DELETE'],
-  credentials: true
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.some(allowedOrigin => {
+      if (allowedOrigin.includes('*')) {
+        const pattern = new RegExp('^' + allowedOrigin.replace('*', '.*') + '$');
+        return pattern.test(origin);
+      }
+      return allowedOrigin === origin;
+    })) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
