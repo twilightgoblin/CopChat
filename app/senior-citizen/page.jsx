@@ -11,6 +11,7 @@ import { motion } from "framer-motion"
 import { FadeIn } from "@/components/fade-in"
 import { Notification } from "@/components/ui/notification"
 import OTPVerification from "@/components/otp-verification"
+import { handleFormSubmit, validateEmail, validatePhone, validateAadhar, formatAadhar } from "@/utils/form-handlers"
 
 export default function SeniorCitizenPage() {
   const [name, setName] = useState("")
@@ -41,64 +42,73 @@ export default function SeniorCitizenPage() {
     window.scrollTo(0, 0)
   }, [])
 
+  const resetForm = () => {
+    setName("")
+    setEmail("")
+    setPhone("")
+    setAadhar("")
+    setAddress("")
+    setAge("")
+    setEmergencyContact("")
+    setMedicalConditions("")
+    setDescription("")
+    setVerifiedOTP(null)
+    setShowOTPVerification(false)
+    setIsVerified(true)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
-    try {
-      const formData = {
-        serviceType: "senior-citizen",
-        details: {
-          name,
-          email,
-          phone,
-          aadhar,
-          address,
-          age,
-          emergencyContact,
-          medicalConditions,
-          description
-        }
-      }
-
-      console.log('Submitting form with data:', formData)
-      const response = await fetch('http://localhost:5001/api/service-forms/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-
-      const data = await response.json()
-      console.log('Form submission response:', data)
-
-      // Show success message
-      setSuccess(true)
-      setShowNotification(true)
-      setNotificationMessage("Form submitted successfully!")
-      setNotificationType("success")
-
-      // Reset form
-      setName("")
-      setEmail("")
-      setPhone("")
-      setAadhar("")
-      setAddress("")
-      setAge("")
-      setEmergencyContact("")
-      setMedicalConditions("")
-      setDescription("")
-      setIsVerified(false)
-    } catch (error) {
-      console.error('Error submitting form:', error)
-      setShowNotification(true)
-      setNotificationMessage("Form submitted successfully!")
-      setNotificationType("success")
-    } finally {
-      setLoading(false)
+    // Validate email
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address")
+      return
     }
+
+    // Validate phone number
+    if (!validatePhone(phone)) {
+      setError("Please enter a valid 10-digit phone number")
+      return
+    }
+
+    // Validate Aadhar number only if provided
+    if (!validateAadhar(aadhar)) {
+      setError("Please enter a valid 12-digit Aadhar number")
+      return
+    }
+
+    // Show OTP verification if not already verified
+    if (!verifiedOTP) {
+      setShowOTPVerification(true)
+      return
+    }
+
+    const formData = {
+      name,
+      email,
+      phone,
+      aadhar,
+      address,
+      age,
+      emergencyContact,
+      medicalConditions,
+      description,
+      otp: verifiedOTP
+    }
+
+    await handleFormSubmit({
+      formData,
+      setLoading,
+      setError,
+      setSuccess,
+      setShowNotification,
+      setNotificationMessage,
+      setNotificationType,
+      resetForm,
+      serviceType: 'senior-citizen'
+    })
   }
 
   const handleOTPVerified = (otp) => {
@@ -107,38 +117,19 @@ export default function SeniorCitizenPage() {
     setError("")
   }
 
-  const formatAadhar = (value) => {
-    const digits = value.replace(/\D/g, "")
-    let formatted = ""
-
-    for (let i = 0; i < digits.length && i < 12; i++) {
-      if (i > 0 && i % 4 === 0) {
-        formatted += " "
-      }
-      formatted += digits[i]
-    }
-
-    return formatted
-  }
-
-  const handleAadharChange = (e) => {
-    const formatted = formatAadhar(e.target.value)
-    setAadhar(formatted)
-
-    // Validate Aadhar immediately
-    const aadharWithoutSpaces = formatted.replace(/\s/g, "")
-    if (aadharWithoutSpaces.length > 0 && aadharWithoutSpaces.length !== 12) {
-      setAadharError("Please enter a valid 12-digit Aadhar number")
+  const handleEmailChange = (e) => {
+    const value = e.target.value
+    setEmail(value)
+    if (value && !validateEmail(value)) {
+      setEmailError("Please enter a valid email address")
     } else {
-      setAadharError("")
+      setEmailError("")
     }
   }
 
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, "")
     setPhone(value.substring(0, 10))
-
-    // Validate phone immediately
     if (value.length > 0 && value.length !== 10) {
       setPhoneError("Please enter a valid 10-digit phone number")
     } else {
@@ -146,15 +137,13 @@ export default function SeniorCitizenPage() {
     }
   }
 
-  const handleEmailChange = (e) => {
-    const value = e.target.value
-    setEmail(value)
-
-    // Validate email immediately
-    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      setEmailError("Please enter a valid email address")
+  const handleAadharChange = (e) => {
+    const formatted = formatAadhar(e.target.value)
+    setAadhar(formatted)
+    if (formatted.replace(/\s/g, "").length > 0 && !validateAadhar(formatted)) {
+      setAadharError("Please enter a valid 12-digit Aadhar number")
     } else {
-      setEmailError("")
+      setAadharError("")
     }
   }
 

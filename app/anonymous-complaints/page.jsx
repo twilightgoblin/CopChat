@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion } from "framer-motion"
 import { AlertCircle, CheckCircle2, Paperclip } from "lucide-react"
 import { Notification } from "@/components/ui/notification"
+import { handleFormSubmit, validateEmail, validatePhone } from "@/utils/form-handlers"
 
 export default function AnonymousComplaintsPage() {
   // Add this at the beginning of the AnonymousComplaintsPage component function
@@ -29,6 +30,11 @@ export default function AnonymousComplaintsPage() {
   const [showNotification, setShowNotification] = useState(false)
   const [notificationMessage, setNotificationMessage] = useState("")
   const [notificationType, setNotificationType] = useState("success")
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [emailError, setEmailError] = useState("")
+  const [phoneError, setPhoneError] = useState("")
 
   const formRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -69,53 +75,75 @@ export default function AnonymousComplaintsPage() {
     return Object.keys(newErrors).length === 0
   }
 
+  const resetForm = () => {
+    setName("")
+    setEmail("")
+    setPhone("")
+    setComplaintType("")
+    setLocation("")
+    setDescription("")
+    setResources("")
+    setAdditionalInfo("")
+    setAttachments([])
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
-    try {
-      const formData = {
-        serviceType: 'anonymous-complaint',
-        details: {
-          complaintType,
-          location,
-          resources,
-          description
-        }
-      }
+    // Validate email if provided
+    if (email && !validateEmail(email)) {
+      setError("Please enter a valid email address")
+      return
+    }
 
-      console.log('Submitting form with data:', formData)
-      const response = await fetch('http://localhost:5001/api/service-forms/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
+    // Validate phone if provided
+    if (phone && !validatePhone(phone)) {
+      setError("Please enter a valid 10-digit phone number")
+      return
+    }
 
-      const data = await response.json()
-      console.log('Form submission response:', data)
+    const formData = {
+      name: name || "Anonymous",
+      email: email || "",
+      phone: phone || "",
+      complaintType,
+      location,
+      resources,
+      description,
+      additionalInfo
+    }
 
-      // Show success message
-      setSuccess(true)
-      setShowNotification(true)
-      setNotificationMessage("Form submitted successfully!")
-      setNotificationType("success")
+    await handleFormSubmit({
+      formData,
+      setLoading,
+      setError,
+      setSuccess,
+      setShowNotification,
+      setNotificationMessage,
+      setNotificationType,
+      resetForm,
+      serviceType: 'anonymous-complaints'
+    })
+  }
 
-      // Reset form
-      setComplaintType("")
-      setLocation("")
-      setResources("")
-      setDescription("")
-      setAttachments([])
-    } catch (error) {
-      console.error('Error submitting form:', error)
-      setShowNotification(true)
-      setNotificationMessage("Form submitted successfully!")
-      setNotificationType("success")
-    } finally {
-      setLoading(false)
+  const handleEmailChange = (e) => {
+    const value = e.target.value
+    setEmail(value)
+    if (value && !validateEmail(value)) {
+      setEmailError("Please enter a valid email address")
+    } else {
+      setEmailError("")
+    }
+  }
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "")
+    setPhone(value.substring(0, 10))
+    if (value.length > 0 && value.length !== 10) {
+      setPhoneError("Please enter a valid 10-digit phone number")
+    } else {
+      setPhoneError("")
     }
   }
 

@@ -1,26 +1,22 @@
 [build]
-  command = "npm install && npm audit fix --force && npm run build"
+  command = "npm run build"
   publish = ".next"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./server/"
 
 [build.environment]
-  # Node.js version
-  NODE_VERSION = "18.19.1"
-  NPM_VERSION = "9.8.1"
-  
-  # Disable telemetry
-  NEXT_TELEMETRY_DISABLED = "1"
-  
-  # Build optimization
-  NODE_ENV = "production"
-  
-  # Next.js build cache
-  NEXT_CACHE = "true"
-  NEXT_CACHE_DIR = ".next/cache"
-  
-  # Build performance
-  NETLIFY_NEXT_PLUGIN_SKIP = "false"
-  NETLIFY_NEXT_PLUGIN_SKIP_ANALYZE = "true"
+  NEXT_PUBLIC_IS_PREVIEW = "false"
+  NODE_VERSION = "18"
+
+[context.production.environment]
+  NEXT_PUBLIC_API_URL = "https://your-production-api-url.com"
+  NEXT_PUBLIC_IS_PREVIEW = "false"
+
+[context.preview.environment]
+  NEXT_PUBLIC_API_URL = "http://localhost:5001"
+  NEXT_PUBLIC_IS_PREVIEW = "true"
+
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_API_URL = "http://localhost:5001"
+  NEXT_PUBLIC_IS_PREVIEW = "true"
 
 # Build plugins
 [[plugins]]
@@ -58,5 +54,9 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;"
-    Cache-Control = "public, max-age=0, must-revalidate" 
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@prisma/client"] 

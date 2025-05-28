@@ -12,6 +12,9 @@ import { FadeIn } from "@/components/fade-in"
 import { Notification } from "@/components/ui/notification"
 import OTPVerification from "@/components/otp-verification"
 
+// Get API URL from environment variable or use default
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+
 export default function LoudSpeakerPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -85,7 +88,20 @@ export default function LoudSpeakerPage() {
         otp: verifiedOTP
       }
 
-      const response = await fetch('http://localhost:5001/api/service-forms/submit', {
+      // Check if we're in preview mode
+      if (process.env.NEXT_PUBLIC_IS_PREVIEW === 'true') {
+        // Simulate successful submission in preview
+        console.log('Preview mode: Simulating form submission', formData)
+        await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
+        setSuccess(true)
+        setShowNotification(true)
+        setNotificationMessage("Form submitted successfully! (Preview Mode)")
+        setNotificationType("success")
+        resetForm()
+        return
+      }
+
+      const response = await fetch(`${API_URL}/api/service-forms/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,21 +118,7 @@ export default function LoudSpeakerPage() {
       setShowNotification(true)
       setNotificationMessage("Form submitted successfully!")
       setNotificationType("success")
-
-      // Reset form
-      setName("")
-      setEmail("")
-      setPhone("")
-      setAadhar("")
-      setAddress("")
-      setEventType("")
-      setEventDate("")
-      setEventTime("")
-      setDuration("")
-      setDescription("")
-      setVerifiedOTP(null)
-      setShowOTPVerification(false)
-      setIsVerified(true)
+      resetForm()
     } catch (error) {
       console.error('Error submitting form:', error)
       setError(error.message || "Failed to submit form. Please try again.")
@@ -126,6 +128,23 @@ export default function LoudSpeakerPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Helper function to reset form
+  const resetForm = () => {
+    setName("")
+    setEmail("")
+    setPhone("")
+    setAadhar("")
+    setAddress("")
+    setEventType("")
+    setEventDate("")
+    setEventTime("")
+    setDuration("")
+    setDescription("")
+    setVerifiedOTP(null)
+    setShowOTPVerification(false)
+    setIsVerified(true)
   }
 
   const handleOTPVerified = (otp) => {
