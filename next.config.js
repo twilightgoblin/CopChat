@@ -24,6 +24,14 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
+  // Logging configuration
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+    level: 'verbose',
+  },
+  
   // Webpack configuration
   webpack: (config, { dev, isServer }) => {
     // Add path aliases
@@ -69,6 +77,12 @@ const nextConfig = {
       cacheDirectory: path.resolve(__dirname, '.next/cache/webpack'),
     }
     
+    // Add verbose logging
+    config.infrastructureLogging = {
+      level: 'verbose',
+      colors: true,
+    }
+    
     return config
   },
   
@@ -77,6 +91,10 @@ const nextConfig = {
     // Enable modern optimizations
     optimizeCss: true,
     scrollRestoration: true,
+    // Add logging for experimental features
+    logging: {
+      level: 'verbose',
+    },
   },
   
   // Configure build cache
