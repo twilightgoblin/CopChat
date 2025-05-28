@@ -20,9 +20,29 @@ const nextConfig = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, './'),
     }
+    // Enable webpack caching
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+    }
     return config
   },
   output: 'standalone',
+  // Enable build caching
+  experimental: {
+    turbotrace: {
+      logLevel: 'error',
+    },
+  },
+  // Configure build cache
+  onDemandEntries: {
+    // period (in ms) where the server will keep pages in the buffer
+    maxInactiveAge: 25 * 1000,
+    // number of pages that should be kept simultaneously without being disposed
+    pagesBufferLength: 2,
+  },
 }
 
 mergeConfig(nextConfig, userConfig)
