@@ -1,70 +1,99 @@
 const path = require('path');
 
-let userConfig = undefined;
-try {
-  userConfig = require('./user-next.config');
-} catch (e) {
-  // ignore error
-}
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Production optimizations
+  poweredByHeader: false,
+  reactStrictMode: true,
+  swcMinify: true,
+  
+  // Build output
+  output: 'standalone',
+  
+  // Image optimization
+  images: {
+    unoptimized: true,
+    domains: ['localhost'],
+  },
+  
+  // ESLint and TypeScript
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: {
-    unoptimized: true,
+  typescript: {
+    ignoreBuildErrors: true,
   },
-  webpack: (config) => {
+  
+  // Webpack configuration
+  webpack: (config, { dev, isServer }) => {
+    // Add path aliases
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, './'),
     }
-    // Enable webpack caching
+    
+    // Production optimizations
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        minimize: true,
+        splitChunks: {
+          chunks: 'all',
+          minSize: 20000,
+          maxSize: 244000,
+          minChunks: 1,
+          maxAsyncRequests: 30,
+          maxInitialRequests: 30,
+          cacheGroups: {
+            defaultVendors: {
+              test: /[\\/]node_modules[\\/]/,
+              priority: -10,
+              reuseExistingChunk: true,
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      }
+    }
+    
+    // Enable filesystem caching
     config.cache = {
       type: 'filesystem',
       buildDependencies: {
         config: [__filename],
       },
+      cacheDirectory: path.resolve(__dirname, '.next/cache/webpack'),
     }
+    
     return config
   },
-  output: 'standalone',
-  // Enable build caching
+  
+  // Experimental features (only stable ones)
   experimental: {
-    turbotrace: {
-      logLevel: 'error',
-    },
+    // Enable modern optimizations
+    optimizeCss: true,
+    scrollRestoration: true,
   },
+  
   // Configure build cache
   onDemandEntries: {
-    // period (in ms) where the server will keep pages in the buffer
-    maxInactiveAge: 25 * 1000,
-    // number of pages that should be kept simultaneously without being disposed
-    pagesBufferLength: 2,
+    maxInactiveAge: 60 * 1000, // 1 minute
+    pagesBufferLength: 5,
   },
 }
 
-mergeConfig(nextConfig, userConfig)
-
-function mergeConfig(nextConfig, userConfig) {
-  if (!userConfig) {
-    return
+// Handle user config if exists
+try {
+  const userConfig = require('./user-next.config')
+  if (userConfig) {
+    Object.assign(nextConfig, userConfig)
   }
-
-  for (const key in userConfig) {
-    if (
-      typeof nextConfig[key] === 'object' &&
-      !Array.isArray(nextConfig[key])
-    ) {
-      nextConfig[key] = {
-        ...nextConfig[key],
-        ...userConfig[key],
-      }
-    } else {
-      nextConfig[key] = userConfig[key]
-    }
-  }
+} catch (e) {
+  // Ignore if user config doesn't exist
 }
 
 module.exports = nextConfig 
