@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { X, Send, ChevronLeft, Bot, Loader2, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import { cn } from '../../utils/helpers';
 
 // Memoized message component to prevent unnecessary re-renders

@@ -59,6 +59,17 @@ const nextConfig = {
         },
       }
     }
+
+    // Enable filesystem caching for webpack
+    if (!dev) {
+      config.cache = {
+        type: 'filesystem',
+        buildDependencies: {
+          config: [__filename],
+        },
+        cacheDirectory: path.resolve(__dirname, '.next/cache/webpack'),
+      }
+    }
     
     return config
   },
@@ -67,6 +78,19 @@ const nextConfig = {
   experimental: {
     // Enable only stable features
     scrollRestoration: true,
+    // Enable build cache
+    turbotrace: {
+      logLevel: 'error',
+      contextDirectory: __dirname,
+    },
+  },
+
+  // Configure build cache
+  onDemandEntries: {
+    // period (in ms) where the server will keep pages in the buffer
+    maxInactiveAge: 25 * 1000,
+    // number of pages that should be kept simultaneously without being disposed
+    pagesBufferLength: 2,
   },
 }
 
