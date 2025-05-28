@@ -1,4 +1,5 @@
 const path = require('path');
+const loggingErrorHandler = require('./common/logging-error-handler');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -24,12 +25,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // Logging configuration
+  // Simplified logging configuration
   logging: {
     fetches: {
       fullUrl: true,
     },
-    level: 'verbose',
+    level: process.env.NODE_ENV === 'production' ? 'error' : 'info',
   },
   
   // Webpack configuration
@@ -38,6 +39,7 @@ const nextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, './'),
+      './common/logging-error-handler': path.resolve(__dirname, './common/logging-error-handler'),
     }
     
     // Production optimizations
@@ -77,9 +79,9 @@ const nextConfig = {
       cacheDirectory: path.resolve(__dirname, '.next/cache/webpack'),
     }
     
-    // Add verbose logging
+    // Simplified infrastructure logging
     config.infrastructureLogging = {
-      level: 'verbose',
+      level: process.env.NODE_ENV === 'production' ? 'error' : 'info',
       colors: true,
     }
     
@@ -91,10 +93,6 @@ const nextConfig = {
     // Enable modern optimizations
     optimizeCss: true,
     scrollRestoration: true,
-    // Add logging for experimental features
-    logging: {
-      level: 'verbose',
-    },
   },
   
   // Configure build cache
