@@ -23,9 +23,6 @@ const nextConfig = {
     return config
   },
   output: 'standalone',
-  experimental: {
-    serverComponents: false,
-  }
 }
 
 mergeConfig(nextConfig, userConfig)
