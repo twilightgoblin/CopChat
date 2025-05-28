@@ -1,5 +1,4 @@
 const path = require('path');
-const loggingErrorHandler = require('./common/logging-error-handler');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -25,21 +24,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // Simplified logging configuration
-  logging: {
-    fetches: {
-      fullUrl: true,
-    },
-    level: process.env.NODE_ENV === 'production' ? 'error' : 'info',
-  },
-  
   // Webpack configuration
   webpack: (config, { dev, isServer }) => {
     // Add path aliases
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, './'),
-      './common/logging-error-handler': path.resolve(__dirname, './common/logging-error-handler'),
     }
     
     // Production optimizations
@@ -70,35 +60,13 @@ const nextConfig = {
       }
     }
     
-    // Enable filesystem caching
-    config.cache = {
-      type: 'filesystem',
-      buildDependencies: {
-        config: [__filename],
-      },
-      cacheDirectory: path.resolve(__dirname, '.next/cache/webpack'),
-    }
-    
-    // Simplified infrastructure logging
-    config.infrastructureLogging = {
-      level: process.env.NODE_ENV === 'production' ? 'error' : 'info',
-      colors: true,
-    }
-    
     return config
   },
   
   // Experimental features (only stable ones)
   experimental: {
-    // Enable modern optimizations
-    optimizeCss: true,
+    // Enable only stable features
     scrollRestoration: true,
-  },
-  
-  // Configure build cache
-  onDemandEntries: {
-    maxInactiveAge: 60 * 1000, // 1 minute
-    pagesBufferLength: 5,
   },
 }
 

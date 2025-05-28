@@ -1,5 +1,5 @@
 [build]
-  command = "npm ci --legacy-peer-deps --verbose && NODE_OPTIONS='--trace-warnings' npm run build"
+  command = "npm install && npm run build"
   publish = ".next"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./server/"
 
@@ -8,22 +8,11 @@
   NODE_VERSION = "18.19.1"
   NPM_VERSION = "9.8.1"
   
-  # Debug logging
-  DEBUG = "*"
-  NODE_DEBUG = "*"
-  NPM_CONFIG_LOGLEVEL = "verbose"
-  
   # Disable telemetry
   NEXT_TELEMETRY_DISABLED = "1"
   
-  # Explicitly disable other language runtimes
-  PYTHON_VERSION = ""
-  RUBY_VERSION = ""
-  GO_VERSION = ""
-  
   # Build optimization
   NODE_ENV = "production"
-  NPM_FLAGS = "--legacy-peer-deps"
   
   # Next.js build cache
   NEXT_CACHE = "true"
