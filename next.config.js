@@ -15,11 +15,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    webpackBuildWorker: true,
-    parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
-  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -27,6 +22,10 @@ const nextConfig = {
     }
     return config
   },
+  output: 'standalone',
+  experimental: {
+    serverComponents: false,
+  }
 }
 
 mergeConfig(nextConfig, userConfig)

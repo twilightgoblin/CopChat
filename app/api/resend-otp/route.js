@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { API_ENDPOINTS } from '@/utils/api';
 
 export async function POST(request) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request) {
     }
 
     // Make request to your backend service
-    const response = await fetch('http://localhost:5001/api/service-forms/resend-otp', {
+    const response = await fetch(API_ENDPOINTS.serviceForms.resendOtp, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
