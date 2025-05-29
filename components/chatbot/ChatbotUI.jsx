@@ -76,6 +76,7 @@ export default function ChatbotUI({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [hasNewMessages, setHasNewMessages] = useState(false);
   const typingIntervalRef = useRef(null);
+  const initialMessageSetRef = useRef(false);
 
   // Memoize the main options to prevent unnecessary re-renders
   const memoizedMainOptions = useMemo(() => mainOptions, [mainOptions]);
@@ -125,10 +126,13 @@ export default function ChatbotUI({
 
   // Initialize with welcome message
   useEffect(() => {
-    if (!initialMessageTyped) {
-      simulateBotTyping(initialMessage, memoizedMainOptions);
-    } else {
-      setMessages([{ type: "bot", content: initialMessage, options: memoizedMainOptions }]);
+    if (!initialMessageSetRef.current) {
+      if (!initialMessageTyped) {
+        simulateBotTyping(initialMessage, memoizedMainOptions);
+      } else {
+        setMessages([{ type: "bot", content: initialMessage, options: memoizedMainOptions }]);
+      }
+      initialMessageSetRef.current = true;
     }
   }, [initialMessageTyped, initialMessage, memoizedMainOptions, simulateBotTyping]);
 
