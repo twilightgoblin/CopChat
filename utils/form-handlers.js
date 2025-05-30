@@ -20,19 +20,19 @@ export const handleFormSubmit = async (
 ) => {
   if (!formData) {
     console.error('No form data provided');
-    setError('Form data is missing');
-    setNotificationMessage('Error: Form data is missing');
-    setNotificationType('error');
-    setShowNotification(true);
+    if (typeof setError === 'function') setError('Form data is missing');
+    if (typeof setNotificationMessage === 'function') setNotificationMessage('Error: Form data is missing');
+    if (typeof setNotificationType === 'function') setNotificationType('error');
+    if (typeof setShowNotification === 'function') setShowNotification(true);
     return;
   }
 
   if (!serviceType) {
     console.error('No service type provided');
-    setError('Service type is missing');
-    setNotificationMessage('Error: Service type is missing');
-    setNotificationType('error');
-    setShowNotification(true);
+    if (typeof setError === 'function') setError('Service type is missing');
+    if (typeof setNotificationMessage === 'function') setNotificationMessage('Error: Service type is missing');
+    if (typeof setNotificationType === 'function') setNotificationType('error');
+    if (typeof setShowNotification === 'function') setShowNotification(true);
     return;
   }
 
@@ -40,10 +40,10 @@ export const handleFormSubmit = async (
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   if (!apiUrl) {
     console.error('API URL not configured');
-    setError('Server configuration error. Please try again later.');
-    setNotificationMessage('Error: Server configuration error');
-    setNotificationType('error');
-    setShowNotification(true);
+    if (typeof setError === 'function') setError('Server configuration error. Please try again later.');
+    if (typeof setNotificationMessage === 'function') setNotificationMessage('Error: Server configuration error');
+    if (typeof setNotificationType === 'function') setNotificationType('error');
+    if (typeof setShowNotification === 'function') setShowNotification(true);
     return;
   }
 
@@ -51,11 +51,11 @@ export const handleFormSubmit = async (
   if (process.env.NEXT_PUBLIC_IS_PREVIEW === 'true') {
     console.log('Preview mode: Simulating form submission', { serviceType, formData });
     await sleep(1000); // Simulate network delay
-    setSuccess(true);
-    setNotificationMessage('Form submitted successfully (Preview Mode)');
-    setNotificationType('success');
-    setShowNotification(true);
-    resetForm();
+    if (typeof setSuccess === 'function') setSuccess(true);
+    if (typeof setNotificationMessage === 'function') setNotificationMessage('Form submitted successfully (Preview Mode)');
+    if (typeof setNotificationType === 'function') setNotificationType('success');
+    if (typeof setShowNotification === 'function') setShowNotification(true);
+    if (typeof resetForm === 'function') resetForm();
     return;
   }
 
@@ -64,26 +64,42 @@ export const handleFormSubmit = async (
 
   while (retryCount <= MAX_RETRIES) {
     try {
-      setLoading(true);
-      setError(null);
+      if (typeof setLoading === 'function') setLoading(true);
+      if (typeof setError === 'function') setError(null);
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
+      // Check if formData is FormData instance
+      const isFormData = formData instanceof FormData;
+      
       // Prepare the request payload
-      const payload = {
-        serviceType,
-        details: formData
+      let requestBody;
+      let headers = {
+        'Accept': 'application/json',
       };
 
-      console.log('Submitting form with payload:', payload);
+      if (isFormData) {
+        // For FormData (file uploads), don't set Content-Type header
+        // Browser will set it automatically with the correct boundary
+        requestBody = formData;
+        formData.append('serviceType', serviceType);
+      } else {
+        // For JSON data
+        headers['Content-Type'] = 'application/json';
+        requestBody = JSON.stringify({
+          serviceType,
+          details: formData
+        });
+      }
 
-      const response = await fetch(`${apiUrl}/api/service-forms/submit`, {
+      console.log('formData type:', isFormData ? 'FormData' : 'JSON');
+      console.log('formData:', formData);
+
+      const response = await fetch(`${apiUrl}/service-forms/submit`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+        headers,
+        body: requestBody,
         signal: controller.signal,
         credentials: 'include'
       });
@@ -104,57 +120,33 @@ export const handleFormSubmit = async (
       console.log('Server response:', data);
       
       if (data.success) {
-        setSuccess(true);
-        setNotificationMessage(data.message || 'Form submitted successfully');
-        setNotificationType('success');
-        setShowNotification(true);
-        resetForm();
+        if (typeof setSuccess === 'function') setSuccess(true);
+        if (typeof setNotificationMessage === 'function') setNotificationMessage(data.message || 'Form submitted successfully');
+        if (typeof setNotificationType === 'function') setNotificationType('success');
+        if (typeof setShowNotification === 'function') setShowNotification(true);
+        if (typeof resetForm === 'function') resetForm();
         return;
       } else {
         throw new Error(data.message || 'Form submission failed');
       }
     } catch (error) {
+      console.error('Error submitting form:', error);
       lastError = error;
-      console.error(`Attempt ${retryCount + 1} failed:`, error);
-
-      if (error.name === 'AbortError') {
-        throw new Error('Request timed out. Please try again.');
-      }
-
-      if (retryCount < MAX_RETRIES) {
-        retryCount++;
-        console.log(`Retrying in ${RETRY_DELAY * retryCount}ms...`);
-        await sleep(RETRY_DELAY * retryCount); // Exponential backoff
-        continue;
-      }
-
-      // Handle specific error types
-      let errorMessage = 'An error occurred while submitting the form.';
+      if (typeof setError === 'function') setError(error.message || 'Failed to submit form. Please try again.');
+      if (typeof setNotificationMessage === 'function') setNotificationMessage(error.message || 'Failed to submit form. Please try again.');
+      if (typeof setNotificationType === 'function') setNotificationType('error');
+      if (typeof setShowNotification === 'function') setShowNotification(true);
       
-      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-        errorMessage = 'Network error. Please check your internet connection and try again.';
-      } else if (error.message.includes('CORS')) {
-        errorMessage = 'Server configuration error. Please try again later.';
-      } else if (error.message.includes('timeout')) {
-        errorMessage = 'Request timed out. Please try again.';
-      } else if (error.message) {
-        errorMessage = error.message;
+      // If this was a network error and we haven't exceeded retries, wait before retrying
+      if (retryCount < MAX_RETRIES) {
+        await sleep(RETRY_DELAY);
       }
-
-      console.error('Final error after retries:', errorMessage);
-      setError(errorMessage);
-      setNotificationMessage(errorMessage);
-      setNotificationType('error');
-      setShowNotification(true);
-      throw error;
+      retryCount++;
     } finally {
-      setLoading(false);
+      if (typeof setLoading === 'function') setLoading(false);
     }
   }
-
-  // If we've exhausted all retries, throw the last error
-  throw lastError;
-}
+};
 
 // Helper function to validate email
 export const validateEmail = (email) => {

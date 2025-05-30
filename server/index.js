@@ -38,13 +38,15 @@ app.use(cors({
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json());
 
-// Serve static files from uploads directory
+// Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Parse JSON bodies
+app.use(express.json());
+
 // MongoDB Connection with detailed logging
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://botchat879:okokokok@chatbot.elbegly.mongodb.net/serviceForms?retryWrites=true&w=majority&appName=ChatBot';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://chatbot:botchat879@chatbot.elbegly.mongodb.net/?retryWrites=true&w=majority&appName=ChatBot';
 
 if (!process.env.MONGODB_URI) {
   console.warn('Warning: MONGODB_URI not found in environment variables. Using fallback connection string.');

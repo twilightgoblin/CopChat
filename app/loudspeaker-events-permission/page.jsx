@@ -10,6 +10,7 @@ import { Volume2, CheckCircle, AlertCircle } from "lucide-react"
 import { motion } from "framer-motion"
 import { FadeIn } from "@/components/fade-in"
 import { Notification } from "@/components/ui/notification"
+import { handleFormSubmit, validateEmail, validatePhone, validateAadhar, formatAadhar } from "@/utils/form-handlers"
 
 export default function LoudspeakerEventsPermissionPage() {
   const [eventName, setEventName] = useState("")
@@ -36,126 +37,81 @@ export default function LoudspeakerEventsPermissionPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError("")
 
     // Validate email
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address")
       return
     }
 
     // Validate phone number
-    if (!/^\d{10}$/.test(contactPhone.replace(/\s/g, ""))) {
+    if (!validatePhone(contactPhone)) {
       setPhoneError("Please enter a valid 10-digit phone number")
       return
     }
 
     // Validate Aadhar number only if provided
-    const aadharWithoutSpaces = aadhar.replace(/\s/g, "")
-    if (aadharWithoutSpaces && !/^\d{12}$/.test(aadharWithoutSpaces)) {
+    if (!validateAadhar(aadhar)) {
       setAadharError("Please enter a valid 12-digit Aadhar number")
       return
     }
 
+    const formData = {
+      name: eventName,
+      email,
+      phone: contactPhone,
+      aadhar,
+      address: location,
+      eventType: eventDetails,
+      eventDate: startDate,
+      endDate,
+      description: eventDetails,
+      contactName
+    }
+
+    await handleFormSubmit(
+      formData,
+      setIsSubmitting,
+      setSubmitError,
+      setSubmitted,
+      setShowNotification,
+      setNotificationMessage,
+      setNotificationType,
+      resetForm,
+      'loudspeaker-events'
+    )
+  }
+
+  const resetForm = () => {
+    setEventName("")
+    setEventDetails("")
+    setContactName("")
+    setEmail("")
+    setContactPhone("")
+    setAadhar("")
+    setLocation("")
+    setStartDate("")
+    setEndDate("")
     setEmailError("")
     setPhoneError("")
     setAadharError("")
-
-    try {
-      const response = await fetch('http://localhost:5001/api/service-forms/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          serviceType: 'loudspeaker-events-permission',
-          details: {
-            name: eventName,
-            phone: contactPhone,
-            aadhar,
-            eventType: eventDetails,
-            location,
-            date: startDate,
-            time: endDate,
-            description: eventDetails,
-            image: null,
-            additionalFiles: []
-          }
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit form');
-      }
-
-      setNotificationMessage("Permission request submitted successfully!");
-      setNotificationType("success");
-      setShowNotification(true);
-      
-      // Reset form fields
-      setEventName("")
-      setEventDetails("")
-      setContactName("")
-      setEmail("")
-      setContactPhone("")
-      setAadhar("")
-      setLocation("")
-      setStartDate("")
-      setEndDate("")
-
-      // Hide notification after 3 seconds
-      setTimeout(() => {
-        setShowNotification(false);
-      }, 3000);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setNotificationMessage(
-        error.message === 'Failed to fetch' 
-          ? 'Unable to connect to the server. Please make sure the backend server is running.'
-          : error.message || 'Failed to submit form. Please try again later.'
-      );
-      setNotificationType("error");
-      setShowNotification(true);
-      
-      // Hide notification after 5 seconds for errors
-      setTimeout(() => {
-        setShowNotification(false);
-      }, 5000);
-    }
+    setSubmitError("")
   }
 
-  const formatAadhar = (value) => {
-    const digits = value.replace(/\D/g, "")
-    let formatted = ""
-
-    for (let i = 0; i < digits.length && i < 12; i++) {
-      if (i > 0 && i % 4 === 0) {
-        formatted += " "
-      }
-      formatted += digits[i]
-    }
-
-    return formatted
-  }
-
-  const handleAadharChange = (e) => {
-    const formatted = formatAadhar(e.target.value)
-    setAadhar(formatted)
-
-    // Validate Aadhar immediately
-    const aadharWithoutSpaces = formatted.replace(/\s/g, "")
-    if (aadharWithoutSpaces.length > 0 && aadharWithoutSpaces.length !== 12) {
-      setAadharError("Please enter a valid 12-digit Aadhar number")
+  const handleEmailChange = (e) => {
+    const value = e.target.value
+    setEmail(value)
+    if (value && !validateEmail(value)) {
+      setEmailError("Please enter a valid email address")
     } else {
-      setAadharError("")
+      setEmailError("")
     }
   }
 
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, "")
     setContactPhone(value.substring(0, 10))
-
-    // Validate phone immediately
     if (value.length > 0 && value.length !== 10) {
       setPhoneError("Please enter a valid 10-digit phone number")
     } else {
@@ -163,15 +119,13 @@ export default function LoudspeakerEventsPermissionPage() {
     }
   }
 
-  const handleEmailChange = (e) => {
-    const value = e.target.value
-    setEmail(value)
-
-    // Validate email immediately
-    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      setEmailError("Please enter a valid email address")
+  const handleAadharChange = (e) => {
+    const formatted = formatAadhar(e.target.value)
+    setAadhar(formatted)
+    if (formatted.replace(/\s/g, "").length > 0 && !validateAadhar(formatted)) {
+      setAadharError("Please enter a valid 12-digit Aadhar number")
     } else {
-      setEmailError("")
+      setAadharError("")
     }
   }
 
@@ -181,7 +135,12 @@ export default function LoudspeakerEventsPermissionPage() {
         <Notification
           message={notificationMessage}
           type={notificationType}
-          onClose={() => setShowNotification(false)}
+          onClose={() => {
+            setShowNotification(false);
+            if (notificationType === 'success') {
+              setSubmitted(true);
+            }
+          }}
         />
       )}
       <div className="container mx-auto px-4 max-w-2xl">

@@ -7,8 +7,8 @@ const getApiUrl = () => {
 export const API_ENDPOINTS = {
   serviceForms: {
     submit: `${getApiUrl()}/api/service-forms/submit`,
-    verifyOtp: `${getApiUrl()}/api/service-forms/verify-otp`,
-    resendOtp: `${getApiUrl()}/api/service-forms/resend-otp`,
+    verifyOtp: '/api/verify-otp',
+    resendOtp: '/api/resend-otp',
   },
   updates: {
     list: `${getApiUrl()}/api/updates`,

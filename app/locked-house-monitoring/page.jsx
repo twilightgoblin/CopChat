@@ -37,6 +37,7 @@ export default function LockedHouseMonitoringPage() {
   const [isVerified, setIsVerified] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState("")
 
   const fileInputRef = useRef(null)
   const additionalFilesRef = useRef(null)
@@ -99,7 +100,7 @@ export default function LockedHouseMonitoringPage() {
       otp: verifiedOTP
     }
 
-    await handleFormSubmit({
+    await handleFormSubmit(
       formData,
       setLoading,
       setError,
@@ -108,8 +109,16 @@ export default function LockedHouseMonitoringPage() {
       setNotificationMessage,
       setNotificationType,
       resetForm,
-      serviceType: 'locked-house-monitoring'
-    })
+      'locked-house-monitoring'
+    )
+
+    if (response?.ok) {
+      setNotificationMessage("✅ Locked house monitoring request submitted successfully! We will process your request and get back to you soon.");
+      setNotificationType("success");
+      setShowNotification(true);
+      setSuccess(true);
+      resetForm();
+    }
   }
 
   const handleOTPVerified = (otp) => {
@@ -171,7 +180,13 @@ export default function LockedHouseMonitoringPage() {
         <Notification
           message={notificationMessage}
           type={notificationType}
-          onClose={() => setShowNotification(false)}
+          onClose={() => {
+            setShowNotification(false);
+            if (notificationType === 'success') {
+              setSubmitted(true);
+            }
+          }}
+          className={notificationType === 'success' ? 'bg-green-100 border-green-500 text-green-800' : ''}
         />
       )}
       <div className="container mx-auto px-4 max-w-2xl">

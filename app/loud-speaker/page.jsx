@@ -11,6 +11,7 @@ import { motion } from "framer-motion"
 import { FadeIn } from "@/components/fade-in"
 import { Notification } from "@/components/ui/notification"
 import OTPVerification from "@/components/otp-verification"
+import { handleFormSubmit, validateEmail, validatePhone, validateAadhar, formatAadhar } from "@/utils/form-handlers"
 
 // Get API URL from environment variable or use default
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
@@ -35,99 +36,61 @@ export default function LoudSpeakerPage() {
   const [showOTPVerification, setShowOTPVerification] = useState(false)
   const [verifiedOTP, setVerifiedOTP] = useState(null)
   const [isVerified, setIsVerified] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
     // Validate email
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!validateEmail(email)) {
       setError("Please enter a valid email address")
-      setLoading(false)
       return
     }
 
     // Validate phone number
-    if (!/^\d{10}$/.test(phone.replace(/\s/g, ""))) {
+    if (!validatePhone(phone)) {
       setError("Please enter a valid 10-digit phone number")
-      setLoading(false)
       return
     }
 
     // Validate Aadhar number only if provided
-    const aadharWithoutSpaces = aadhar.replace(/\s/g, "")
-    if (aadharWithoutSpaces && !/^\d{12}$/.test(aadharWithoutSpaces)) {
+    if (!validateAadhar(aadhar)) {
       setError("Please enter a valid 12-digit Aadhar number")
-      setLoading(false)
       return
     }
 
     // Show OTP verification if not already verified
     if (!verifiedOTP) {
       setShowOTPVerification(true)
-      setLoading(false)
       return
     }
 
-    try {
-      const formData = {
-        serviceType: "loud-speaker",
-        details: {
-          name,
-          email,
-          phone,
-          aadhar,
-          address,
-          eventType,
-          date: eventDate,
-          time: eventTime,
-          duration,
-          description
-        },
-        otp: verifiedOTP
-      }
-
-      // Check if we're in preview mode
-      if (process.env.NEXT_PUBLIC_IS_PREVIEW === 'true') {
-        // Simulate successful submission in preview
-        console.log('Preview mode: Simulating form submission', formData)
-        await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
-        setSuccess(true)
-        setShowNotification(true)
-        setNotificationMessage("Form submitted successfully! (Preview Mode)")
-        setNotificationType("success")
-        resetForm()
-        return
-      }
-
-      const response = await fetch(`${API_URL}/api/service-forms/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to submit form')
-      }
-
-      setSuccess(true)
-      setShowNotification(true)
-      setNotificationMessage("Form submitted successfully!")
-      setNotificationType("success")
-      resetForm()
-    } catch (error) {
-      console.error('Error submitting form:', error)
-      setError(error.message || "Failed to submit form. Please try again.")
-      setShowNotification(true)
-      setNotificationMessage(error.message || "Failed to submit form. Please try again.")
-      setNotificationType("error")
-    } finally {
-      setLoading(false)
+    const formData = {
+      name,
+      email,
+      phone,
+      aadhar,
+      address,
+      eventType,
+      eventDate,
+      startTime: eventTime,
+      endTime: duration || eventTime,
+      description,
+      otp: verifiedOTP
     }
+
+    await handleFormSubmit(
+      formData,
+      setLoading,
+      setError,
+      setSuccess,
+      setShowNotification,
+      setNotificationMessage,
+      setNotificationType,
+      resetForm,
+      'loud-speaker'
+    )
   }
 
   // Helper function to reset form
@@ -149,16 +112,14 @@ export default function LoudSpeakerPage() {
 
   const handleOTPVerified = (otp) => {
     setVerifiedOTP(otp)
-    setShowOTPVerification(false)
     setIsVerified(true)
-    // Automatically submit the form after OTP verification
-    handleSubmit(new Event('submit'))
+    setError("")
   }
 
   const handleEmailChange = (e) => {
     const value = e.target.value
     setEmail(value)
-    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    if (value && !validateEmail(value)) {
       setError("Please enter a valid email address")
     } else {
       setError("")
@@ -176,16 +137,9 @@ export default function LoudSpeakerPage() {
   }
 
   const handleAadharChange = (e) => {
-    const value = e.target.value.replace(/\D/g, "")
-    let formatted = ""
-    for (let i = 0; i < value.length && i < 12; i++) {
-      if (i > 0 && i % 4 === 0) {
-        formatted += " "
-      }
-      formatted += value[i]
-    }
+    const formatted = formatAadhar(e.target.value)
     setAadhar(formatted)
-    if (value.length > 0 && value.length !== 12) {
+    if (formatted.replace(/\s/g, "").length > 0 && !validateAadhar(formatted)) {
       setError("Please enter a valid 12-digit Aadhar number")
     } else {
       setError("")
@@ -198,7 +152,13 @@ export default function LoudSpeakerPage() {
         <Notification
           message={notificationMessage}
           type={notificationType}
-          onClose={() => setShowNotification(false)}
+          onClose={() => {
+            setShowNotification(false);
+            if (notificationType === 'success') {
+              setSubmitted(true);
+            }
+          }}
+          className={notificationType === 'success' ? 'bg-green-100 border-green-500 text-green-800' : ''}
         />
       )}
       <div className="container mx-auto px-4 max-w-2xl">
@@ -338,11 +298,14 @@ export default function LoudSpeakerPage() {
                       <Label htmlFor="duration">Duration (Required)</Label>
                       <Input
                         id="duration"
+                        type="time"
                         value={duration}
                         onChange={(e) => setDuration(e.target.value)}
                         required
-                        placeholder="e.g., 2 hours, 1 day"
+                        placeholder="Enter event duration"
+                        min={eventTime}
                       />
+                      <p className="text-sm text-gray-500">Please enter when the event will end</p>
                     </div>
 
                     <div className="space-y-2">

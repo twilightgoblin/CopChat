@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { AlertCircle, CheckCircle2 } from "lucide-react"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
+import { API_ENDPOINTS } from "@/utils/api"
 
 export default function OTPVerification({ email, onVerified }) {
   const [otp, setOtp] = useState("")
@@ -15,6 +16,7 @@ export default function OTPVerification({ email, onVerified }) {
   const [otpSent, setOtpSent] = useState(false)
 
   const handleSendOTP = async () => {
+    console.log('[OTP] handleSendOTP called with email:', email)
     if (!email) {
       setError("Email is required to send OTP")
       return
@@ -23,19 +25,21 @@ export default function OTPVerification({ email, onVerified }) {
     setResendLoading(true)
     setError("")
     try {
-      const response = await fetch('/api/resend-otp', {
+      const response = await fetch(API_ENDPOINTS.serviceForms.resendOtp, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
   
-      const data = await response.json();
-  
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to send OTP');
+         if (!response.headers.get("content-type")?.includes("application/json")) {
+            throw new Error("Server returned an error (status: " + response.status + ") – not JSON.");
+         }
+         const data = await response.json();
+         throw new Error(data.message || 'Failed to send OTP');
       }
+  
+      const data = await response.json();
   
       setOtp(""); // reset the OTP input
       setError(""); // clear any previous errors
@@ -59,7 +63,7 @@ export default function OTPVerification({ email, onVerified }) {
 
     try {
       console.log('Verifying OTP:', { email, otp })
-      const response = await fetch('http://localhost:5001/api/service-forms/verify-otp', {
+      const response = await fetch(API_ENDPOINTS.serviceForms.verifyOtp, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,17 +74,21 @@ export default function OTPVerification({ email, onVerified }) {
         })
       })
 
-      const data = await response.json()
-      console.log('Verification response:', data)
-
+      const contentType = response.headers.get("content-type");
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to verify OTP')
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          throw new Error(data.message || 'Failed to verify OTP');
+        } else {
+          throw new Error(`Server returned an error (status: ${response.status}) – not JSON.`);
+        }
       }
+      const data = await response.json();
+      console.log('Verification response:', data)
 
       // Set verified state
       setIsVerified(true)
       setError("")
-      
       // Call onVerified with the verified OTP
       onVerified(data.otp)
     } catch (error) {
@@ -94,67 +102,51 @@ export default function OTPVerification({ email, onVerified }) {
 
   return (
     <div className="space-y-4">
-      {!otpSent ? (
+      <Button
+        onClick={handleSendOTP}
+        disabled={resendLoading || !email}
+        className="w-full bg-violet-600 hover:bg-violet-700"
+      >
+        {resendLoading ? "Sending..." : "Send OTP"}
+      </Button>
+      {otpSent && (
+        <div className="space-y-2">
+          <Label>Enter Verification Code</Label>
+          <InputOTP
+            maxLength={6}
+            value={otp}
+            onChange={(value) => {
+              console.log('OTP input changed:', value)
+              setOtp(value)
+            }}
+            disabled={isVerified}
+          >
+            <InputOTPGroup>
+              {Array.from({ length: 6 }).map((_, index) => ( <InputOTPSlot key={index} index={index} /> ))}
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
+      )}
+      {error && (
+        <div className="flex items-center text-yellow-600">
+          <AlertCircle className="h-4 w-4 mr-1" />
+          <span>{error}</span>
+        </div>
+      )}
+      {isVerified && (
+        <div className="flex items-center text green-600">
+          <CheckCircle2 className="h-4 w-4 mr-1" />
+          <span>OTP verified successfully!</span>
+        </div>
+      )}
+      {otpSent && ( (otp.length === 6) && ( !isVerified ) ) && (
         <Button
-          onClick={handleSendOTP}
-          disabled={resendLoading || !email}
-          className="w-full bg-violet-600 hover:bg-violet-700"
+          onClick={handleVerify}
+          disabled={loading}
+          className="flex-1 bg-violet-600 hover:bg-violet-700"
         >
-          {resendLoading ? "Sending..." : "Send OTP"}
+          {loading ? "Verifying..." : "Verify"}
         </Button>
-      ) : (
-        <>
-          <div className="space-y-2">
-            <Label>Enter Verification Code</Label>
-            <InputOTP
-              maxLength={6}
-              value={otp}
-              onChange={(value) => {
-                console.log('OTP input changed:', value)
-                setOtp(value)
-              }}
-              disabled={isVerified}
-            >
-              <InputOTPGroup>
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <InputOTPSlot key={index} index={index} />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
-          </div>
-
-          {error && (
-            <div className="flex items-center text-yellow-600">
-              <AlertCircle className="h-4 w-4 mr-1" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {isVerified && (
-            <div className="flex items-center text-green-600">
-              <CheckCircle2 className="h-4 w-4 mr-1" />
-              <span>OTP verified successfully!</span>
-            </div>
-          )}
-
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button
-              onClick={handleVerify}
-              disabled={loading || otp.length !== 6 || isVerified}
-              className="flex-1 bg-violet-600 hover:bg-violet-700"
-            >
-              {loading ? "Verifying..." : isVerified ? "Verified" : "Verify"}
-            </Button>
-            <Button
-              onClick={handleSendOTP}
-              disabled={resendLoading || isVerified}
-              variant="outline"
-              className="flex-1"
-            >
-              {resendLoading ? "Sending..." : "Resend Code"}
-            </Button>
-          </div>
-        </>
       )}
     </div>
   )

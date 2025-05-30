@@ -94,15 +94,15 @@ export default function WomenCompanionPage() {
       email,
       phone,
       aadhar,
+      address,
       destination,
       travelDate,
       travelTime,
-      duration: description,
-      additionalInfo: address,
+      description,
       otp: verifiedOTP
     }
 
-    await handleFormSubmit({
+    await handleFormSubmit(
       formData,
       setLoading,
       setError,
@@ -111,8 +111,8 @@ export default function WomenCompanionPage() {
       setNotificationMessage,
       setNotificationType,
       resetForm,
-      serviceType: 'women-companion'
-    })
+      'women-companion'
+    )
   }
 
   const handleOTPVerified = (otp) => {
@@ -174,7 +174,12 @@ export default function WomenCompanionPage() {
         <Notification
           message={notificationMessage}
           type={notificationType}
-          onClose={() => setShowNotification(false)}
+          onClose={() => {
+            setShowNotification(false);
+            if (notificationType === 'success') {
+              setSubmitted(true);
+            }
+          }}
         />
       )}
       <div className="container mx-auto px-4 max-w-2xl">

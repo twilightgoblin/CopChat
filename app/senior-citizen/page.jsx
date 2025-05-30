@@ -20,6 +20,7 @@ export default function SeniorCitizenPage() {
   const [aadhar, setAadhar] = useState("")
   const [address, setAddress] = useState("")
   const [age, setAge] = useState("")
+  const [contactName, setContactName] = useState("")
   const [emergencyContact, setEmergencyContact] = useState("")
   const [medicalConditions, setMedicalConditions] = useState("")
   const [description, setDescription] = useState("")
@@ -49,6 +50,7 @@ export default function SeniorCitizenPage() {
     setAadhar("")
     setAddress("")
     setAge("")
+    setContactName("")
     setEmergencyContact("")
     setMedicalConditions("")
     setDescription("")
@@ -74,8 +76,21 @@ export default function SeniorCitizenPage() {
     }
 
     // Validate Aadhar number only if provided
-    if (!validateAadhar(aadhar)) {
+    if (aadhar && !validateAadhar(aadhar)) {
       setError("Please enter a valid 12-digit Aadhar number")
+      return
+    }
+
+    // Validate age
+    const ageNum = parseInt(age)
+    if (isNaN(ageNum) || ageNum < 60) {
+      setError("Age must be at least 60 years")
+      return
+    }
+
+    // Validate contact name
+    if (!contactName.trim()) {
+      setError("Please enter a contact name")
       return
     }
 
@@ -91,14 +106,15 @@ export default function SeniorCitizenPage() {
       phone,
       aadhar,
       address,
-      age,
+      age: ageNum,
+      contactName,
       emergencyContact,
       medicalConditions,
       description,
       otp: verifiedOTP
     }
 
-    await handleFormSubmit({
+    await handleFormSubmit(
       formData,
       setLoading,
       setError,
@@ -107,8 +123,16 @@ export default function SeniorCitizenPage() {
       setNotificationMessage,
       setNotificationType,
       resetForm,
-      serviceType: 'senior-citizen'
-    })
+      'senior-citizen'
+    )
+
+    if (response?.ok) {
+      setNotificationMessage("✅ Senior citizen registration submitted successfully! We will process your request and get back to you soon.");
+      setNotificationType("success");
+      setShowNotification(true);
+      setSuccess(true);
+      resetForm();
+    }
   }
 
   const handleOTPVerified = (otp) => {
@@ -153,7 +177,13 @@ export default function SeniorCitizenPage() {
         <Notification
           message={notificationMessage}
           type={notificationType}
-          onClose={() => setShowNotification(false)}
+          onClose={() => {
+            setShowNotification(false);
+            if (notificationType === 'success') {
+              setSubmitted(true);
+            }
+          }}
+          className={notificationType === 'success' ? 'bg-green-100 border-green-500 text-green-800' : ''}
         />
       )}
       <div className="container mx-auto px-4 max-w-2xl">
@@ -278,20 +308,31 @@ export default function SeniorCitizenPage() {
                             onChange={(e) => setAge(e.target.value)}
                             required
                             min="60"
-                            placeholder="Enter your age"
+                            placeholder="Enter your age (must be 60 or above)"
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="emergencyContact">Emergency Contact (Required)</Label>
+                          <Label htmlFor="contactName">Contact Person Name (Required)</Label>
                           <Input
-                            id="emergencyContact"
-                            value={emergencyContact}
-                            onChange={(e) => setEmergencyContact(e.target.value)}
+                            id="contactName"
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
                             required
-                            placeholder="Enter emergency contact number"
+                            placeholder="Enter contact person's name"
                           />
                         </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="emergencyContact">Emergency Contact (Required)</Label>
+                        <Input
+                          id="emergencyContact"
+                          value={emergencyContact}
+                          onChange={(e) => setEmergencyContact(e.target.value)}
+                          required
+                          placeholder="Enter emergency contact number"
+                        />
                       </div>
 
                       <div className="space-y-2">

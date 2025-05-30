@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import { API_ENDPOINTS } from '@/utils/api';
 
 export async function POST(request) {
   try {
     const body = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_BASE_URL}/api/service-forms/resend-otp`, {
+    const response = await fetch(`${process.env.BACKEND_BASE_URL}/api/service-forms/verify-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -24,7 +23,7 @@ export async function POST(request) {
     const data = await response.json();
     return new Response(JSON.stringify(data), { status: response.status });
   } catch (error) {
-    console.error("Error in resend-otp proxy:", error);
+    console.error("Error in verify-otp proxy:", error);
     return new Response(JSON.stringify({ message: error.message || "Internal server error" }), { status: 500 });
   }
 } 

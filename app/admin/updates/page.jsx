@@ -75,7 +75,7 @@ export default function AdminUpdates() {
         throw new Error(errorData.message || 'Failed to add update')
       }
 
-      setNotificationMessage("Update added successfully!")
+      setNotificationMessage("✅ Update added successfully!")
       setNotificationType("success")
       setShowNotification(true)
 
@@ -111,7 +111,7 @@ export default function AdminUpdates() {
         throw new Error('Failed to delete update')
       }
 
-      setNotificationMessage("Update deleted successfully!")
+      setNotificationMessage("✅ Update deleted successfully!")
       setNotificationType("success")
       setShowNotification(true)
 
@@ -181,6 +181,7 @@ export default function AdminUpdates() {
                 message={notificationMessage}
                 type={notificationType}
                 onClose={() => setShowNotification(false)}
+                className={notificationType === 'success' ? 'bg-green-100 border-green-500 text-green-800' : ''}
               />
             )}
 

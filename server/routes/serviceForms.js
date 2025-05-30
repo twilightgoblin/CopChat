@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const LostAndFoundForm = require('../models/LostAndFoundForm');
 const LockedHouseMonitoringForm = require('../models/LockedHouseMonitoringForm');
 const WomenCompanionForm = require('../models/WomenCompanionForm');
@@ -35,7 +38,9 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: 'botchat879@gmail.com',
     pass: 'kogt hqxd tfsx hzly' // App password for Gmail
-  }
+  },
+  debug: true, // Enable debug logging
+  logger: true // Enable logger
 });
 
 // Verify transporter configuration
@@ -44,6 +49,49 @@ transporter.verify(function(error, success) {
     console.error('SMTP configuration error:', error);
   } else {
     console.log('SMTP server is ready to take our messages');
+  }
+});
+
+// Configure multer for file storage
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, '../uploads');
+    // Create uploads directory if it doesn't exist
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    // Generate unique filename
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// File filter to accept only images and documents
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ];
+
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid file type. Only images and documents are allowed.'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
   }
 });
 
@@ -160,7 +208,8 @@ router.post('/verify-otp', async (req, res) => {
 router.post('/resend-otp', async (req, res) => {
   try {
     const { email } = req.body;
-    console.log('Resending OTP to:', email); // Debug log
+    console.log("[resend-otp] Route hit with email:", email); // Debug log (nodemailer connection check)
+    console.log('Resending OTP to:', email); // (existing debug log)
 
     if (!email) {
       console.log('Email is required'); // Debug log
@@ -190,7 +239,10 @@ router.post('/resend-otp', async (req, res) => {
 
     // Send OTP email
     const mailOptions = {
-      from: 'botchat879@gmail.com',
+      from: {
+        name: 'Police Service Portal',
+        address: 'botchat879@gmail.com'
+      },
       to: email,
       subject: 'OTP for Police Service Request',
       html: `
@@ -201,14 +253,21 @@ router.post('/resend-otp', async (req, res) => {
       `
     };
 
-    await transporter.sendMail(mailOptions);
-    console.log('OTP email sent successfully to:', email); // Debug log
+    console.log('Attempting to send email with options:', mailOptions); // Debug log
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully:', info); // Debug log
 
     res.status(200).json({
       message: 'OTP sent successfully'
     });
   } catch (error) {
     console.error('Error sending OTP:', error);
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+      code: error.code
+    });
     res.status(500).json({
       message: 'Error sending OTP',
       error: error.message
@@ -217,90 +276,127 @@ router.post('/resend-otp', async (req, res) => {
 });
 
 // Submit a new service form
-router.post('/submit', async (req, res) => {
+router.post('/submit', upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'additionalFiles', maxCount: 5 }
+]), async (req, res) => {
+  // Add request ID for tracking
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`[${requestId}] Starting form submission request`);
+  console.log(`[${requestId}] 📩 Received body:`, JSON.stringify(req.body, null, 2));
+  console.log(`[${requestId}] 📎 Received files:`, req.files ? JSON.stringify(req.files, null, 2) : 'No files');
+  console.log(`[${requestId}] 🔍 Content-Type:`, req.get('Content-Type'));
+
   try {
-    console.log('Received form submission request:', req.body);
-    const { serviceType, details } = req.body;
+    // Handle both JSON and multipart form data
+    let serviceType, details;
+    
+    if (req.is('multipart/form-data')) {
+      console.log(`[${requestId}] 📦 Processing as multipart/form-data`);
+      // Handle multipart form data
+      serviceType = req.body.serviceType;
+      details = { ...req.body };
+      
+      // Handle uploaded files
+      if (req.files) {
+        if (req.files.image) {
+          details.image = `/uploads/${req.files.image[0].filename}`;
+        }
+        if (req.files.additionalFiles) {
+          details.additionalFiles = req.files.additionalFiles.map(file => `/uploads/${file.filename}`);
+        }
+      }
+    } else {
+      console.log(`[${requestId}] 📦 Processing as JSON`);
+      // Handle JSON data
+      ({ serviceType, details } = req.body);
+      console.log(`[${requestId}] 🔍 Extracted JSON data:`, {
+        serviceType,
+        details: JSON.stringify(details, null, 2)
+      });
+    }
+
+    console.log(`[${requestId}] 🔍 Extracted data:`, { 
+      serviceType, 
+      details: JSON.stringify(details, null, 2),
+      hasItem: !!details?.item,
+      itemValue: details?.item
+    });
 
     if (!serviceType || !details) {
-      console.error('Missing required fields:', { serviceType, details });
+      console.log(`[${requestId}] Missing required fields:`, { serviceType: !!serviceType, hasDetails: !!details });
       return res.status(400).json({ message: 'Service type and details are required' });
     }
 
-    console.log('Processing form submission for service type:', serviceType);
+    console.log(`[${requestId}] Processing ${serviceType} form submission`);
     let form;
 
     // Create form based on service type
     switch (serviceType) {
       case 'senior-citizen':
-        console.log('Creating senior citizen form with details:', details);
         form = new SeniorCitizenForm({
           ...details,
-          contactPhone: details.phone // Map phone to contactPhone
+          contactPhone: details.phone
         });
         break;
 
       case 'women-companion':
-        console.log('Creating women companion form with details:', details);
         form = new WomenCompanionForm(details);
         break;
 
       case 'lost-and-found':
-        console.log('Creating lost and found form with details:', details);
-        form = new LostAndFoundForm({
-          ...details,
-          item: details.itemType // Map itemType to item
-        });
+        console.log(`[${requestId}] Creating Lost and Found form with details:`, JSON.stringify(details, null, 2));
+        // Validate image requirement for found items
+        if (!details.isLost && !details.image) {
+          return res.status(400).json({ 
+            message: 'Image is required for found items',
+            errors: { image: { message: 'Image is required for found items' } }
+          });
+        }
+        form = new LostAndFoundForm(details);
         break;
 
       case 'locked-house-monitoring':
-        console.log('Creating locked house monitoring form with details:', details);
         form = new LockedHouseMonitoringForm(details);
         break;
 
       case 'loud-speaker':
-        console.log('Creating loud speaker form with details:', details);
         form = new LoudSpeakerForm({
           ...details,
-          name: details.eventName, // Map eventName to name
-          eventDate: details.date, // Map date to eventDate
-          startTime: details.time, // Map time to startTime
-          endTime: details.duration // Map duration to endTime
+          name: details.eventName,
+          eventDate: details.date,
+          startTime: details.time,
+          endTime: details.duration
         });
         break;
 
       case 'anonymous-complaint':
-        console.log('Creating anonymous complaint form with details:', details);
         form = new AnonymousComplaintForm(details);
         break;
 
       default:
-        console.error('Invalid service type:', serviceType);
+        console.log(`[${requestId}] Invalid service type:`, serviceType);
         return res.status(400).json({ message: 'Invalid service type' });
     }
 
     // Validate the form before saving
     const validationError = form.validateSync();
     if (validationError) {
-      console.error('Form validation error:', validationError);
+      console.log(`[${requestId}] Validation errors:`, JSON.stringify(validationError.errors, null, 2));
       return res.status(400).json({
         message: 'Invalid form data',
         errors: validationError.errors
       });
     }
 
-    console.log('Attempting to save form to database...');
+    console.log(`[${requestId}] Saving form to database...`);
     const savedForm = await form.save();
-    console.log('Form saved successfully:', {
-      id: savedForm._id,
-      serviceType: serviceType,
-      createdAt: savedForm.createdAt
-    });
+    console.log(`[${requestId}] Form saved successfully with ID:`, savedForm._id);
 
     // Send confirmation email if email is provided
     if (details.email) {
       try {
-        console.log('Sending confirmation email to:', details.email);
+        console.log(`[${requestId}] Sending confirmation email to:`, details.email);
         const mailOptions = {
           from: 'botchat879@gmail.com',
           to: details.email,
@@ -315,14 +411,15 @@ router.post('/submit', async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('Confirmation email sent successfully');
+        console.log(`[${requestId}] Confirmation email sent successfully`);
       } catch (emailError) {
-        console.error('Error sending confirmation email:', emailError);
+        console.error(`[${requestId}] Email error:`, emailError.message);
         // Don't fail the request if email fails
       }
     }
 
     // Return success response
+    console.log(`[${requestId}] Request completed successfully`);
     res.status(201).json({
       message: 'Form submitted successfully',
       formId: savedForm._id,
@@ -330,29 +427,25 @@ router.post('/submit', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error submitting form:', error);
-    console.error('Error details:', {
+    console.error(`[${requestId}] Error in form submission:`, {
       name: error.name,
-      message: error.message,
-      stack: error.stack
+      message: error.message
     });
 
-    // Check if it's a validation error
     if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        message: 'Invalid form data',
-        errors: error.errors
+      console.log(`[${requestId}] Validation errors:`, JSON.stringify(error.errors, null, 2));
+      return res.status(400).json({ 
+        message: 'Invalid form data', 
+        errors: error.errors 
       });
     }
 
-    // Check if it's a duplicate key error
     if (error.code === 11000) {
       return res.status(400).json({
         message: 'A form with this information already exists'
       });
     }
 
-    // For other errors
     res.status(500).json({
       message: 'Error submitting form',
       error: error.message

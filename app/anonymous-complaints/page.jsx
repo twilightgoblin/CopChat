@@ -22,6 +22,7 @@ export default function AnonymousComplaintsPage() {
   const [location, setLocation] = useState("")
   const [resources, setResources] = useState("")
   const [description, setDescription] = useState("")
+  const [additionalInfo, setAdditionalInfo] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState({})
@@ -104,9 +105,9 @@ export default function AnonymousComplaintsPage() {
     }
 
     const formData = {
-      name: name || "Anonymous",
-      email: email || "",
-      phone: phone || "",
+      name,
+      email,
+      phone,
       complaintType,
       location,
       resources,
@@ -114,17 +115,25 @@ export default function AnonymousComplaintsPage() {
       additionalInfo
     }
 
-    await handleFormSubmit({
+    await handleFormSubmit(
       formData,
-      setLoading,
-      setError,
-      setSuccess,
+      setIsSubmitting,
+      setSubmitError,
+      setSubmitted,
       setShowNotification,
       setNotificationMessage,
       setNotificationType,
       resetForm,
-      serviceType: 'anonymous-complaints'
-    })
+      'anonymous-complaint'
+    )
+
+    if (response?.ok) {
+      setNotificationMessage("✅ Anonymous complaint submitted successfully! We will process your complaint and take necessary action.");
+      setNotificationType("success");
+      setShowNotification(true);
+      setSubmitted(true);
+      resetForm();
+    }
   }
 
   const handleEmailChange = (e) => {
@@ -179,7 +188,13 @@ export default function AnonymousComplaintsPage() {
         <Notification
           message={notificationMessage}
           type={notificationType}
-          onClose={() => setShowNotification(false)}
+          onClose={() => {
+            setShowNotification(false);
+            if (notificationType === 'success') {
+              setSubmitted(true);
+            }
+          }}
+          className={notificationType === 'success' ? 'bg-green-100 border-green-500 text-green-800' : ''}
         />
       )}
       <div className="container mx-auto px-4 max-w-2xl">

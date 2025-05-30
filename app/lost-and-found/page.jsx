@@ -65,56 +65,146 @@ export default function LostAndFoundPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    console.log('Form submitted')
     setError("")
+
+    // Log all form fields for debugging
+    console.log('Form field values:', {
+      isLost,
+      name,
+      email,
+      phone,
+      aadhar,
+      item,
+      location,
+      description,
+      hasImage: !!image,
+      additionalFilesCount: additionalFiles.length
+    })
 
     // Validate email
     if (!validateEmail(email)) {
+      console.log('Email validation failed')
       setError("Please enter a valid email address")
       return
     }
 
     // Validate phone number
     if (!validatePhone(phone)) {
+      console.log('Phone validation failed')
       setError("Please enter a valid 10-digit phone number")
       return
     }
 
     // Validate Aadhar number only if provided
     if (!validateAadhar(aadhar)) {
+      console.log('Aadhar validation failed')
       setError("Please enter a valid 12-digit Aadhar number")
+      return
+    }
+
+    // Validate item field
+    if (!item?.trim()) {
+      console.log('Item validation failed')
+      setError("Please enter the item details")
+      return
+    }
+
+    // Validate image for Found items
+    if (!isLost && !image) {
+      console.log('Image validation failed for Found item')
+      setError("Please attach an image of the found item")
       return
     }
 
     // Show OTP verification if not already verified
     if (!verifiedOTP) {
+      console.log('OTP not verified')
       setShowOTPVerification(true)
       return
     }
 
-    const formData = {
-      name,
-      email,
-      phone,
-      aadhar,
-      itemType: item,
-      location,
-      description,
-      image: image ? image.name : null,
-      additionalFiles: additionalFiles.map(file => file.name),
-      otp: verifiedOTP
-    }
+    console.log('All validations passed, preparing form data')
 
-    await handleFormSubmit({
-      formData,
-      setLoading,
-      setError,
-      setSuccess,
-      setShowNotification,
-      setNotificationMessage,
-      setNotificationType,
-      resetForm,
-      serviceType: 'lost-and-found'
-    })
+    try {
+      setLoading(true)
+
+      // First, prepare the form data as a plain object
+      const formFields = {
+        isLost,
+        name,
+        email,
+        phone,
+        item,
+        location,
+        description,
+        otp: verifiedOTP
+      }
+      
+      // Add optional fields if they exist
+      if (aadhar) formFields.aadhar = aadhar
+
+      console.log('🚀 Submitting form data:', JSON.stringify(formFields, null, 2))
+
+      // Submit the form data first
+      const response = await handleFormSubmit(
+        formFields, // Pass plain object, not FormData
+        setLoading,
+        setError,
+        setSuccess,
+        setShowNotification,
+        setNotificationMessage,
+        setNotificationType,
+        resetForm,
+        'lost-and-found'
+      )
+
+      if (!response?.ok) {
+        const errorData = await response.json()
+        console.error('❌ Form submission failed:', errorData)
+        throw new Error(errorData.message || 'Failed to submit form')
+      }
+
+      // If we have files and the form submission was successful, upload the files
+      if (response?.ok && (image || additionalFiles.length > 0)) {
+        console.log('📤 Uploading files...')
+        
+        const formData = new FormData()
+        if (image) {
+          formData.append('image', image)
+        }
+        additionalFiles.forEach((file) => {
+          formData.append('additionalFiles', file)
+        })
+
+        // Upload files in a separate request
+        const uploadResponse = await fetch('/api/upload-files', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload files')
+        }
+
+        console.log('✅ Files uploaded successfully')
+      }
+
+      console.log('✅ Form submitted successfully')
+
+      if (response?.ok) {
+        setNotificationMessage("✅ Form submitted successfully! We will process your request and get back to you soon.");
+        setNotificationType("success");
+        setShowNotification(true);
+        setSuccess(true);
+        resetForm();
+      }
+
+    } catch (err) {
+      console.error('❌ Form submission error:', err)
+      setError(err.message || 'An error occurred while submitting the form')
+      setLoading(false)
+    }
   }
 
   const handleOTPVerified = (otp) => {
@@ -176,7 +266,13 @@ export default function LostAndFoundPage() {
         <Notification
           message={notificationMessage}
           type={notificationType}
-          onClose={() => setShowNotification(false)}
+          onClose={() => {
+            setShowNotification(false);
+            if (notificationType === 'success') {
+              setSubmitted(true);
+            }
+          }}
+          className={notificationType === 'success' ? 'bg-green-100 border-green-500 text-green-800' : ''}
         />
       )}
       <div className="container mx-auto px-4 max-w-2xl">
@@ -384,8 +480,12 @@ export default function LostAndFoundPage() {
                       )}
                     </div>
 
-                    <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700" disabled={loading}>
-                      Submit Report
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-violet-600 hover:bg-violet-700" 
+                      disabled={loading || !isVerified}
+                    >
+                      {loading ? 'Submitting...' : 'Submit Report'}
                     </Button>
                   </form>
                 </>
