@@ -57,30 +57,50 @@ export default function LoudspeakerEventsPermissionPage() {
       return
     }
 
-    const formData = {
-      name: eventName,
-      email,
-      phone: contactPhone,
-      aadhar,
-      address: location,
-      eventType: eventDetails,
-      eventDate: startDate,
-      endDate,
-      description: eventDetails,
-      contactName
-    }
+    try {
+      const formData = {
+        name: eventName,
+        email,
+        phone: contactPhone,
+        aadhar,
+        address: location,
+        eventType: eventDetails,
+        eventDate: startDate,
+        endDate,
+        description: eventDetails,
+        contactName
+      }
 
-    await handleFormSubmit(
-      formData,
-      setIsSubmitting,
-      setSubmitError,
-      setSubmitted,
-      setShowNotification,
-      setNotificationMessage,
-      setNotificationType,
-      resetForm,
-      'loudspeaker-events'
-    )
+      await handleFormSubmit(
+        formData,
+        setIsSubmitting,
+        setSubmitError,
+        setSubmitted,
+        setShowNotification,
+        setNotificationMessage,
+        setNotificationType,
+        resetForm,
+        'loudspeaker-events'
+      )
+
+      // Ensure only one notification is shown at a time
+      setShowNotification(false);
+      setTimeout(() => {
+        setNotificationMessage("✅ Loudspeaker event permission request submitted successfully! We will process your request and get back to you soon.");
+        setNotificationType("success");
+        setShowNotification(true);
+      }, 10);
+      setSubmitted(true);
+      resetForm();
+    } catch (error) {
+      setShowNotification(false);
+      setTimeout(() => {
+        setSubmitError(error.message || "Failed to submit form. Please try again.");
+        setNotificationMessage(error.message || "Failed to submit form. Please try again.");
+        setNotificationType("error");
+        setShowNotification(true);
+      }, 10);
+    }
   }
 
   const resetForm = () => {

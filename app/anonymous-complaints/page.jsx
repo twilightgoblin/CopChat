@@ -90,17 +90,17 @@ export default function AnonymousComplaintsPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError("")
+    setSubmitError("")
 
     // Validate email if provided
     if (email && !validateEmail(email)) {
-      setError("Please enter a valid email address")
+      setSubmitError("Please enter a valid email address")
       return
     }
 
     // Validate phone if provided
     if (phone && !validatePhone(phone)) {
-      setError("Please enter a valid 10-digit phone number")
+      setSubmitError("Please enter a valid 10-digit phone number")
       return
     }
 
@@ -115,24 +115,35 @@ export default function AnonymousComplaintsPage() {
       additionalInfo
     }
 
-    await handleFormSubmit(
-      formData,
-      setIsSubmitting,
-      setSubmitError,
-      setSubmitted,
-      setShowNotification,
-      setNotificationMessage,
-      setNotificationType,
-      resetForm,
-      'anonymous-complaint'
-    )
-
-    if (response?.ok) {
-      setNotificationMessage("✅ Anonymous complaint submitted successfully! We will process your complaint and take necessary action.");
-      setNotificationType("success");
-      setShowNotification(true);
+    try {
+      await handleFormSubmit(
+        formData,
+        setIsSubmitting,
+        setSubmitError,
+        setSubmitted,
+        setShowNotification,
+        setNotificationMessage,
+        setNotificationType,
+        resetForm,
+        'anonymous-complaint'
+      )
+      // Ensure only one notification is shown at a time
+      setShowNotification(false);
+      setTimeout(() => {
+        setNotificationMessage("✅ Anonymous complaint submitted successfully! We will process your complaint and take necessary action.");
+        setNotificationType("success");
+        setShowNotification(true);
+      }, 10);
       setSubmitted(true);
       resetForm();
+    } catch (error) {
+      setShowNotification(false);
+      setTimeout(() => {
+        setSubmitError(error.message || "Failed to submit form. Please try again.");
+        setNotificationMessage(error.message || "Failed to submit form. Please try again.");
+        setNotificationType("error");
+        setShowNotification(true);
+      }, 10);
     }
   }
 

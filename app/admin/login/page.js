@@ -1,39 +1,58 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { Shield, AlertCircle, Eye, EyeOff } from "lucide-react"
-import Cookies from "js-cookie"
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { Shield, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import Cookies from 'js-cookie';
 
 export default function AdminLogin() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    // Check if already authenticated
+    const auth = Cookies.get('adminAuthenticated');
+    if (auth) {
+      router.replace('/admin/updates');
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [router]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
     // Check credentials
-    if (email === "botchat879@gmail.com" && password === "Okokokok@879") {
+    if (email === 'botchat879@gmail.com' && password === 'Okokokok@879') {
       // Store authentication state in cookie
-      Cookies.set("adminAuthenticated", "true", { expires: 1 }) // Expires in 1 day
+      Cookies.set('adminAuthenticated', 'true', { expires: 1 }); // Expires in 1 day
       // Redirect to admin dashboard
-      router.push("/admin/updates")
+      router.replace('/admin/updates');
     } else {
-      setError("Invalid email or password")
+      setError('Invalid email or password');
+      setLoading(false);
     }
-
-    setLoading(false)
-  }
+  };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
+    setShowPassword(!showPassword);
+  };
+
+  // Show loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-violet-50 to-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
+      </div>
+    );
   }
 
   return (
@@ -90,7 +109,7 @@ export default function AdminLogin() {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
                   value={password}
@@ -138,5 +157,5 @@ export default function AdminLogin() {
         </div>
       </div>
     </div>
-  )
+  );
 } 

@@ -147,8 +147,8 @@ export default function LostAndFoundPage() {
       console.log('🚀 Submitting form data:', JSON.stringify(formFields, null, 2))
 
       // Submit the form data first
-      const response = await handleFormSubmit(
-        formFields, // Pass plain object, not FormData
+      await handleFormSubmit(
+        formFields,
         setLoading,
         setError,
         setSuccess,
@@ -159,14 +159,18 @@ export default function LostAndFoundPage() {
         'lost-and-found'
       )
 
-      if (!response?.ok) {
-        const errorData = await response.json()
-        console.error('❌ Form submission failed:', errorData)
-        throw new Error(errorData.message || 'Failed to submit form')
-      }
+      // If we get here, the form submission was successful
+      setShowNotification(false);
+      setTimeout(() => {
+        setNotificationMessage("✅ Lost and Found request submitted successfully! We will process your request and get back to you soon.");
+        setNotificationType("success");
+        setShowNotification(true);
+      }, 10);
+      setSubmitted(true);
+      resetForm();
 
       // If we have files and the form submission was successful, upload the files
-      if (response?.ok && (image || additionalFiles.length > 0)) {
+      if (image || additionalFiles.length > 0) {
         console.log('📤 Uploading files...')
         
         const formData = new FormData()
@@ -190,19 +194,14 @@ export default function LostAndFoundPage() {
         console.log('✅ Files uploaded successfully')
       }
 
-      console.log('✅ Form submitted successfully')
-
-      if (response?.ok) {
-        setNotificationMessage("✅ Form submitted successfully! We will process your request and get back to you soon.");
-        setNotificationType("success");
-        setShowNotification(true);
-        setSuccess(true);
-        resetForm();
-      }
-
     } catch (err) {
-      console.error('❌ Form submission error:', err)
-      setError(err.message || 'An error occurred while submitting the form')
+      setShowNotification(false);
+      setTimeout(() => {
+        setError(err.message || 'An error occurred while submitting the form');
+        setNotificationMessage(err.message || "Failed to submit form. Please try again.");
+        setNotificationType("error");
+        setShowNotification(true);
+      }, 10);
       setLoading(false)
     }
   }

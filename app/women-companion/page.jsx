@@ -89,30 +89,50 @@ export default function WomenCompanionPage() {
       return
     }
 
-    const formData = {
-      name,
-      email,
-      phone,
-      aadhar,
-      address,
-      destination,
-      travelDate,
-      travelTime,
-      description,
-      otp: verifiedOTP
-    }
+    try {
+      const formData = {
+        name,
+        email,
+        phone,
+        aadhar,
+        address,
+        destination,
+        travelDate,
+        travelTime,
+        description,
+        otp: verifiedOTP
+      }
 
-    await handleFormSubmit(
-      formData,
-      setLoading,
-      setError,
-      setSuccess,
-      setShowNotification,
-      setNotificationMessage,
-      setNotificationType,
-      resetForm,
-      'women-companion'
-    )
+      await handleFormSubmit(
+        formData,
+        setLoading,
+        setError,
+        setSuccess,
+        setShowNotification,
+        setNotificationMessage,
+        setNotificationType,
+        resetForm,
+        'women-companion'
+      )
+
+      // Ensure only one notification is shown at a time
+      setShowNotification(false);
+      setTimeout(() => {
+        setNotificationMessage("✅ Women companion request submitted successfully! We will process your request and get back to you soon.");
+        setNotificationType("success");
+        setShowNotification(true);
+      }, 10);
+      setSuccess(true);
+      resetForm();
+    } catch (error) {
+      setShowNotification(false);
+      setTimeout(() => {
+        setError(error.message || "Failed to submit form. Please try again.");
+        setNotificationMessage(error.message || "Failed to submit form. Please try again.");
+        setNotificationType("error");
+        setShowNotification(true);
+      }, 10);
+    }
   }
 
   const handleOTPVerified = (otp) => {

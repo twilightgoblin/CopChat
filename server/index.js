@@ -6,6 +6,8 @@ const serviceFormsRoutes = require('./routes/serviceForms');
 const testimonialsRoutes = require('./routes/testimonials');
 const updatesRoutes = require('./routes/updates');
 const uploadRoutes = require('./routes/upload');
+const beatPoliceRoutes = require('./routes/beatPolice');
+const chatbotRoutes = require('./routes/chatbot');
 require('dotenv').config();
 
 const app = express();
@@ -133,6 +135,8 @@ app.use('/api/service-forms', serviceFormsRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/updates', updatesRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/beat-police', beatPoliceRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 app.get('/', (req, res) => {
   res.send('Backend server is running');

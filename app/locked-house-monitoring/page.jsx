@@ -88,36 +88,48 @@ export default function LockedHouseMonitoringPage() {
       return
     }
 
-    const formData = {
-      name,
-      email,
-      phone,
-      aadhar,
-      address,
-      startDate,
-      endDate,
-      description,
-      otp: verifiedOTP
-    }
+    try {
+      const formData = {
+        name,
+        email,
+        phone,
+        aadhar,
+        address,
+        startDate,
+        endDate,
+        description,
+        otp: verifiedOTP
+      }
 
-    await handleFormSubmit(
-      formData,
-      setLoading,
-      setError,
-      setSuccess,
-      setShowNotification,
-      setNotificationMessage,
-      setNotificationType,
-      resetForm,
-      'locked-house-monitoring'
-    )
+      await handleFormSubmit(
+        formData,
+        setLoading,
+        setError,
+        setSuccess,
+        setShowNotification,
+        setNotificationMessage,
+        setNotificationType,
+        resetForm,
+        'locked-house-monitoring'
+      )
 
-    if (response?.ok) {
-      setNotificationMessage("✅ Locked house monitoring request submitted successfully! We will process your request and get back to you soon.");
-      setNotificationType("success");
-      setShowNotification(true);
+      // Ensure only one notification is shown at a time
+      setShowNotification(false);
+      setTimeout(() => {
+        setNotificationMessage("✅ Locked house monitoring request submitted successfully! We will process your request and get back to you soon.");
+        setNotificationType("success");
+        setShowNotification(true);
+      }, 10);
       setSuccess(true);
       resetForm();
+    } catch (error) {
+      setShowNotification(false);
+      setTimeout(() => {
+        setError(error.message || "Failed to submit form. Please try again.");
+        setNotificationMessage(error.message || "Failed to submit form. Please try again.");
+        setNotificationType("error");
+        setShowNotification(true);
+      }, 10);
     }
   }
 
