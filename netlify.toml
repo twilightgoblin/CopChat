@@ -1,5 +1,5 @@
 [build]
-  command = "npm run clean && npm run build"
+  command = "npm run build"
   publish = ".next"
   functions = "netlify/functions"
 
@@ -9,6 +9,7 @@
   NPM_FLAGS = "--legacy-peer-deps"
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_ENV = "production"
+  NETLIFY_NEXT_PLUGIN_SKIP = "false"
 
 [context.production.environment]
   NEXT_PUBLIC_API_URL = "/.netlify/functions/api"
