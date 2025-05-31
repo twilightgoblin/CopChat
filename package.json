@@ -11,7 +11,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clean": "rimraf .next"
+    "clean": "rimraf .next",
+    "start:all": "concurrently \"npm run dev\" \"cd server && npm run dev\"",
+    "start:prod": "concurrently \"npm run start\" \"cd server && npm run start\""
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.2.2",
