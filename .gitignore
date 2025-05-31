@@ -13,6 +13,9 @@
 # production
 /build
 
+# netlify
+/netlify/functions/dist
+
 # misc
 .DS_Store
 *.pem

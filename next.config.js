@@ -13,7 +13,13 @@ const nextConfig = {
   // Image optimization
   images: {
     unoptimized: true,
-    domains: ['localhost'],
+    domains: ['localhost', '*.netlify.app'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
   
   // ESLint and TypeScript

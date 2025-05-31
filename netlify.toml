@@ -5,7 +5,7 @@
 
 [build.environment]
   NEXT_PUBLIC_IS_PREVIEW = "false"
-  NODE_VERSION = "18"
+  NODE_VERSION = "18.17.0"
   NPM_FLAGS = "--legacy-peer-deps"
 
 [context.production.environment]
