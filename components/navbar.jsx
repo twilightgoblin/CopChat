@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Shield, Facebook, Instagram, Twitter, MessageSquare, Menu, X, Bot } from "lucide-react"
+import { Shield, Facebook, Instagram, Twitter, MessageSquare, Menu, X, Bot, Users, Home, Phone, Search, FileText, AlertTriangle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -105,6 +105,29 @@ export default function Navbar() {
                 <MobileNavLink href="/anonymous-complaints" onClick={() => setIsOpen(false)}>
                   Anonymous Complaints
                 </MobileNavLink>
+                <div className="pt-2">
+                  <p className="text-sm font-medium mb-2">Services</p>
+                  <div className="flex flex-col space-y-2 pl-4">
+                    <MobileNavLink href="/women-companion" onClick={() => setIsOpen(false)}>
+                      Women Companion
+                    </MobileNavLink>
+                    <MobileNavLink href="/loudspeaker-events-permission" onClick={() => setIsOpen(false)}>
+                      Loud Speaker
+                    </MobileNavLink>
+                    <MobileNavLink href="/locked-house-monitoring" onClick={() => setIsOpen(false)}>
+                      Locked House Monitoring
+                    </MobileNavLink>
+                    <MobileNavLink href="/senior-citizen" onClick={() => setIsOpen(false)}>
+                      Senior Citizen
+                    </MobileNavLink>
+                    <MobileNavLink href="/lost-and-found" onClick={() => setIsOpen(false)}>
+                      Lost and Found
+                    </MobileNavLink>
+                    <MobileNavLink href="/station-contacts" onClick={() => setIsOpen(false)}>
+                      Station Contact Details
+                    </MobileNavLink>
+                  </div>
+                </div>
                 <div className="pt-4 border-t border-white/20">
                   <p className="text-sm font-medium mb-4">Connect With Us</p>
                   <div className="flex space-x-4">
@@ -155,6 +178,69 @@ export default function Navbar() {
           <NavLink href="/beat-police">Beat Police</NavLink>
           <NavLink href="/nearest-station">Nearest Station</NavLink>
           <NavLink href="/anonymous-complaints">Anonymous Complaints</NavLink>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 text-white hover:text-violet-200">
+                Services
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg rounded-lg p-2 min-w-[200px]">
+              <DropdownMenuItem>
+                <Link
+                  href="/women-companion"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-violet-600"
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Women Companion</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href="/loudspeaker-events-permission"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-violet-600"
+                >
+                  <AlertTriangle className="h-4 w-4" />
+                  <span>Loud Speaker</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href="/locked-house-monitoring"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-violet-600"
+                >
+                  <Home className="h-4 w-4" />
+                  <span>Locked House Monitoring</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href="/senior-citizen"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-violet-600"
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Senior Citizen</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href="/lost-and-found"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-violet-600"
+                >
+                  <Search className="h-4 w-4" />
+                  <span>Lost and Found</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href="/station-contacts"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-violet-600"
+                >
+                  <Phone className="h-4 w-4" />
+                  <span>Station Contact Details</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 text-white hover:text-violet-200">

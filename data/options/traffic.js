@@ -105,7 +105,7 @@ export const trafficOptions = {
             className: "text-blue-600 hover:underline block"
           }, "Pay Traffic Fines Online / ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಟ್ರಾಫಿಕ್ ದಂಡ ಪಾವತಿಸಿ"),
           React.createElement('a', {
-            href: "https://ksp.karnataka.gov.in/traffic/fines",
+            href: "https://btp.karnataka.gov.in/117/spot-fines/en",
             target: "_blank",
             rel: "noopener noreferrer",
             className: "text-blue-600 hover:underline block"
@@ -148,11 +148,13 @@ export const trafficOptions = {
         ),
         React.createElement('div', { className: "mt-4 space-y-2" },
           React.createElement('a', {
-            href: "/traffic-signs",
+            href: "https://btp.karnataka.gov.in/168/traffic-signs/en",
+            target: "_blank",
+            rel: "noopener noreferrer",
             className: "text-blue-600 hover:underline block"
           }, "View Traffic Signs / ಟ್ರಾಫಿಕ್ ಸೂಚನೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ"),
           React.createElement('a', {
-            href: "https://morth.nic.in/road-safety",
+            href: "https://btp.karnataka.gov.in/116/advice-to-drivers/en",
             target: "_blank",
             rel: "noopener noreferrer",
             className: "text-blue-600 hover:underline block"

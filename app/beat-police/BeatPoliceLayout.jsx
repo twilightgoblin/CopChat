@@ -17,7 +17,8 @@ import {
   InputAdornment,
   IconButton,
   Tooltip,
-  Fade
+  Fade,
+  Button
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import SearchIcon from '@mui/icons-material/Search';
@@ -142,26 +143,30 @@ export default function BeatPoliceLayout({
               {talukName[lang]} {t.title}
             </Typography>
           </Box>
-          <Tooltip 
-            title={isEnglish ? t.switchToKannada : t.switchToEnglish}
-            TransitionComponent={Fade}
-            TransitionProps={{ timeout: 600 }}
+          <Button
+            onClick={() => setIsEnglish(!isEnglish)}
+            variant="contained"
+            sx={{
+              bgcolor: isEnglish ? '#5E35B1' : '#1976d2',
+              color: 'white',
+              '&:hover': {
+                bgcolor: isEnglish ? '#4527A0' : '#1565c0',
+              },
+              transition: 'all 0.3s ease',
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontSize: '0.9rem',
+              fontWeight: 'medium',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
           >
-            <IconButton
-              onClick={() => setIsEnglish(!isEnglish)}
-              sx={{
-                bgcolor: isEnglish ? '#5E35B1' : '#1976d2',
-                color: 'white',
-                '&:hover': {
-                  bgcolor: isEnglish ? '#4527A0' : '#1565c0',
-                },
-                transition: 'all 0.3s ease',
-                p: 1.5
-              }}
-            >
-              <TranslateIcon />
-            </IconButton>
-          </Tooltip>
+            <TranslateIcon sx={{ fontSize: '1.1rem' }} />
+            {isEnglish ? t.switchToKannada : t.switchToEnglish}
+          </Button>
         </Box>
 
         <Box sx={{ mb: 4 }}>

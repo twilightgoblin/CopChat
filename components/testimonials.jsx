@@ -5,23 +5,12 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Star, Quote } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
 import { ScrollAnimation } from "@/components/scroll-animation"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Notification } from "@/components/ui/notification"
+import Link from "next/link"
 
 export default function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [feedbackOpen, setFeedbackOpen] = useState(false)
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [emailError, setEmailError] = useState("")
-  const [feedback, setFeedback] = useState("")
-  const [rating, setRating] = useState(5)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [testimonials, setTestimonials] = useState([])
   const [showNotification, setShowNotification] = useState(false)
@@ -30,34 +19,21 @@ export default function Testimonials() {
   const touchStartX = useRef(0)
   const touchEndX = useRef(0)
 
-  // Email validation function
-  const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
-  };
-
-  // Handle email change with validation
-  const handleEmailChange = (e) => {
-    const newEmail = e.target.value;
-    setEmail(newEmail);
-    
-    if (newEmail && !validateEmail(newEmail)) {
-      setEmailError("Please enter a valid email address (e.g., name@domain.com)");
-    } else {
-      setEmailError("");
-    }
-  };
-
   // Fetch testimonials
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/testimonials');
+        const response = await fetch('/api/testimonials');
         if (!response.ok) throw new Error('Failed to fetch testimonials');
         const data = await response.json();
-        setTestimonials(data);
+        // Filter testimonials with rating > 3
+        const filteredTestimonials = data.filter(t => t.rating > 3);
+        setTestimonials(filteredTestimonials);
       } catch (error) {
         console.error('Error fetching testimonials:', error);
+        setNotificationMessage("Failed to load testimonials");
+        setNotificationType("error");
+        setShowNotification(true);
       }
     };
 
@@ -74,64 +50,6 @@ export default function Testimonials() {
 
     return () => clearInterval(interval)
   }, [isPaused, testimonials.length])
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    // Validate email before submission
-    if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address");
-      return;
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      const response = await fetch('http://localhost:5001/api/testimonials', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          content: feedback,
-          rating
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit feedback');
-      }
-
-      const newTestimonial = await response.json();
-      setTestimonials(prev => [newTestimonial, ...prev].slice(0, 5));
-      
-      setNotificationMessage("Thank you for your feedback!");
-      setNotificationType("success");
-      setShowNotification(true);
-      
-      // Reset form
-      setName("");
-      setEmail("");
-      setEmailError("");
-      setFeedback("");
-      setRating(5);
-      setFeedbackOpen(false);
-
-      // Hide notification after 3 seconds
-      setTimeout(() => {
-        setShowNotification(false);
-      }, 3000);
-    } catch (error) {
-      setNotificationMessage(error.message);
-      setNotificationType("error");
-      setShowNotification(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
 
   const renderStars = (count) => {
     return Array(5)
@@ -272,91 +190,14 @@ export default function Testimonials() {
 
           {/* Feedback button */}
           <div className="text-center">
-            <Button
-              onClick={() => setFeedbackOpen(true)}
-              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-medium px-8 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
-              Share Your Feedback
-            </Button>
+            <Link href="/testimonials">
+              <Button
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-medium px-8 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              >
+                Share Your Feedback
+              </Button>
+            </Link>
           </div>
-
-          {/* Feedback dialog */}
-          <Dialog open={feedbackOpen} onOpenChange={setFeedbackOpen}>
-            <DialogContent className="sm:max-w-md backdrop-blur-lg bg-white/90 border border-white/40">
-              <DialogHeader>
-                <DialogTitle className="text-center text-xl font-bold text-violet-800">
-                  Share Your Experience
-                </DialogTitle>
-                <DialogDescription className="text-center text-violet-600">
-                  Your feedback helps us improve our services
-                </DialogDescription>
-              </DialogHeader>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="bg-white/50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    required
-                    className={`bg-white/50 ${emailError ? 'border-red-500' : ''}`}
-                    placeholder="name@domain.com"
-                  />
-                  {emailError && (
-                    <p className="text-sm text-red-500 mt-1">{emailError}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="feedback">Your Feedback</Label>
-                  <Textarea
-                    id="feedback"
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                    required
-                    className="bg-white/50 min-h-[100px]"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Rating</Label>
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setRating(star)}
-                        className="focus:outline-none"
-                      >
-                        <Star
-                          className={`h-6 w-6 ${
-                            star <= rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting || !!emailError}
-                  className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
-                >
-                  {isSubmitting ? "Submitting..." : "Submit Feedback"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
         </div>
       </section>
     </ScrollAnimation>

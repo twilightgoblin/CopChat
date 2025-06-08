@@ -56,7 +56,7 @@ export const utilitiesOptions = {
         React.createElement('ol', { className: "list-decimal pl-4 space-y-2" },
           React.createElement('li', null, 
             React.createElement('a', {
-              href: "/house-monitoring",
+              href: "/locked-house-monitoring",
               className: "text-blue-600 hover:underline"
             }, "Register for House Monitoring / ಮನೆ ನಿಯಂತ್ರಣಕ್ಕೆ ನೋಂದಣಿ ಮಾಡಿ")
           ),
@@ -76,7 +76,7 @@ export const utilitiesOptions = {
         React.createElement('ul', { className: "list-disc pl-4 space-y-2" },
           React.createElement('li', null, 
             React.createElement('a', {
-              href: "/senior-citizen-registration",
+              href: "/senior-citizen",
               className: "text-blue-600 hover:underline"
             }, "Register for Senior Citizen Assistance / ಹಿರಿಯ ನಾಗರಿಕ ಸಹಾಯಕ್ಕೆ ನೋಂದಣಿ ಮಾಡಿ")
           ),
@@ -97,7 +97,7 @@ export const utilitiesOptions = {
         React.createElement('ol', { className: "list-decimal pl-4 space-y-2" },
           React.createElement('li', null, 
             React.createElement('a', {
-              href: "/loudspeaker-permission",
+              href: "/loudspeaker-events-permission",
               className: "text-blue-600 hover:underline"
             }, "Apply for Loudspeaker Permission / ಲೌಡ್‌ಸ್ಪೀಕರ್ ಅನುಮತಿಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ")
           ),
@@ -118,7 +118,7 @@ export const utilitiesOptions = {
         React.createElement('ul', { className: "list-disc pl-4 space-y-2" },
           React.createElement('li', null, 
             React.createElement('a', {
-              href: "/women-safety-registration",
+              href: "/women-companion",
               className: "text-blue-600 hover:underline"
             }, "Register for Women Safety Services / ಮಹಿಳಾ ಸುರಕ್ಷತೆ ಸೇವೆಗಳಿಗೆ ನೋಂದಣಿ ಮಾಡಿ")
           ),

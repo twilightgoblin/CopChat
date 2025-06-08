@@ -3,12 +3,12 @@ import { complaintOptions } from './complaints';
 import { downloadFirOptions } from './downloadFir';
 import { trafficOptions } from './traffic';
 import { policeInformationOptions } from './policeInformation';
-import { lostFoundOptions } from './lostFound';
 import { cybercrimeOptions } from './cybercrime';
 import { socialMediaOptions } from './socialMedia';
 import { legalOptions } from './legal';
 import { utilitiesOptions } from './utilities';
 import { faqOptions } from './faqs';
+import { feedbackOptions } from './feedback';
 
 /**
  * Main options for the chatbot
@@ -20,10 +20,10 @@ export const mainOptions = [
   downloadFirOptions,
   trafficOptions,
   policeInformationOptions,
-  lostFoundOptions,
   cybercrimeOptions,
   socialMediaOptions,
   legalOptions,
   utilitiesOptions,
   faqOptions,
+  feedbackOptions,
 ]; 

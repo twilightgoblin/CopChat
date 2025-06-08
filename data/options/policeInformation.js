@@ -43,27 +43,27 @@ export const policeInformationOptions = {
       value: "beat",
       keywords: ["beat", "police", "officer", "patrol", "ಬೀಟ್", "ಪೊಲೀಸ್", "ಅಧಿಕಾರಿ", "ಗಸ್ತು"],
       info: React.createElement('div', { className: "space-y-4 text-sm" },
-        React.createElement('p', { className: "font-medium" }, "What It Offers / ಏನು ಒದಗಿಸುತ್ತದೆ:"),
+        React.createElement('p', { className: "font-medium" }, "What It Offers:"),
         React.createElement('ul', { className: "list-disc pl-4 space-y-2" },
-          React.createElement('li', null, "Information about beat police officers / ಬೀಟ್ ಪೊಲೀಸ್ ಅಧಿಕಾರಿಗಳ ಬಗ್ಗೆ ಮಾಹಿತಿ"),
-          React.createElement('li', null, "Contact details and patrol areas / ಸಂಪರ್ಕ ವಿವರಗಳು ಮತ್ತು ಗಸ್ತು ಪ್ರದೇಶಗಳು")
+          React.createElement('li', null, "Information about beat police officers"),
+          React.createElement('li', null, "Contact details and patrol areas")
         ),
-        React.createElement('p', { className: "font-medium" }, "How to Use / ಹೇಗೆ ಬಳಸುವುದು:"),
+        React.createElement('p', { className: "font-medium" }, "How to Use:"),
         React.createElement('ol', { className: "list-decimal pl-4 space-y-2" },
           React.createElement('li', null,
-            "Provide the following details / ಈ ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ನೀಡಿ:",
+            "Provide the following details:",
             React.createElement('ul', { className: "list-disc pl-4 space-y-1" },
-              React.createElement('li', null, "Your location or area of interest / ನಿಮ್ಮ ಸ್ಥಳ ಅಥವಾ ಆಸಕ್ತಿಯ ಪ್ರದೇಶ"),
-              React.createElement('li', null, "Specific beat officer's name (if known) / ನಿರ್ದಿಷ್ಟ ಬೀಟ್ ಅಧಿಕಾರಿಯ ಹೆಸರು (ತಿಳಿದಿದ್ದರೆ)")
+              React.createElement('li', null, "Your location or area of interest"),
+              React.createElement('li', null, "Specific beat officer's name (if known)")
             )
           ),
           React.createElement('li', null,
             React.createElement('a', {
               href: "/beat-police",
               className: "text-blue-600 hover:underline"
-            }, "Find your beat police officer / ನಿಮ್ಮ ಬೀಟ್ ಪೊಲೀಸ್ ಅಧಿಕಾರಿಯನ್ನು ಹುಡುಕಿ")
+            }, "Find your beat police officer")
           ),
-          React.createElement('li', null, "Contact the beat officer for local assistance / ಸ್ಥಳೀಯ ಸಹಾಯಕ್ಕಾಗಿ ಬೀಟ್ ಅಧಿಕಾರಿಯನ್ನು ಸಂಪರ್ಕಿಸಿ")
+          React.createElement('li', null, "Contact the beat officer for local assistance")
         )
       ),
     },
@@ -81,7 +81,9 @@ export const policeInformationOptions = {
         React.createElement('ol', { className: "list-decimal pl-4 space-y-2" },
           React.createElement('li', null,
             React.createElement('a', {
-              href: "/jurisdiction-map",
+              href: "https://ksp.karnataka.gov.in/pslocator/en ",
+              target: "_blank",
+              rel: "noopener noreferrer",
               className: "text-blue-600 hover:underline"
             }, "Access the jurisdiction map / ಅಧಿಕಾರ ವ್ಯಾಪ್ತಿ ನಕ್ಷೆಯನ್ನು ಪ್ರವೇಶಿಸಿ")
           ),
