@@ -477,13 +477,6 @@ const famousPlaces = [
     type: "Temple"
   },
   {
-    name: "Siddaganga Mutt",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Religious Site"
-  },
-  {
     name: "Sri Lakshmi Narasimha Swamy Temple",
     taluk: "Chickballapur",
     lat: 13.4500,
