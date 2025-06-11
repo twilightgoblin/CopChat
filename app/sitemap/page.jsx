@@ -123,12 +123,6 @@ export default function Sitemap() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="flex items-center space-x-3 text-violet-700 hover:text-violet-900">
-                    <Phone className="h-5 w-5" />
-                    <span>Contact Us</span>
-                  </Link>
-                </li>
-                <li>
                   <Link href="/privacy-policy" className="flex items-center space-x-3 text-violet-700 hover:text-violet-900">
                     <FileText className="h-5 w-5" />
                     <span>Privacy Policy</span>
