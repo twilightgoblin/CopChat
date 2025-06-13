@@ -124,7 +124,7 @@ export default function Hero() {
           <Button
             size="lg"
             className="bg-red-500 hover:bg-red-600 text-white shadow-lg"
-            onClick={() => (window.location.href = "tel:100")}
+            onClick={() => (window.location.href = "tel:112")}
           >
             <Phone className="mr-2 h-4 w-4" />
             Emergency 112
