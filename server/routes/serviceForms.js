@@ -537,4 +537,46 @@ router.get('/:serviceType/:id', async (req, res) => {
   }
 });
 
+// Delete a specific form by ID (admin only)
+router.delete('/:serviceType/:id', async (req, res) => {
+  try {
+    const { serviceType, id } = req.params;
+    let Form;
+    switch (serviceType) {
+      case 'senior-citizen':
+        Form = SeniorCitizenForm;
+        break;
+      case 'women-companion':
+        Form = WomenCompanionForm;
+        break;
+      case 'lost-and-found':
+        Form = LostAndFoundForm;
+        break;
+      case 'locked-house-monitoring':
+        Form = LockedHouseMonitoringForm;
+        break;
+      case 'loud-speaker':
+        Form = LoudSpeakerForm;
+        break;
+      case 'anonymous-complaint':
+        Form = AnonymousComplaintForm;
+        break;
+      default:
+        return res.status(400).json({ message: 'Invalid service type' });
+    }
+
+    const deleted = await Form.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+    res.status(200).json({ message: 'Form deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting form:', error);
+    res.status(500).json({
+      message: 'Error deleting form',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router; 

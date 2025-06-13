@@ -102,6 +102,16 @@ export default function AdminLayout({ children }) {
               <Bot className="h-5 w-5 mr-2" />
               Chatbot
             </Link>
+            <Link
+              href="/admin/database"
+              className={`inline-flex items-center px-4 py-3 border-b-2 text-sm font-medium ${
+                pathname === '/admin/database'
+                  ? 'border-violet-500 text-violet-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Database Portal
+            </Link>
           </div>
         </div>
       </nav>

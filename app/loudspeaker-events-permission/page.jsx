@@ -11,6 +11,7 @@ import { motion } from "framer-motion"
 import { FadeIn } from "@/components/fade-in"
 import { Notification } from "@/components/ui/notification"
 import { handleFormSubmit, validateEmail, validatePhone, validateAadhar, formatAadhar } from "@/utils/form-handlers"
+import OTPVerification from "@/components/otp-verification"
 
 export default function LoudspeakerEventsPermissionPage() {
   const [eventName, setEventName] = useState("")
@@ -31,13 +32,16 @@ export default function LoudspeakerEventsPermissionPage() {
   const [notificationMessage, setNotificationMessage] = useState("")
   const [notificationType, setNotificationType] = useState("success")
 
+  // OTP states
+  const [verifiedOTP, setVerifiedOTP] = useState(null)
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError("")
+    setSubmitError("")
 
     // Validate email
     if (!validateEmail(email)) {
@@ -57,6 +61,11 @@ export default function LoudspeakerEventsPermissionPage() {
       return
     }
 
+    if (!verifiedOTP) {
+      setSubmitError("Please verify OTP before submitting the form.")
+      return
+    }
+
     try {
       const formData = {
         name: eventName,
@@ -68,7 +77,8 @@ export default function LoudspeakerEventsPermissionPage() {
         eventDate: startDate,
         endDate,
         description: eventDetails,
-        contactName
+        contactName,
+        otp: verifiedOTP,
       }
 
       await handleFormSubmit(
@@ -117,6 +127,7 @@ export default function LoudspeakerEventsPermissionPage() {
     setPhoneError("")
     setAadharError("")
     setSubmitError("")
+    setVerifiedOTP(null)
   }
 
   const handleEmailChange = (e) => {
@@ -127,6 +138,7 @@ export default function LoudspeakerEventsPermissionPage() {
     } else {
       setEmailError("")
     }
+    setVerifiedOTP(null)
   }
 
   const handlePhoneChange = (e) => {
@@ -218,20 +230,19 @@ export default function LoudspeakerEventsPermissionPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="email">Email (Required)</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    required
-                    placeholder="Enter your email address"
-                  />
-                  {emailError && (
-                    <div className="flex items-center text-yellow-600 mt-1">
-                      <AlertCircle className="h-4 w-4 mr-1" />
-                      <span>{emailError}</span>
-                    </div>
-                  )}
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={handleEmailChange}
+                      required
+                      placeholder="Enter your email address"
+                    />
+                    {validateEmail(email) && (
+                      <OTPVerification email={email} onVerified={setVerifiedOTP} />
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
