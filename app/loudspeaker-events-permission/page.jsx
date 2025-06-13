@@ -35,6 +35,8 @@ export default function LoudspeakerEventsPermissionPage() {
   // OTP states
   const [verifiedOTP, setVerifiedOTP] = useState(null)
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -42,6 +44,7 @@ export default function LoudspeakerEventsPermissionPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitError("")
+    setIsSubmitting(true)
 
     // Validate email
     if (!validateEmail(email)) {
@@ -90,7 +93,7 @@ export default function LoudspeakerEventsPermissionPage() {
         setNotificationMessage,
         setNotificationType,
         resetForm,
-        'loudspeaker-events'
+        'loud-speaker'
       )
 
       // Ensure only one notification is shown at a time
@@ -103,6 +106,7 @@ export default function LoudspeakerEventsPermissionPage() {
       setSubmitted(true);
       resetForm();
     } catch (error) {
+      setIsSubmitting(false)
       setShowNotification(false);
       setTimeout(() => {
         setSubmitError(error.message || "Failed to submit form. Please try again.");
@@ -315,8 +319,8 @@ export default function LoudspeakerEventsPermissionPage() {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700">
-                  Submit Request
+                <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Submit Request"}
                 </Button>
               </form>
             ) : (
