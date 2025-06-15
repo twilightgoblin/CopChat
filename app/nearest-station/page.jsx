@@ -296,467 +296,238 @@ const villagePincodeMap = {
   "Jangamkote": "562102",
   "Malamachanahalli": "562102",
   "Mallur": "562102",
-  "Nagamangala": "562102"
+  "Nagamangala": "562102",
+
+  // Beat Police Villages (by Police Station) (added from beat police data)
+  "Pedduru": "563123",
+  "Tummalahalli": "563123",
+  "Korakonapalli": "563123",
+  "Gaunicheruvupalli": "563123",
+  "Digavapalli": "563123",
+  "Muddalhalli": "563123",
+  "Nimmakayalahalli": "563123",
+  "Nandiganahalli": "563123",
+  "Kadirappanayakankote": "563123",
+  "Neelapalli": "563123",
+  "Bodugundlahalli": "563123",
+  "Mamidimakalapalli": "561209",
+  "Devaramakalapalli": "561209",
+  "Pyayalavarapalli": "561209",
+  "Arigevarigutta": "561209",
+  "Gyadavandlapalli": "561209",
+  "Bestalapalli": "561209",
+  "Konapura": "561209",
+  "Baichapura": "561209",
+  "Badimaraluru": "561209",
+  "Virupasandra": "561209",
+  "Uchchodanahalli": "561209",
+  "Saganahalli": "561209",
+  "Gangasandra": "561209",
+  "Kengenahalli": "561209",
+  "Vedalaveni": "561209",
+  "Kurubarahalli": "561209",
+  "Virlagollahalli": "561209",
+  "Sugar Factory": "561209",
+  "Cheegatagere": "561209",
+  "Kallapparallapalli": "562103",
+  "Yaguvamarappagarpalli": "562103",
+  "Diguvamarappagarpalli": "562103",
+  "Dugginayakanapalli": "562103",
+  "Gummalapalli": "562103",
+  "Peddanagarlu": "562103",
+  "Poolakuntlapalli": "562103",
+  "Gooluru Gram Panchayat": "561207",
+  "Chinnakayalapalli": "561207",
+  "Yagava Aivarlpalli": "561207",
+  "Lakshman Tanda": "561207",
+  "Ramakka Tanda": "561207",
+  "Parvathipura Tanda": "561207",
+  "Papannakunta Tanda": "561207",
+  "Saddupalli": "561207",
+  "Saddupalli Tanda": "561207",
+  "Kuruvadinepalli": "561207",
+  "Anjanapura": "561207"
 }
 
-// Famous places data with coordinates
-const famousPlaces = [
-  {
-    name: "Nandi Hills",
-    taluk: "Chickballapur",
-    lat: 13.3700,
-    lng: 77.6800,
-    type: "Hill Station"
-  },
-  {
-    name: "Bhoga Nandeeshwara Temple",
-    taluk: "Nandi",
-    lat: 13.3889,
-    lng: 77.6967,
-    type: "Temple"
-  },
-  {
-    name: "Tipu's Drop",
-    taluk: "Nandi",
-    lat: 13.3700,
-    lng: 77.6800,
-    type: "Historical Site"
-  },
-  {
-    name: "Amrita Sarovar",
-    taluk: "Nandi",
-    lat: 13.3700,
-    lng: 77.6800,
-    type: "Lake"
-  },
-  {
-    name: "Skandagiri",
-    taluk: "Chickballapur",
-    lat: 13.4000,
-    lng: 77.7000,
-    type: "Hill Station"
-  },
-  {
-    name: "Chikka Tirupathi",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Muddenahalli",
-    taluk: "Chickballapur",
-    lat: 13.3500,
-    lng: 77.7000,
-    type: "Historical Site"
-  },
-  {
-    name: "Ghati Subramanya Temple",
-    taluk: "Doddaballapur",
-    lat: 13.4000,
-    lng: 77.6667,
-    type: "Temple"
-  },
-  {
-    name: "Chintamani Narasimha Swamy Temple",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Temple"
-  },
-  {
-    name: "Sidlaghatta Kote",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Historical Site"
-  },
-  {
-    name: "Gauribidanur Radio Telescope",
-    taluk: "Gauribidanur",
-    lat: 13.6108,
-    lng: 77.5167,
-    type: "Science Center"
-  },
-  {
-    name: "Bagepalli Fort",
-    taluk: "Bagepalli",
-    lat: 13.7833,
-    lng: 77.7833,
-    type: "Historical Site"
-  },
-  {
-    name: "Gudibande Fort",
-    taluk: "Gudibande",
-    lat: 13.6000,
-    lng: 77.7000,
-    type: "Historical Site"
-  },
-  {
-    name: "Muddenahalli Heritage Site",
-    taluk: "Chickballapur",
-    lat: 13.3500,
-    lng: 77.7000,
-    type: "Historical Site"
-  },
-  {
-    name: "Chintamani Lake",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Lake"
-  },
-  {
-    name: "Brahmashram",
-    taluk: "Chickballapur",
-    lat: 13.3700,
-    lng: 77.6800,
-    type: "Historical Site"
-  },
-  {
-    name: "Yoga Nandeeshwara Temple",
-    taluk: "Nandi",
-    lat: 13.3889,
-    lng: 77.6967,
-    type: "Temple"
-  },
-  {
-    name: "Arunachala Temple",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Channarayana Durga Fort",
-    taluk: "Chickballapur",
-    lat: 13.4000,
-    lng: 77.7000,
-    type: "Historical Site"
-  },
-  {
-    name: "Himavad Gopalaswamy Temple",
-    taluk: "Chickballapur",
-    lat: 13.3700,
-    lng: 77.6800,
-    type: "Temple"
-  },
-  {
-    name: "Kailasagiri Temple",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Muddenahalli Sir M Visvesvaraya Memorial",
-    taluk: "Chickballapur",
-    lat: 13.3500,
-    lng: 77.7000,
-    type: "Museum"
-  },
-  {
-    name: "Nandi Temple",
-    taluk: "Nandi",
-    lat: 13.3889,
-    lng: 77.6967,
-    type: "Temple"
-  },
-  {
-    name: "Pilikula Nisargadhama",
-    taluk: "Chickballapur",
-    lat: 13.4000,
-    lng: 77.7000,
-    type: "Nature Park"
-  },
-  {
-    name: "Ranganatha Swamy Temple",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Sri Lakshmi Narasimha Swamy Temple",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Sri Ranganatha Swamy Temple",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Sri Venkataramana Swamy Temple",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Talakad",
-    taluk: "Chickballapur",
-    lat: 13.4000,
-    lng: 77.7000,
-    type: "Historical Site"
-  },
-  {
-    name: "Talakad Temples",
-    taluk: "Chickballapur",
-    lat: 13.4000,
-    lng: 77.7000,
-    type: "Temple"
-  },
-  {
-    name: "Vijayanagara Fort",
-    taluk: "Chickballapur",
-    lat: 13.4000,
-    lng: 77.7000,
-    type: "Historical Site"
-  },
-  {
-    name: "Vijayanagara Temples",
-    taluk: "Chickballapur",
-    lat: 13.4000,
-    lng: 77.7000,
-    type: "Temple"
-  },
-  {
-    name: "Yediyur Siddhalingeshwara Temple",
-    taluk: "Chickballapur",
-    lat: 13.4500,
-    lng: 77.7500,
-    type: "Temple"
-  },
-  {
-    name: "Chickballapur Market",
-    taluk: "Chickballapur",
-    lat: 13.4323,
-    lng: 77.7289,
-    type: "Market"
-  },
-  {
-    name: "Sidlaghatta Market",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Market"
-  },
-  {
-    name: "Chintamani Market",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Market"
-  },
-  {
-    name: "Gauribidanur Market",
-    taluk: "Gauribidanur",
-    lat: 13.6108,
-    lng: 77.5167,
-    type: "Market"
-  },
-  {
-    name: "Bagepalli Market",
-    taluk: "Bagepalli",
-    lat: 13.7833,
-    lng: 77.7833,
-    type: "Market"
-  },
-  {
-    name: "Nandi Hills View Point",
-    taluk: "Chickballapur",
-    lat: 13.3700,
-    lng: 77.6800,
-    type: "View Point"
-  },
-  {
-    name: "Chickballapur Bus Stand",
-    taluk: "Chickballapur",
-    lat: 13.4323,
-    lng: 77.7289,
-    type: "Transport Hub"
-  },
-  {
-    name: "Chintamani Bus Stand",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Transport Hub"
-  },
-  {
-    name: "Gauribidanur Railway Station",
-    taluk: "Gauribidanur",
-    lat: 13.6108,
-    lng: 77.5167,
-    type: "Transport Hub"
-  },
-  {
-    name: "Chickballapur Railway Station",
-    taluk: "Chickballapur",
-    lat: 13.4323,
-    lng: 77.7289,
-    type: "Transport Hub"
-  },
-  {
-    name: "Sidlaghatta Bus Stand",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Transport Hub"
-  },
-  {
-    name: "Bagepalli Bus Stand",
-    taluk: "Bagepalli",
-    lat: 13.7833,
-    lng: 77.7833,
-    type: "Transport Hub"
-  },
-  {
-    name: "Chickballapur Government Hospital",
-    taluk: "Chickballapur",
-    lat: 13.4323,
-    lng: 77.7289,
-    type: "Hospital"
-  },
-  {
-    name: "Chintamani Government Hospital",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Hospital"
-  },
-  {
-    name: "Gauribidanur Government Hospital",
-    taluk: "Gauribidanur",
-    lat: 13.6108,
-    lng: 77.5167,
-    type: "Hospital"
-  },
-  {
-    name: "Sidlaghatta Government Hospital",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Hospital"
-  },
-  {
-    name: "Bagepalli Government Hospital",
-    taluk: "Bagepalli",
-    lat: 13.7833,
-    lng: 77.7833,
-    type: "Hospital"
-  },
-  {
-    name: "Chickballapur District Court",
-    taluk: "Chickballapur",
-    lat: 13.4323,
-    lng: 77.7289,
-    type: "Government Office"
-  },
-  {
-    name: "Chintamani Court",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Government Office"
-  },
-  {
-    name: "Gauribidanur Court",
-    taluk: "Gauribidanur",
-    lat: 13.6108,
-    lng: 77.5167,
-    type: "Government Office"
-  },
-  {
-    name: "Sidlaghatta Court",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Government Office"
-  },
-  {
-    name: "Bagepalli Court",
-    taluk: "Bagepalli",
-    lat: 13.7833,
-    lng: 77.7833,
-    type: "Government Office"
-  },
-  {
-    name: "Chickballapur District Stadium",
-    taluk: "Chickballapur",
-    lat: 13.4323,
-    lng: 77.7289,
-    type: "Sports Complex"
-  },
-  {
-    name: "Chintamani Stadium",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Sports Complex"
-  },
-  {
-    name: "Gauribidanur Stadium",
-    taluk: "Gauribidanur",
-    lat: 13.6108,
-    lng: 77.5167,
-    type: "Sports Complex"
-  },
-  {
-    name: "Sidlaghatta Stadium",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Sports Complex"
-  },
-  {
-    name: "Bagepalli Stadium",
-    taluk: "Bagepalli",
-    lat: 13.7833,
-    lng: 77.7833,
-    type: "Sports Complex"
-  },
-  {
-    name: "Chickballapur District Library",
-    taluk: "Chickballapur",
-    lat: 13.4323,
-    lng: 77.7289,
-    type: "Library"
-  },
-  {
-    name: "Chintamani Library",
-    taluk: "Chintamani",
-    lat: 13.4019,
-    lng: 78.0529,
-    type: "Library"
-  },
-  {
-    name: "Gauribidanur Library",
-    taluk: "Gauribidanur",
-    lat: 13.6108,
-    lng: 77.5167,
-    type: "Library"
-  },
-  {
-    name: "Sidlaghatta Library",
-    taluk: "Sidlaghatta",
-    lat: 13.3789,
-    lng: 77.8372,
-    type: "Library"
-  },
-  {
-    name: "Bagepalli Library",
-    taluk: "Bagepalli",
-    lat: 13.7833,
-    lng: 77.7833,
-    type: "Library"
-  }
-]
+// Beat Police Villages (by Police Station) (added from beat police data)
+const villagePoliceStationMap = {
+  "Batlahalli Police Station": {
+    pincode: "563123",
+    villages: [
+      "Pedduru",
+      "Tummalahalli",
+      "Korakonapalli",
+      "Gaunicheruvupalli",
+      "Digavapalli",
+      "Muddalhalli",
+      "Nimmakayalahalli",
+      "Nandiganahalli",
+      "Kadirappanayakankote",
+      "Neelapalli",
+      "Bodugundlahalli"
+    ]
+  },
+  "Kencharlahalli Police Station": {
+    pincode: "561209",
+    villages: [
+      "Mamidimakalapalli",
+      "Devaramakalapalli",
+      "Pyayalavarapalli",
+      "Arigevarigutta",
+      "Gyadavandlapalli",
+      "Bestalapalli"
+    ]
+  },
+  "Gudibande Police Station": {
+    pincode: "561209",
+    villages: [
+      "Konapura",
+      "Baichapura",
+      "Badimaraluru",
+      "Virupasandra",
+      "Uchchodanahalli",
+      "Saganahalli",
+      "Gangasandra",
+      "Kengenahalli",
+      "Vedalaveni",
+      "Kurubarahalli",
+      "Virlagollahalli",
+      "Sugar Factory",
+      "Cheegatagere"
+    ]
+  },
+  "Chelur Police Station": {
+    pincode: "562103",
+    villages: [
+      "Kallapparallapalli",
+      "Yaguvamarappagarpalli",
+      "Diguvamarappagarpalli",
+      "Dugginayakanapalli",
+      "Gummalapalli",
+      "Peddanagarlu",
+      "Poolakuntlapalli"
+    ]
+  },
+  "Bagepalli Police Station": {
+    pincode: "561207",
+    villages: [
+      "Gooluru Gram Panchayat",
+      "Chinnakayalapalli",
+      "Yagava Aivarlpalli",
+      "Lakshman Tanda",
+      "Ramakka Tanda",
+      "Parvathipura Tanda",
+      "Papannakunta Tanda",
+      "Saddupalli",
+      "Saddupalli Tanda",
+      "Kuruvadinepalli",
+      "Anjanapura"
+    ]
+  },
+  "Chikkaballapura Rural Police Station": {
+    pincode: "562101",
+    villages: [
+      "C M C Layout",
+      "Agalagurki",
+      "Bannikuppe",
+      "Sonnapura",
+      "Tippanahalli",
+      "Ajjavara",
+      "Nugitahalli",
+      "Mannarapura",
+      "Poojanahalli"
+    ]
+  },
+  "Chikkaballapura Town Police Station": {
+    pincode: "562101",
+    villages: [
+      "Ward No. 1", "Vapasandra", "C.R. Layout", "Kanaka Nagar", "Oil Mill Road", "Yellamma Temple Road", "K.K. Pete", "KSRTC Bus Stand Road",
+      "Ward No. 2", "Bhovi Colony", "Garden Road", "Patel Street",
+      "Ward No. 3", "K.K. Pete", "Khadrappa Street", "Sharap Street", "Patel Street", "Gowda Street", "Vasavi Temple Road", "Ashoka Road",
+      "Ward No. 4 & 30", "Kote", "Harijan Colony", "A.D. Colony", "T.B. Road Side",
+      "Ward No. 5", "Khazi Road", "Dodda Khazi Road", "Ashoka Road", "VGT Road",
+      "Ward No. 6", "Kurubara Pete", "VGT Road", "T.B. Road", "Sharaf Road", "Old Hospital Road",
+      "Ward No. 7", "A.K. Colony", "Idga Road", "K.E.B. Road", "Siddhartha Nagar",
+      "Ward No. 8", "A.K. Colony", "Idga Road", "Bypass Road", "K.E.B. Road", "Siddhartha Nagar",
+      "Ward No. 9", "A.K. Colony", "Bypass Road", "K.E.B. Road", "Sunnasabi Quarters", "Poojamma Temple Road", "Nallimarada Halli"
+    ]
+  },
+  "Chintamani Town Police Station": {
+    pincode: "563125",
+    villages: [
+      "Venkatagiri Kote North", "Venkatagiri Kote South", "Ven. Kote Colony", "Tank Bund Road, West", "Tank Bund Road, East", "Kalappa Badavane", "K.R. Badavane", "Anjani Badavane", "Ashwini Badavane", "Prabhakar Badavane", "Malapalli", "N.R Badavane"
+    ]
+  },
+  "Chintamani Rural Police Station": {
+    pincode: "563125",
+    villages: [
+      "Bhaktarahalli", "Ulappanahalli", "Korlahalli", "Chandrahalli", "Kattariguppe", "Husseinpura", "Kadashanahalli", "Timmasandra", "Mohammadpura", "Kanganahalli",
+      "Bukkanahalli", "Singasandra", "N.Kotturu", "K.Gollahalli", "Doddahalli", "Kurumaralahalli", "Sujjanahalli", "Narasapura", "Kotagal", "K.Raguttahalli", "Chaudadenahalli", "Bandameedahalli", "Bodanamari", "Nallarallahalli Cross",
+      "Chokkanahalli", "Nayanhalli", "Srinivasapura", "Venkatapura", "Ketanayakanahalli", "Yashwantapura", "Palepalli", "Jaladenahalli", "Shettihalli", "Anakal", "Tammepalli", "Chikkamunimangala", "Doddamunimangala", "Kodigenahalli", "Nelamachanahalli",
+      "Chokkareddihalli", "Krishnarajapura", "Tippanahalli", "Veerapalli", "Jagattanahalli", "Gopalapura", "Bacchavarahalli", "Kagati", "Hiranyahalli", "Kongatimmanahalli", "Badagavarahalli", "Kariyapalli",
+      "Gopasandra", "Buragamakalhalli", "Handijogigadda", "Ulavadi", "Kurapalli", "Bhattalhalli"
+    ]
+  },
+  "Gauribidanuru Town Police Station": {
+    pincode: "561208",
+    villages: [
+      "Karekalahalli", "Swagat Layout", "Nagaredddy Layout", "Nagalamma Layout",
+      "Kuvempu Nagar", "Vidya Nagar", "K.L.N Layout",
+      "Virandahalli", "H.N Layout", "Ayyappa Swami Temple Area",
+      "Vinayaka Nagar", "Brahmin Street",
+      "Sante Maidana", "Nadigadde", "Sadashiva Layout",
+      "Kakanathopu", "Abhilash Layout", "Sumangali Layout",
+      "Panduranga Temple", "Mental Hospital", "Madhava Nagar", "Church",
+      "Shyanu Bhogarahalli", "Ramayanadavaragalli", "Bazaar Road Left Side",
+      "Hoovadigaragalli", "Gaurayagalli", "B.H Road", "Bavi Katte", "Marigamma Temple Area",
+      "Railway Quarters", "Isturi Sibbayashetty Layout", "H.P Nagendra Kumar Layout", "G.S.K Layout", "C Rajanna Layout", "K.N Ramegowda Layout", "M Narasamma Layout"
+    ]
+  },
+  "Gauribidanuru Rural Police Station": {
+    pincode: "561208",
+    villages: [
+      "Bandarahalli", "Kantarahalli", "Mattavalahalli", "Appannagarihalli", "Nanjaiahgarihalli", "Kotappanahalli", "Narasimhareddihalli", "Nagaragere", "Payandahalli", "Mallenahalli",
+      "Jinkavaripalli", "Chinnappareddihalli", "Bellavalahalli", "Gundlakothuru", "Tandas", "Bottadappanahalli", "Cholashettihalli", "Kodihalli", "Nallahalli", "Chikkamallenahalli",
+      "Krishnarajapura", "Chimukalahalli", "Tokalahalli", "Mopurahalli", "Sabbanahalli", "Vatadahosahalli", "Dabbalavaripalli", "Bodabandahalli", "Subbarayanahalli", "Kereolaginhalli", "Halevooru", "Kadirenahalli",
+      "Srinivasacharahalli", "Hanumenahalli", "Musalmanarahalli", "Manipal", "M. Gollahalli", "Muddalodu", "Jilakunte", "Sadarahalli", "Maripadagu", "Ontimanehalli", "Chittavulahalli", "Melya", "Hunasenahalli", "Dinne Hunasenahalli", "Jagareddihalli",
+      "Gotlakunte", "Peddanahalli", "Katanakallu", "Sooranayakanahalli", "Hulikunte", "Narasapura", "Nakkalahalli", "Devaganahalli", "Lakkasandra", "Lakshmipura", "Hudaguru"
+    ]
+  },
+  "Shidlaghatta Rural Police Station": {
+    pincode: "562105",
+    villages: [
+      "Shilemakalhalli", "Handiganala", "Keshavapura", "Hanumenahalli", "Appegoudanahalli", "Kambadahalli", "Meluru", "Ganganahalli", "Chaudasandra", "Ragimakalhalli",
+      "Anuru", "A.Hunasenahalli", "Tippenahalli", "Dabarganahalli", "Bairanayakanahalli", "Japti Hosahalli", "Bodaguru", "Hittalahalli", "Belluti", "Bhaktahalli",
+      "Malluru", "Matturu", "Kachahalli", "Ankattatti", "Kakachakkondahalli", "Nagamangala", "Hosahalli", "Nallenahalli", "Nadipinaayakanahalli", "Pura (Be)",
+      "Mugiladapi", "Malamachanahalli", "Basavapattana", "Taduru", "Totliganahalli", "Yannanguru", "Doddachakkondahalli", "Eddalatippenahalli", "Hosapete",
+      "Jangamakote/Cross", "Obalapura", "J.Kurabarahalli", "Tottibavi", "K.G Chikkaballa", "Sundrahalli", "Bairasandra", "Sugaturu", "Ghattamaranahalli", "J.Venkatapura", "Baluvanahalli", "Mittanahalli"
+    ]
+  },
+  "Manchenahalli Police Station": {
+    pincode: "562101",
+    villages: [
+      "Gadag",
+      "Adagal"
+    ]
+  },
+  "Nandi Hills Police Station": {
+    pincode: "562101",
+    villages: [
+      "Doddakirugambi",
+      "Chikkakirugambi",
+      "Elehalli",
+      "Keshavara",
+      "Nelamakalahalli"
+    ]
+  },
+}
+
+// Merge all villages from villagePoliceStationMap into villagePincodeMap
+Object.values(villagePoliceStationMap).forEach(({ villages, pincode }) => {
+  villages.forEach(village => {
+    villagePincodeMap[village] = pincode;
+  });
+});
 
 // Function to calculate distance between two points using Haversine formula
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
