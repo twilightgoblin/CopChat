@@ -2,12 +2,23 @@ const express = require('express');
 const router = express.Router();
 const Testimonial = require('../models/Testimonial');
 
-// Get recent testimonials
-router.get('/', async (req, res) => {
+// Get all testimonials (admin only)
+router.get('/admin', async (req, res) => {
   try {
     const testimonials = await Testimonial.find()
+      .sort({ createdAt: -1 });
+    res.json(testimonials);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get public testimonials (approved only)
+router.get('/', async (req, res) => {
+  try {
+    const testimonials = await Testimonial.find({ status: 'approved' })
       .sort({ createdAt: -1 })
-      .limit(5);
+      .limit(10);
     res.json(testimonials);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -29,13 +40,53 @@ router.post('/', async (req, res) => {
       name,
       email,
       content,
-      rating
+      rating,
+      status: 'pending'
     });
 
     const savedTestimonial = await testimonial.save();
     res.status(201).json(savedTestimonial);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+// Update testimonial status (admin only)
+router.patch('/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    const testimonial = await Testimonial.findByIdAndUpdate(
+      id,
+      { status, updatedAt: Date.now() },
+      { new: true }
+    );
+
+    if (!testimonial) {
+      return res.status(404).json({ message: 'Testimonial not found' });
+    }
+
+    res.json(testimonial);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Delete testimonial (admin only)
+router.delete('/:id', async (req, res) => {
+  try {
+    const testimonial = await Testimonial.findByIdAndDelete(req.params.id);
+    if (!testimonial) {
+      return res.status(404).json({ message: 'Testimonial not found' });
+    }
+    res.json({ message: 'Testimonial deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

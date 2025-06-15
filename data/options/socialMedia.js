@@ -27,7 +27,7 @@ export const socialMediaOptions = {
             ),
             React.createElement('li', null, 
               React.createElement('a', {
-                href: "https://ksp.karnataka.gov.in/chikkaballapura",
+                href: "https://chikkaballapurapolice.karnataka.gov.in/english",
                 target: "_blank",
                 rel: "noopener noreferrer",
                 className: "text-blue-600 hover:underline"

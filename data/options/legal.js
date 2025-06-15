@@ -41,17 +41,6 @@ export const legalOptions = {
             React.createElement('li', null, "Court Proceedings: The trial process begins with both parties presenting their case. / ನ್ಯಾಯಾಲಯ ಪ್ರಕ್ರಿಯೆ: ನ್ಯಾಯಾಲಯವು ವಿಚಾರಣೆಯ ಪ್ರಾರಂಭವನ್ನು ಮಾಡುತ್ತದೆ, ಭಾಗವಹಿಸುವ ಪಕ್ಷಗಳು ತಮ್ಮ ಕಾರಣವನ್ನು ಮಂಡಿಸುತ್ತವೆ."),
             React.createElement('li', null, "Appeal: Both parties can appeal the judgment if dissatisfied. / ಅಪೀಲ್ಗೆ ಹಕ್ಕು: ತಪ್ಪಿತಸ್ಥವಾದಲ್ಲಿ ಅಥವಾ ನ್ಯಾಯಾಲಯದ ತೀರ್ಪಿಗೆ ಅಸಮಾಧಾನವಾದರೆ, ಮೇಲ್ದರ್ಜೆ ನ್ಯಾಯಾಲಯದಲ್ಲಿ ಅಪೀಲ್ ಸಲ್ಲಿಸಬಹುದು.")
           ),
-          React.createElement('p', { className: "font-medium mt-4" }, "File FIR Online / ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ FIR ದಾಖಲಿಸಿ:"),
-          React.createElement('p', null, 
-            "Visit ", 
-            React.createElement('a', {
-              href: "https://ksp.karnataka.gov.in/fir",
-              target: "_blank",
-              rel: "noopener noreferrer",
-              className: "text-blue-600 hover:underline"
-            }, "Karnataka Police FIR Portal / ಕರ್ನಾಟಕ ಪೊಲೀಸ್ FIR ಪೋರ್ಟಲ್"),
-            " to file your FIR online. / ನಿಮ್ಮ FIR ಅನ್ನು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ದಾಖಲಿಸಲು ಭೇಟಿ ನೀಡಿ."
-          )
         )
       ),
     },
@@ -73,7 +62,7 @@ export const legalOptions = {
           React.createElement('ul', { className: "list-disc pl-4 space-y-2" },
             React.createElement('li', null, 
               React.createElement('a', {
-                href: "https://wcd.nic.in/schemes/one-stop-centre-scheme",
+                href: "https://www.ncw.gov.in/ncw-cells/ncw-women-helpline/",
                 target: "_blank",
                 rel: "noopener noreferrer",
                 className: "text-blue-600 hover:underline"
@@ -81,7 +70,7 @@ export const legalOptions = {
             ),
             React.createElement('li', null, 
               React.createElement('a', {
-                href: "https://childlineindia.org.in/",
+                href: "https://childlineindia.org/a/about/childline-india",
                 target: "_blank",
                 rel: "noopener noreferrer",
                 className: "text-blue-600 hover:underline"

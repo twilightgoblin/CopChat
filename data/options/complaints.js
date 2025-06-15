@@ -52,7 +52,7 @@ export const complaintOptions = {
             React.createElement('div', null,
               "Visit KSP e-Lost & Found App / ಕೆಎಸ್ಪಿ ಇ-ನಷ್ಟ ಮತ್ತು ಕಂಡುಹಿಡಿಯುವ ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಭೇಟಿ ನೀಡಿ: ",
               React.createElement('a', {
-                href: "https://ksp.karnataka.gov.in/elost/",
+                href: "https://ksp.karnataka.gov.in/english",
                 target: "_blank",
                 rel: "noopener noreferrer",
                 className: "text-blue-600 hover:underline"

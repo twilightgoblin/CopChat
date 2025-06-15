@@ -16,19 +16,18 @@ if (!mongoose.connection.readyState) {
 const testimonialSchema = new mongoose.Schema({
   name: String,
   email: String,
-  message: String,
+  content: String,
   rating: Number,
-  createdAt: { type: Date, default: Date.now },
-  approved: { type: Boolean, default: false }
+  createdAt: { type: Date, default: Date.now }
 });
 
 // Create model if it doesn't exist
 const Testimonial = mongoose.models.Testimonial || mongoose.model('Testimonial', testimonialSchema);
 
-// Get all approved testimonials
+// Get all testimonials
 export async function GET() {
   try {
-    const testimonials = await Testimonial.find({ approved: true })
+    const testimonials = await Testimonial.find()
       .sort({ createdAt: -1 })
       .limit(10);
     
@@ -48,22 +47,26 @@ export async function POST(request) {
     const testimonialData = await request.json();
     
     // Validate required fields
-    if (!testimonialData.name || !testimonialData.message) {
+    if (!testimonialData.name || !testimonialData.content || !testimonialData.rating) {
       return NextResponse.json(
-        { error: 'Name and message are required' },
+        { error: 'Name, content, and rating are required' },
         { status: 400 }
       );
     }
 
-    const testimonial = new Testimonial({
-      ...testimonialData,
-      approved: false // Requires admin approval
-    });
+    // Validate rating
+    if (testimonialData.rating < 1 || testimonialData.rating > 5) {
+      return NextResponse.json(
+        { error: 'Rating must be between 1 and 5' },
+        { status: 400 }
+      );
+    }
 
+    const testimonial = new Testimonial(testimonialData);
     await testimonial.save();
 
     return NextResponse.json({
-      message: 'Testimonial submitted successfully. It will be visible after approval.',
+      message: 'Testimonial submitted successfully',
       testimonial
     });
   } catch (error) {

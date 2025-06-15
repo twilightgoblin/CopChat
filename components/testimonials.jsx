@@ -24,14 +24,17 @@ export default function Testimonials() {
     const fetchTestimonials = async () => {
       try {
         const response = await fetch('/api/testimonials');
-        if (!response.ok) throw new Error('Failed to fetch testimonials');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch testimonials');
+        }
         const data = await response.json();
-        // Filter testimonials with rating > 3
+        // Only filter by rating > 3
         const filteredTestimonials = data.filter(t => t.rating > 3);
         setTestimonials(filteredTestimonials);
       } catch (error) {
         console.error('Error fetching testimonials:', error);
-        setNotificationMessage("Failed to load testimonials");
+        setNotificationMessage(error.message || "Failed to load testimonials");
         setNotificationType("error");
         setShowNotification(true);
       }
@@ -154,7 +157,6 @@ export default function Testimonials() {
 
                         <div className="inline-block bg-white/80 px-6 py-2 rounded-full shadow-sm">
                           <p className="font-bold text-lg text-violet-800">{testimonials[activeIndex].name}</p>
-                          <p className="text-sm text-violet-600">Community Member</p>
                         </div>
                       </div>
                     </div>
