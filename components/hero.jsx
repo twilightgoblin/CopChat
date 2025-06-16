@@ -1,12 +1,17 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Shield, MessageSquare, Phone } from "lucide-react"
+import { Shield, MessageSquare, Phone, Languages } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 export default function Hero() {
+  const { language, toggleLanguage } = useLanguage()
+  const t = translations[language]
+
   return (
     <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
       {/* Melted liquid background */}
@@ -99,21 +104,37 @@ export default function Hero() {
             />
           </div>
         </motion.div>
+
+        {/* Language Toggle Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <Button
+            onClick={toggleLanguage}
+            variant="outline"
+            className="bg-white/80 backdrop-blur-sm text-violet-700 hover:bg-white border-violet-300 shadow-lg"
+          >
+            <Languages className="mr-2 h-4 w-4" />
+            {t.hero.switchToKannada}
+          </Button>
+        </motion.div>
+
         <motion.h1
           className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-white drop-shadow-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          Chikkaballapura Police Services
+          {t.hero.title}
         </motion.h1>
         <motion.p
           className="max-w-[600px] text-white text-sm sm:text-base md:text-lg drop-shadow-md"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
         >
-          Serving and Protecting Our Community with Dedication, Integrity, and Excellence
+          {t.hero.description}
         </motion.p>
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md mx-auto"
@@ -127,7 +148,7 @@ export default function Hero() {
             onClick={() => (window.location.href = "tel:112")}
           >
             <Phone className="mr-2 h-4 w-4" />
-            Emergency 112
+            {t.hero.emergency}
           </Button>
           <Button
             size="lg"
@@ -136,7 +157,7 @@ export default function Hero() {
           >
             <Link href="/chatbot" className="flex items-center justify-center">
               <MessageSquare className="mr-2 h-4 w-4" />
-              Talk to Chatbot
+              {t.hero.chatbot}
             </Link>
           </Button>
         </motion.div>

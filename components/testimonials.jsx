@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { ScrollAnimation } from "@/components/scroll-animation"
 import { Notification } from "@/components/ui/notification"
 import Link from "next/link"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 export default function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -18,6 +20,8 @@ export default function Testimonials() {
   const [notificationType, setNotificationType] = useState("success")
   const touchStartX = useRef(0)
   const touchEndX = useRef(0)
+  const { language } = useLanguage()
+  const t = translations[language]
 
   // Fetch testimonials
   useEffect(() => {
@@ -114,10 +118,10 @@ export default function Testimonials() {
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-purple-600">
-              What Our Community Says
+              {t.testimonials.title}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Real feedback from citizens who have interacted with our services
+              {t.testimonials.subtitle}
             </p>
           </div>
 
@@ -163,7 +167,7 @@ export default function Testimonials() {
                   </motion.div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-gray-500">No testimonials yet. Be the first to share your feedback!</p>
+                    <p className="text-gray-500">{t.testimonials.noTestimonials}</p>
                   </div>
                 )}
               </AnimatePresence>
@@ -196,7 +200,7 @@ export default function Testimonials() {
               <Button
                 className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-medium px-8 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
-                Share Your Feedback
+                {t.testimonials.shareFeedback}
               </Button>
             </Link>
           </div>

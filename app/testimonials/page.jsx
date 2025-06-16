@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { ScrollAnimation } from "@/components/scroll-animation"
 import { Notification } from "@/components/ui/notification"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 export default function TestimonialsPage() {
   const [name, setName] = useState("")
@@ -21,6 +23,8 @@ export default function TestimonialsPage() {
   const [showNotification, setShowNotification] = useState(false)
   const [notificationMessage, setNotificationMessage] = useState("")
   const [notificationType, setNotificationType] = useState("success")
+  const { language } = useLanguage()
+  const t = translations[language]
 
   // Email validation function
   const validateEmail = (email) => {
@@ -34,7 +38,7 @@ export default function TestimonialsPage() {
     setEmail(newEmail);
     
     if (newEmail && !validateEmail(newEmail)) {
-      setEmailError("Please enter a valid email address (e.g., name@domain.com)");
+      setEmailError(t.testimonials.form.emailError);
     } else {
       setEmailError("");
     }
@@ -45,7 +49,7 @@ export default function TestimonialsPage() {
     
     // Validate email before submission
     if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address");
+      setEmailError(t.testimonials.form.emailError);
       return;
     }
 
@@ -70,7 +74,7 @@ export default function TestimonialsPage() {
         throw new Error(errorData.message || 'Failed to submit feedback');
       }
 
-      setNotificationMessage("Thank you for your feedback!");
+      setNotificationMessage(t.testimonials.form.success);
       setNotificationType("success");
       setShowNotification(true);
       
@@ -136,10 +140,10 @@ export default function TestimonialsPage() {
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-purple-600">
-              Share Your Feedback
+              {t.testimonials.form.title}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Your feedback helps us improve our services and better serve the community
+              {t.testimonials.form.subtitle}
             </p>
           </div>
 
@@ -152,19 +156,19 @@ export default function TestimonialsPage() {
             >
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t.testimonials.form.name}</Label>
                   <Input
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                     className="bg-white/50"
-                    placeholder="Enter your name"
+                    placeholder={t.testimonials.form.namePlaceholder}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t.testimonials.form.email}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -172,7 +176,7 @@ export default function TestimonialsPage() {
                     onChange={handleEmailChange}
                     required
                     className={`bg-white/50 ${emailError ? 'border-red-500' : ''}`}
-                    placeholder="name@domain.com"
+                    placeholder={t.testimonials.form.emailPlaceholder}
                   />
                   {emailError && (
                     <p className="text-sm text-red-500 mt-1">{emailError}</p>
@@ -180,19 +184,19 @@ export default function TestimonialsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="feedback">Your Feedback</Label>
+                  <Label htmlFor="feedback">{t.testimonials.form.feedback}</Label>
                   <Textarea
                     id="feedback"
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
                     required
                     className="bg-white/50 min-h-[100px]"
-                    placeholder="Share your experience with us..."
+                    placeholder={t.testimonials.form.feedbackPlaceholder}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Rating</Label>
+                  <Label>{t.testimonials.form.rating}</Label>
                   <div className="flex gap-1">
                     {renderStars(rating)}
                   </div>
@@ -203,7 +207,7 @@ export default function TestimonialsPage() {
                   disabled={isSubmitting || !!emailError}
                   className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Feedback"}
+                  {isSubmitting ? t.testimonials.form.submitting : t.testimonials.form.submit}
                 </Button>
               </form>
             </motion.div>
