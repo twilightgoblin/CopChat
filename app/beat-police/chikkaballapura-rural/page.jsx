@@ -662,7 +662,8 @@ const beatData = {
         { en: "Ajjavara", kn: "ಅಜ್ಜಾವರ" },
         { en: "Nugitahalli", kn: "ನುಗಿತಹಳ್ಳಿ" },
         { en: "Mannarapura", kn: "ಮನ್ನಾರಾಪುರ" },
-        { en: "Poojanahalli", kn: "ಪೂಜನಹಳ್ಳಿ" }
+        { en: "Poojanahalli", kn: "ಪೂಜನಹಳ್ಳಿ" },
+        { en: "Kandavara", kn: "ಕಂದವರ" }
       ],
       supervisor: { 
         name: {

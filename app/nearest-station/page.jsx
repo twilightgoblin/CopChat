@@ -166,6 +166,7 @@ const policeStations = [
 
 // Famous places in Chikkaballapura district
 const famousPlaces = [
+  // Tourist Attractions & Historical Places
   {
     name: "Nandi Hills",
     lat: 13.3701,
@@ -191,16 +192,230 @@ const famousPlaces = [
     description: "Ancient temple in Chintamani town"
   },
   {
-    name: "Gauribidanur Railway Station",
-    lat: 13.6107,
-    lng: 77.5173,
-    description: "Major railway junction"
+    name: "Gudibande Fort",
+    lat: 13.6,
+    lng: 77.7,
+    description: "Historical fort in Gudibande"
   },
   {
     name: "Bagepalli Palace",
     lat: 13.7833,
     lng: 77.7833,
     description: "Historical palace in Bagepalli"
+  },
+
+  // Educational Institutions - Colleges
+  {
+    name: "Government First Grade College Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Government college in Chikkaballapura"
+  },
+  {
+    name: "Government First Grade College Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Government college in Chintamani"
+  },
+  {
+    name: "Government First Grade College Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Government college in Gauribidanur"
+  },
+  {
+    name: "Government First Grade College Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Government college in Sidlaghatta"
+  },
+  {
+    name: "Government First Grade College Bagepalli",
+    lat: 13.7833,
+    lng: 77.7833,
+    description: "Government college in Bagepalli"
+  },
+  {
+    name: "Government Polytechnic College Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Polytechnic college in Chikkaballapura"
+  },
+  {
+    name: "Government ITI Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Industrial Training Institute"
+  },
+  {
+    name: "Government ITI Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Industrial Training Institute"
+  },
+  {
+    name: "SJC Institute of Technology",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Engineering college in Chikkaballapura"
+  },
+
+  // Schools - High Schools
+  {
+    name: "Government High School Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Government high school in Chikkaballapura"
+  },
+  {
+    name: "Government High School Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Government high school in Chintamani"
+  },
+  {
+    name: "Government High School Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Government high school in Gauribidanur"
+  },
+  {
+    name: "Government High School Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Government high school in Sidlaghatta"
+  },
+  {
+    name: "Government High School Bagepalli",
+    lat: 13.7833,
+    lng: 77.7833,
+    description: "Government high school in Bagepalli"
+  },
+  {
+    name: "Government High School Gudibande",
+    lat: 13.6,
+    lng: 77.7,
+    description: "Government high school in Gudibande"
+  },
+  {
+    name: "Government High School Batlahalli",
+    lat: 13.45,
+    lng: 78.1,
+    description: "Government high school in Batlahalli"
+  },
+  {
+    name: "St. Joseph's High School Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Private high school in Chikkaballapura"
+  },
+  {
+    name: "St. Mary's High School Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Private high school in Chintamani"
+  },
+
+  // Hospitals & Medical Centers
+  {
+    name: "District Hospital Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Main district hospital"
+  },
+  {
+    name: "Taluk Hospital Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Taluk level hospital"
+  },
+  {
+    name: "Taluk Hospital Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Taluk level hospital"
+  },
+  {
+    name: "Taluk Hospital Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Taluk level hospital"
+  },
+  {
+    name: "Taluk Hospital Bagepalli",
+    lat: 13.7833,
+    lng: 77.7833,
+    description: "Taluk level hospital"
+  },
+  {
+    name: "Primary Health Center Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Primary health center"
+  },
+
+  // Transportation Hubs
+  {
+    name: "KSRTC Bus Stand Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Main bus stand in Chikkaballapura"
+  },
+  {
+    name: "KSRTC Bus Stand Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Bus stand in Chintamani"
+  },
+  {
+    name: "KSRTC Bus Stand Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Bus stand in Gauribidanur"
+  },
+  {
+    name: "KSRTC Bus Stand Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Bus stand in Sidlaghatta"
+  },
+  {
+    name: "KSRTC Bus Stand Bagepalli",
+    lat: 13.7833,
+    lng: 77.7833,
+    description: "Bus stand in Bagepalli"
+  },
+  {
+    name: "Gauribidanur Railway Station",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Major railway junction"
+  },
+  {
+    name: "Chikkaballapura Railway Station",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Railway station in Chikkaballapura"
+  },
+
+  // Markets & Shopping Areas
+  {
+    name: "Chikkaballapura Market",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Main market area in Chikkaballapura"
+  },
+  {
+    name: "Chintamani Market",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Main market area in Chintamani"
+  },
+  {
+    name: "Gauribidanur Market",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Main market area in Gauribidanur"
   },
   {
     name: "Sidlaghatta Market",
@@ -209,11 +424,109 @@ const famousPlaces = [
     description: "Famous market area in Sidlaghatta"
   },
   {
-    name: "Gudibande Fort",
+    name: "Bagepalli Market",
+    lat: 13.7833,
+    lng: 77.7833,
+    description: "Main market area in Bagepalli"
+  },
+  {
+    name: "Gudibande Market",
     lat: 13.6,
     lng: 77.7,
-    description: "Historical fort in Gudibande"
+    description: "Market area in Gudibande"
   },
+
+  // Banks & Financial Institutions
+  {
+    name: "State Bank of India Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Main SBI branch in Chikkaballapura"
+  },
+  {
+    name: "Canara Bank Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Canara Bank branch"
+  },
+  {
+    name: "State Bank of India Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "SBI branch in Chintamani"
+  },
+  {
+    name: "State Bank of India Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "SBI branch in Gauribidanur"
+  },
+
+  // Government Offices
+  {
+    name: "Deputy Commissioner Office Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "District administrative office"
+  },
+  {
+    name: "Superintendent of Police Office Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "District police headquarters"
+  },
+  {
+    name: "Taluk Office Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Taluk administrative office"
+  },
+  {
+    name: "Taluk Office Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Taluk administrative office"
+  },
+  {
+    name: "Taluk Office Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Taluk administrative office"
+  },
+  {
+    name: "Taluk Office Bagepalli",
+    lat: 13.7833,
+    lng: 77.7833,
+    description: "Taluk administrative office"
+  },
+
+  // Parks & Recreation
+  {
+    name: "Gandhi Park Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Public park in Chikkaballapura"
+  },
+  {
+    name: "Children's Park Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Children's park in Chintamani"
+  },
+  {
+    name: "Batlahalli Lake",
+    lat: 13.45,
+    lng: 78.1,
+    description: "Scenic lake in Batlahalli"
+  },
+  {
+    name: "Nandi Hills View Point",
+    lat: 13.3701,
+    lng: 77.6836,
+    description: "Scenic viewpoint at Nandi Hills"
+  },
+
+  // Religious Places
   {
     name: "Chelur Temple",
     lat: 13.7833,
@@ -221,10 +534,300 @@ const famousPlaces = [
     description: "Ancient temple in Chelur"
   },
   {
-    name: "Batlahalli Lake",
+    name: "Sri Venkateshwara Temple Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Famous temple in Chikkaballapura"
+  },
+  {
+    name: "Masjid-e-Azam Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Main mosque in Chikkaballapura"
+  },
+  {
+    name: "St. Joseph's Church Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Catholic church in Chikkaballapura"
+  },
+
+  // Petrol Pumps & Fuel Stations
+  {
+    name: "Indian Oil Petrol Pump Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Indian Oil fuel station"
+  },
+  {
+    name: "HP Petrol Pump Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "HP fuel station"
+  },
+  {
+    name: "BP Petrol Pump Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "BP fuel station"
+  },
+  {
+    name: "Shell Petrol Pump Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Shell fuel station"
+  },
+
+  // ATMs & Banking Services
+  {
+    name: "HDFC Bank ATM Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "HDFC Bank ATM"
+  },
+  {
+    name: "ICICI Bank ATM Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "ICICI Bank ATM"
+  },
+  {
+    name: "Axis Bank ATM Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Axis Bank ATM"
+  },
+  {
+    name: "Karnataka Bank ATM Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Karnataka Bank ATM"
+  },
+
+  // Industrial & Commercial Areas
+  {
+    name: "Chikkaballapura Industrial Area",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Industrial manufacturing zone"
+  },
+  {
+    name: "Chintamani Industrial Estate",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Industrial estate in Chintamani"
+  },
+  {
+    name: "Gauribidanur Business Park",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Business park with offices"
+  },
+  {
+    name: "Sidlaghatta Warehouse Complex",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Warehouse and storage facilities"
+  },
+
+  // Additional Healthcare Facilities
+  {
+    name: "Multi-Specialty Hospital Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Private multi-specialty hospital"
+  },
+  {
+    name: "Dental Clinic Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Dental care center"
+  },
+  {
+    name: "Medical Store Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Pharmacy and medical store"
+  },
+  {
+    name: "Diagnostic Center Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Medical diagnostic laboratory"
+  },
+  {
+    name: "Eye Hospital Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Specialized eye care hospital"
+  },
+
+  // Additional Educational Institutions
+  {
+    name: "Government Primary School Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Government primary school"
+  },
+  {
+    name: "St. Mary's Nursery School Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Nursery and pre-primary school"
+  },
+  {
+    name: "Coaching Center Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Tuition and coaching center"
+  },
+  {
+    name: "Public Library Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Public library and reading room"
+  },
+  {
+    name: "Computer Training Center Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Computer education center"
+  },
+
+  // Residential & Community Areas
+  {
+    name: "Senior Citizens Club Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Senior citizens community center"
+  },
+
+  // Additional Transportation Hubs
+  {
+    name: "Auto Stand Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Auto-rickshaw stand"
+  },
+  {
+    name: "Taxi Stand Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Taxi and cab pickup point"
+  },
+  {
+    name: "Public Parking Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Public parking area"
+  },
+  {
+    name: "Cycle Stand Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Bicycle parking area"
+  },
+
+  // Legal & Professional Services
+  {
+    name: "District Court Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "District court and judicial complex"
+  },
+  {
+    name: "Law Office Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Legal services office"
+  },
+  {
+    name: "Insurance Office Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Insurance company office"
+  },
+  {
+    name: "Real Estate Office Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Property and real estate office"
+  },
+  {
+    name: "Notary Office Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Notary public office"
+  },
+
+  // Entertainment & Leisure
+  {
+    name: "Children's Playground Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Children's play area"
+  },
+  {
+    name: "Swimming Pool Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Public swimming pool"
+  },
+  {
+    name: "Gaming Center Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Entertainment and gaming center"
+  },
+  {
+    name: "Sports Ground Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Multi-purpose sports ground"
+  },
+  {
+    name: "Adventure Park Nandi Hills",
+    lat: 13.3701,
+    lng: 77.6836,
+    description: "Adventure sports and activities"
+  },
+  {
+    name: "Boating Club Batlahalli Lake",
     lat: 13.45,
     lng: 78.1,
-    description: "Scenic lake in Batlahalli"
+    description: "Boating and water sports"
+  },
+
+  // Post Offices
+  {
+    name: "Head Post Office Chikkaballapura",
+    lat: 13.4349,
+    lng: 77.7278,
+    description: "Main post office in Chikkaballapura"
+  },
+  {
+    name: "Post Office Chintamani",
+    lat: 13.4019,
+    lng: 78.0529,
+    description: "Post office in Chintamani"
+  },
+  {
+    name: "Post Office Gauribidanur",
+    lat: 13.6107,
+    lng: 77.5173,
+    description: "Post office in Gauribidanur"
+  },
+  {
+    name: "Post Office Sidlaghatta",
+    lat: 13.3789,
+    lng: 77.8372,
+    description: "Post office in Sidlaghatta"
+  },
+  {
+    name: "Post Office Bagepalli",
+    lat: 13.7833,
+    lng: 77.7833,
+    description: "Post office in Bagepalli"
   }
 ]
 
@@ -251,6 +854,7 @@ const villagePincodeMap = {
   "Manchenahalli Rural": "562101",
   "Nandi Hills Town": "562101",
   "Nandi Hills Rural": "562101",
+  "Kandavara": "562101",
 
   // Sidlaghatta Taluk
   "Sidlaghatta": "562105",
