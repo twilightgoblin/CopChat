@@ -122,26 +122,6 @@ export const utilitiesOptions = {
               className: "text-blue-600 hover:underline"
             }, "Register for Women Safety Services / ಮಹಿಳಾ ಸುರಕ್ಷತೆ ಸೇವೆಗಳಿಗೆ ನೋಂದಣಿ ಮಾಡಿ")
           ),
-          React.createElement('li', null, 
-            React.createElement('a', {
-              href: "https://wcd.nic.in/schemes/one-stop-centre-scheme",
-              target: "_blank",
-              rel: "noopener noreferrer",
-              className: "text-blue-600 hover:underline"
-            }, "Emergency Helplines: 24/7 assistance for women in distress / ತುರ್ತು ಸಹಾಯಹಸ್ತಗಳು: 24/7 ಸಮಯದಲ್ಲಿ ಮಹಿಳೆಯರಿಗೆ ಸಹಾಯ")
-          ),
-          React.createElement('li', null, 
-            React.createElement('a', {
-              href: "/report-harassment",
-              className: "text-blue-600 hover:underline"
-            }, "Report Harassment / ಹಾರಸು ವರದಿ ಮಾಡಿ")
-          ),
-          React.createElement('li', null, 
-            React.createElement('a', {
-              href: "/self-defense-registration",
-              className: "text-blue-600 hover:underline"
-            }, "Register for Self-Defense Training / ಆತ್ಮರಕ್ಷಣೆ ತರಬೇತಿಗೆ ನೋಂದಣಿ ಮಾಡಿ")
-          )
         )
       ),
     },
