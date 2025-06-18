@@ -12,6 +12,8 @@ import { FadeIn } from "@/components/fade-in"
 import { Notification } from "@/components/ui/notification"
 import { handleFormSubmit, validateEmail, validatePhone, validateAadhar, formatAadhar } from "@/utils/form-handlers"
 import OTPVerification from "@/components/otp-verification"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 export default function LoudspeakerEventsPermissionPage() {
   const [eventName, setEventName] = useState("")
@@ -36,6 +38,9 @@ export default function LoudspeakerEventsPermissionPage() {
   const [verifiedOTP, setVerifiedOTP] = useState(null)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const { language } = useLanguage()
+  const t = translations[language]?.loudspeakerEventsPermission || translations.en.loudspeakerEventsPermission
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -182,10 +187,10 @@ export default function LoudspeakerEventsPermissionPage() {
       <div className="container mx-auto px-4 max-w-2xl">
         <FadeIn>
           <h1 className="text-4xl md:text-5xl font-bold text-center text-violet-900 mb-4">
-            Loudspeaker & Events Permission
+            {t.title}
           </h1>
           <p className="text-lg text-violet-700 text-center mb-8">
-            Apply for permission to use loudspeakers or host events
+            {t.subtitle}
           </p>
         </FadeIn>
 
@@ -199,41 +204,41 @@ export default function LoudspeakerEventsPermissionPage() {
             {!submitted ? (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="eventName">Event Name (Required)</Label>
+                  <Label htmlFor="eventName">{t.form.eventName}</Label>
                   <Input
                     id="eventName"
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
                     required
-                    placeholder="Enter event name"
+                    placeholder={t.form.eventNamePlaceholder}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="eventDetails">Event Details (Required)</Label>
+                  <Label htmlFor="eventDetails">{t.form.eventDetails}</Label>
                   <Textarea
                     id="eventDetails"
                     value={eventDetails}
                     onChange={(e) => setEventDetails(e.target.value)}
                     required
-                    placeholder="Provide details about the event, expected attendees, etc."
+                    placeholder={t.form.eventDetailsPlaceholder}
                     className="min-h-[100px]"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="contactName">Contact Person Name (Required)</Label>
+                  <Label htmlFor="contactName">{t.form.contactName}</Label>
                   <Input
                     id="contactName"
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
                     required
-                    placeholder="Enter contact person name"
+                    placeholder={t.form.contactNamePlaceholder}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email (Required)</Label>
+                  <Label htmlFor="email">{t.form.email}</Label>
                   <div className="flex gap-2 items-center">
                     <Input
                       id="email"
@@ -241,7 +246,7 @@ export default function LoudspeakerEventsPermissionPage() {
                       value={email}
                       onChange={handleEmailChange}
                       required
-                      placeholder="Enter your email address"
+                      placeholder={t.form.emailPlaceholder}
                     />
                     {validateEmail(email) && (
                       <OTPVerification email={email} onVerified={setVerifiedOTP} />
@@ -250,14 +255,14 @@ export default function LoudspeakerEventsPermissionPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="contactPhone">Contact Phone Number (Required)</Label>
+                  <Label htmlFor="contactPhone">{t.form.phone}</Label>
                   <Input
                     id="contactPhone"
                     type="tel"
                     value={contactPhone}
                     onChange={handlePhoneChange}
                     required
-                    placeholder="Enter your 10-digit contact number"
+                    placeholder={t.form.phonePlaceholder}
                   />
                   {phoneError && (
                     <div className="flex items-center text-yellow-600 mt-1">
@@ -268,12 +273,12 @@ export default function LoudspeakerEventsPermissionPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="aadhar">Aadhar Number (Optional)</Label>
+                  <Label htmlFor="aadhar">{t.form.aadhar}</Label>
                   <Input
                     id="aadhar"
                     value={aadhar}
                     onChange={handleAadharChange}
-                    placeholder="XXXX XXXX XXXX"
+                    placeholder={t.form.aadharPlaceholder}
                   />
                   {aadharError && (
                     <div className="flex items-center text-yellow-600 mt-1">
@@ -284,20 +289,20 @@ export default function LoudspeakerEventsPermissionPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="location">Location Details (Required)</Label>
+                  <Label htmlFor="location">{t.form.location}</Label>
                   <Textarea
                     id="location"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     required
-                    placeholder="Enter complete location details"
+                    placeholder={t.form.locationPlaceholder}
                     className="min-h-[80px]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="startDate">Start Date (Required)</Label>
+                    <Label htmlFor="startDate">{t.form.startDate}</Label>
                     <Input
                       id="startDate"
                       type="date"
@@ -308,7 +313,7 @@ export default function LoudspeakerEventsPermissionPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="endDate">End Date (Required)</Label>
+                    <Label htmlFor="endDate">{t.form.endDate}</Label>
                     <Input
                       id="endDate"
                       type="date"
@@ -320,7 +325,7 @@ export default function LoudspeakerEventsPermissionPage() {
                 </div>
 
                 <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Submit Request"}
+                  {isSubmitting ? t.form.submitting : t.form.submit}
                 </Button>
               </form>
             ) : (
@@ -337,11 +342,11 @@ export default function LoudspeakerEventsPermissionPage() {
                 >
                   <CheckCircle className="h-16 w-16 text-green-500" />
                 </motion.div>
-                <h2 className="text-2xl font-bold text-violet-900 mb-4">Permission Request Submitted</h2>
+                <h2 className="text-2xl font-bold text-violet-900 mb-4">{t.success.submitted}</h2>
                 <p className="text-violet-700 mb-2">
-                  Thank you for submitting your loudspeaker and event permission request.
+                  {t.successMessage}
                 </p>
-                <p className="text-violet-700">You will receive a verification call soon.</p>
+                <p className="text-violet-700">{t.thankYou}</p>
               </motion.div>
             )}
           </CardContent>

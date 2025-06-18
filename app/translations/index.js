@@ -449,6 +449,42 @@ export const translations = {
         submitted: "✅ Senior citizen registration submitted successfully! We will process your request and get back to you soon."
       }
     },
+    loudspeakerEventsPermission: {
+      title: "Loudspeaker & Events Permission",
+      subtitle: "Apply for permission to use loudspeakers or host events",
+      thankYou: "Thank you!",
+      successMessage: "Your loudspeaker/event permission request has been submitted successfully. We will process your request and get back to you soon.",
+      form: {
+        eventName: "Event Name (Required)",
+        eventNamePlaceholder: "Enter event name",
+        eventDetails: "Event Details (Required)",
+        eventDetailsPlaceholder: "Provide details about the event, expected attendees, etc.",
+        contactName: "Contact Person Name (Required)",
+        contactNamePlaceholder: "Enter contact person name",
+        email: "Email (Required)",
+        emailPlaceholder: "Enter your email address",
+        phone: "Contact Phone Number (Required)",
+        phonePlaceholder: "Enter your 10-digit contact number",
+        aadhar: "Aadhar Number (Optional)",
+        aadharPlaceholder: "XXXX XXXX XXXX",
+        location: "Location Details (Required)",
+        locationPlaceholder: "Enter complete location details",
+        startDate: "Start Date (Required)",
+        endDate: "End Date (Required)",
+        submit: "Submit Request",
+        submitting: "Submitting..."
+      },
+      errors: {
+        validEmail: "Please enter a valid email address",
+        validPhone: "Please enter a valid 10-digit phone number",
+        validAadhar: "Please enter a valid 12-digit Aadhar number",
+        submitFailed: "Failed to submit form. Please try again.",
+        otpRequired: "Please verify OTP before submitting the form."
+      },
+      success: {
+        submitted: "✅ Loudspeaker event permission request submitted successfully! We will process your request and get back to you soon."
+      }
+    },
   },
   kn: {
     hero: {
@@ -846,6 +882,42 @@ export const translations = {
       },
       success: {
         submitted: "✅ ವೃದ್ಧ ನಾಗರಿಕರ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ! ನಾವು ನಿಮ್ಮ ವಿನಂತಿಯನ್ನು ಸಂಸ್ಕರಿಸುತ್ತೇವೆ ಮತ್ತು ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುತ್ತೇವೆ."
+      }
+    },
+    loudspeakerEventsPermission: {
+      title: "ಲೌಡ್‌ಸ್ಪೀಕರ್ ಮತ್ತು ಕಾರ್ಯಕ್ರಮಗಳ ಅನುಮತಿ",
+      subtitle: "ಲೌಡ್‌ಸ್ಪೀಕರ್ ಬಳಸಲು ಅಥವಾ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ಆಯೋಜಿಸಲು ಅನುಮತಿಗಾಗಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ",
+      thankYou: "ಧನ್ಯವಾದಗಳು!",
+      successMessage: "ನಿಮ್ಮ ಲೌಡ್‌ಸ್ಪೀಕರ್/ಕಾರ್ಯಕ್ರಮ ಅನುಮತಿ ವಿನಂತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ. ನಾವು ನಿಮ್ಮ ವಿನಂತಿಯನ್ನು ಸಂಸ್ಕರಿಸುತ್ತೇವೆ ಮತ್ತು ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುತ್ತೇವೆ.",
+      form: {
+        eventName: "ಕಾರ್ಯಕ್ರಮದ ಹೆಸರು (ಅಗತ್ಯ)",
+        eventNamePlaceholder: "ಕಾರ್ಯಕ್ರಮದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+        eventDetails: "ಕಾರ್ಯಕ್ರಮದ ವಿವರಗಳು (ಅಗತ್ಯ)",
+        eventDetailsPlaceholder: "ಕಾರ್ಯಕ್ರಮದ ವಿವರಗಳು, ನಿರೀಕ್ಷಿತ ಭಾಗವಹಿಸುವವರು ಇತ್ಯಾದಿಗಳನ್ನು ನೀಡಿ",
+        contactName: "ಸಂಪರ್ಕ ವ್ಯಕ್ತಿಯ ಹೆಸರು (ಅಗತ್ಯ)",
+        contactNamePlaceholder: "ಸಂಪರ್ಕ ವ್ಯಕ್ತಿಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+        email: "ಇಮೇಲ್ (ಅಗತ್ಯ)",
+        emailPlaceholder: "ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
+        phone: "ಸಂಪರ್ಕ ಫೋನ್ ಸಂಖ್ಯೆ (ಅಗತ್ಯ)",
+        phonePlaceholder: "ನಿಮ್ಮ 10-ಅಂಕಿಯ ಸಂಪರ್ಕ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ",
+        aadhar: "ಆಧಾರ್ ಸಂಖ್ಯೆ (ಐಚ್ಛಿಕ)",
+        aadharPlaceholder: "XXXX XXXX XXXX",
+        location: "ಸ್ಥಳದ ವಿವರಗಳು (ಅಗತ್ಯ)",
+        locationPlaceholder: "ಪೂರ್ಣ ಸ್ಥಳದ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ",
+        startDate: "ಪ್ರಾರಂಭ ದಿನಾಂಕ (ಅಗತ್ಯ)",
+        endDate: "ಅಂತಿಮ ದಿನಾಂಕ (ಅಗತ್ಯ)",
+        submit: "ವಿನಂತಿಯನ್ನು ಸಲ್ಲಿಸಿ",
+        submitting: "ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ..."
+      },
+      errors: {
+        validEmail: "ಮಾನ್ಯ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
+        validPhone: "ಮಾನ್ಯ 10-ಅಂಕಿಯ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ",
+        validAadhar: "ಮಾನ್ಯ 12-ಅಂಕಿಯ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ",
+        submitFailed: "ಫಾರ್ಮ್ ಸಲ್ಲಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+        otpRequired: "ಫಾರ್ಮ್ ಸಲ್ಲಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು OTP ಪರಿಶೀಲಿಸಿ."
+      },
+      success: {
+        submitted: "✅ ಲೌಡ್‌ಸ್ಪೀಕರ್/ಕಾರ್ಯಕ್ರಮ ಅನುಮತಿ ವಿನಂತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ! ನಾವು ನಿಮ್ಮ ವಿನಂತಿಯನ್ನು ಸಂಸ್ಕರಿಸುತ್ತೇವೆ ಮತ್ತು ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುತ್ತೇವೆ."
       }
     },
   },
