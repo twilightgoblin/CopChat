@@ -14,38 +14,56 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/app/contexts/LanguageContext';
+import { translations } from '@/app/translations';
 
 const policeStations = [
-  { name: 'Chelur Police Station', type: 'Rural', area: 'North' },
-  { name: 'Bagepalli Police Station', type: 'Rural', area: 'North' },
-  { name: 'Pathapalya Police Station', type: 'Rural', area: 'North' },
-  { name: 'Chikkaballapura Town Police Station', type: 'Town', area: 'Central' },
-  { name: 'Chikkaballapura Rural Police Station', type: 'Rural', area: 'Central' },
-  { name: 'Nandi Hills Police Station', type: 'Rural', area: 'Central' },
-  { name: 'Gauribidanuru Town Police Station', type: 'Town', area: 'South' },
-  { name: 'Gauribidanuru Rural Police Station', type: 'Rural', area: 'South' },
-  { name: 'Gudibande Police Station', type: 'Rural', area: 'East' },
-  { name: 'Manchenahalli Police Station', type: 'Rural', area: 'East' },
-  { name: 'Chintamani Town Police Station', type: 'Town', area: 'South' },
-  { name: 'Chintamani Rural Police Station', type: 'Rural', area: 'South' },
-  { name: 'Batlahalli Police Station', type: 'Rural', area: 'East' },
-  { name: 'Kencharalahalli Police Station', type: 'Rural', area: 'East' },
-  { name: 'Shidlaghatta Town Police Station', type: 'Town', area: 'North' },
-  { name: 'Shidlaghatta Rural Police Station', type: 'Rural', area: 'North' },
-  { name: 'Dibburahalli Police Station', type: 'Rural', area: 'East' }
+  { key: 'chelur', name: 'Chelur Police Station', type: 'Rural', area: 'North' },
+  { key: 'bagepalli', name: 'Bagepalli Police Station', type: 'Rural', area: 'North' },
+  { key: 'pathapalya', name: 'Pathapalya Police Station', type: 'Rural', area: 'North' },
+  { key: 'chikkaballapuraTown', name: 'Chikkaballapura Town Police Station', type: 'Town', area: 'Central' },
+  { key: 'chikkaballapuraRural', name: 'Chikkaballapura Rural Police Station', type: 'Rural', area: 'Central' },
+  { key: 'nandiHills', name: 'Nandi Hills Police Station', type: 'Rural', area: 'Central' },
+  { key: 'gauribidanuruTown', name: 'Gauribidanuru Town Police Station', type: 'Town', area: 'South' },
+  { key: 'gauribidanuruRural', name: 'Gauribidanuru Rural Police Station', type: 'Rural', area: 'South' },
+  { key: 'gudibande', name: 'Gudibande Police Station', type: 'Rural', area: 'East' },
+  { key: 'manchenahalli', name: 'Manchenahalli Police Station', type: 'Rural', area: 'East' },
+  { key: 'chintamaniTown', name: 'Chintamani Town Police Station', type: 'Town', area: 'South' },
+  { key: 'chintamaniRural', name: 'Chintamani Rural Police Station', type: 'Rural', area: 'South' },
+  { key: 'batlahalli', name: 'Batlahalli Police Station', type: 'Rural', area: 'East' },
+  { key: 'kencharalahalli', name: 'Kencharalahalli Police Station', type: 'Rural', area: 'East' },
+  { key: 'shidlaghattaTown', name: 'Shidlaghatta Town Police Station', type: 'Town', area: 'North' },
+  { key: 'shidlaghattaRural', name: 'Shidlaghatta Rural Police Station', type: 'Rural', area: 'North' },
+  { key: 'dibburahalli', name: 'Dibburahalli Police Station', type: 'Rural', area: 'East' }
 ];
-
-const areas = ['All', 'North', 'Central', 'South', 'East'];
-const types = ['All', 'Town', 'Rural'];
 
 const BeatPolice = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArea, setSelectedArea] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = translations[language];
+
+  // Create area and type arrays based on translations
+  const areas = [
+    { key: 'All', label: t.beatPolice.filters.areas.all },
+    { key: 'North', label: t.beatPolice.filters.areas.north },
+    { key: 'Central', label: t.beatPolice.filters.areas.central },
+    { key: 'South', label: t.beatPolice.filters.areas.south },
+    { key: 'East', label: t.beatPolice.filters.areas.east }
+  ];
+  
+  const types = [
+    { key: 'All', label: t.beatPolice.filters.types.all },
+    { key: 'Town', label: t.beatPolice.filters.types.town },
+    { key: 'Rural', label: t.beatPolice.filters.types.rural }
+  ];
 
   const filteredStations = policeStations.filter(station => {
-    const matchesSearch = station.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const translatedName = t.beatPolice.stations[station.key];
+    const matchesSearch = station.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         translatedName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesArea = selectedArea === 'All' || station.area === selectedArea;
     const matchesType = selectedType === 'All' || station.type === selectedType;
     return matchesSearch && matchesArea && matchesType;
@@ -104,7 +122,7 @@ const BeatPolice = () => {
               }
             }}
           >
-            Chikkaballapura Beat Police
+            {t.beatPolice.title}
           </Typography>
           <Typography 
             variant="h6" 
@@ -116,7 +134,7 @@ const BeatPolice = () => {
               textShadow: '0 1px 2px rgba(0,0,0,0.2)'
             }}
           >
-            Select a police station to view beat police information
+            {t.beatPolice.subtitle}
           </Typography>
           
           {/* Search and Filters */}
@@ -130,7 +148,7 @@ const BeatPolice = () => {
             <TextField
               fullWidth
               variant="outlined"
-              placeholder="Search police stations..."
+              placeholder={t.beatPolice.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               sx={{ 
@@ -174,14 +192,14 @@ const BeatPolice = () => {
             }}>
               {areas.map((area) => (
                 <Chip
-                  key={area}
-                  label={area}
-                  onClick={() => setSelectedArea(area)}
+                  key={area.key}
+                  label={area.label}
+                  onClick={() => setSelectedArea(area.key)}
                   sx={{
-                    backgroundColor: selectedArea === area ? 'white' : 'rgba(255,255,255,0.2)',
-                    color: selectedArea === area ? '#4a148c' : 'white',
+                    backgroundColor: selectedArea === area.key ? 'white' : 'rgba(255,255,255,0.2)',
+                    color: selectedArea === area.key ? '#4a148c' : 'white',
                     '&:hover': {
-                      backgroundColor: selectedArea === area ? 'white' : 'rgba(255,255,255,0.3)'
+                      backgroundColor: selectedArea === area.key ? 'white' : 'rgba(255,255,255,0.3)'
                     }
                   }}
                 />
@@ -196,14 +214,14 @@ const BeatPolice = () => {
             }}>
               {types.map((type) => (
                 <Chip
-                  key={type}
-                  label={type}
-                  onClick={() => setSelectedType(type)}
+                  key={type.key}
+                  label={type.label}
+                  onClick={() => setSelectedType(type.key)}
                   sx={{
-                    backgroundColor: selectedType === type ? 'white' : 'rgba(255,255,255,0.2)',
-                    color: selectedType === type ? '#4a148c' : 'white',
+                    backgroundColor: selectedType === type.key ? 'white' : 'rgba(255,255,255,0.2)',
+                    color: selectedType === type.key ? '#4a148c' : 'white',
                     '&:hover': {
-                      backgroundColor: selectedType === type ? 'white' : 'rgba(255,255,255,0.3)'
+                      backgroundColor: selectedType === type.key ? 'white' : 'rgba(255,255,255,0.3)'
                     }
                   }}
                 />
@@ -274,7 +292,7 @@ const BeatPolice = () => {
                       WebkitTextFillColor: 'transparent'
                     }}
                   >
-                    {station.name}
+                    {t.beatPolice.stations[station.key]}
                   </Typography>
                   <ArrowForwardIcon 
                     className="arrow-icon"
@@ -310,7 +328,7 @@ const BeatPolice = () => {
                     opacity: 0.8
                   }}
                 >
-                  View Beat Information
+                  {t.beatPolice.viewBeatInfo}
                 </Typography>
               </CardContent>
             </Card>

@@ -2,25 +2,13 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Shield, Users, Target, Award } from "lucide-react"
+import { Shield, Users, Target, MessageSquare } from "lucide-react"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import { translations } from "@/app/translations"
 
 const services = [
   {
     icon: Shield,
-    title: {
-      en: "File a Complaint",
-      kn: "ದೂರು ದಾಖಲಿಸಿ"
-    },
-    description: {
-      en: "Register your complaints online securely",
-      kn: "ನಿಮ್ಮ ದೂರುಗಳನ್ನು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿ ದಾಖಲಿಸಿ"
-    },
-    link: "/file-complaint",
-  },
-  {
-    icon: Users,
     title: {
       en: "Beat Police",
       kn: "ಬೀಟ್ ಪೊಲೀಸ್"
@@ -44,7 +32,7 @@ const services = [
     link: "/nearest-station",
   },
   {
-    icon: Award,
+    icon: Users,
     title: {
       en: "Anonymous Complaints",
       kn: "ಅನಾಮಧೇಯ ದೂರುಗಳು"
@@ -54,6 +42,18 @@ const services = [
       kn: "ಅನಾಮಧೇಯವಾಗಿ ದೂರುಗಳನ್ನು ಸಲ್ಲಿಸಿ"
     },
     link: "/anonymous-complaints",
+  },
+  {
+    icon: MessageSquare,
+    title: {
+      en: "Police Chatbot",
+      kn: "ಪೊಲೀಸ್ ಚಾಟ್‌ಬಾಟ್"
+    },
+    description: {
+      en: "Get instant answers to your queries 24/7",
+      kn: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳಿಗೆ 24/7 ತ್ವರಿತ ಉತ್ತರಗಳನ್ನು ಪಡೆಯಿರಿ"
+    },
+    link: "/chatbot",
   },
 ]
 

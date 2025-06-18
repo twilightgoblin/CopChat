@@ -5,14 +5,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 const LanguageContext = createContext()
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState('kn')
 
   useEffect(() => {
-    // Load saved language preference from localStorage
-    const savedLanguage = localStorage.getItem('language')
-    if (savedLanguage) {
-      setLanguage(savedLanguage)
-    }
+    // Always start with Kannada as default language
+    // Remove any previously saved language preference
+    localStorage.removeItem('language')
+    setLanguage('kn')
   }, [])
 
   const toggleLanguage = () => {

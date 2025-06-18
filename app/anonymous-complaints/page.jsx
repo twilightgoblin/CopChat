@@ -10,6 +10,8 @@ import { motion } from "framer-motion"
 import { AlertCircle, CheckCircle2, Paperclip } from "lucide-react"
 import { Notification } from "@/components/ui/notification"
 import { handleFormSubmit, validateEmail, validatePhone } from "@/utils/form-handlers"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 export default function AnonymousComplaintsPage() {
   // Add this at the beginning of the AnonymousComplaintsPage component function
@@ -17,6 +19,7 @@ export default function AnonymousComplaintsPage() {
     window.scrollTo(0, 0)
   }, [])
 
+  const { language } = useLanguage()
   const [typedText, setTypedText] = useState("")
   const [complaintType, setComplaintType] = useState("")
   const [location, setLocation] = useState("")
@@ -41,7 +44,7 @@ export default function AnonymousComplaintsPage() {
   const fileInputRef = useRef(null)
 
   useEffect(() => {
-    const text = "Anonymous Complaints"
+    const text = translations[language].anonymousComplaints.title
     let i = 0
     const typingInterval = setInterval(() => {
       if (i < text.length) {
@@ -53,23 +56,23 @@ export default function AnonymousComplaintsPage() {
     }, 100)
 
     return () => clearInterval(typingInterval)
-  }, [])
+  }, [language])
 
   const validateForm = () => {
     const newErrors = {}
 
     if (!complaintType) {
-      newErrors.complaintType = "Please select a complaint type"
+      newErrors.complaintType = translations[language].anonymousComplaints.errors.selectComplaintType
     }
 
     if (!location) {
-      newErrors.location = "Location is required"
+      newErrors.location = translations[language].anonymousComplaints.errors.locationRequired
     }
 
     if (!description) {
-      newErrors.description = "Please provide a brief description"
+      newErrors.description = translations[language].anonymousComplaints.errors.descriptionRequired
     } else if (description.split(/\r\n|\r|\n/).length > 4) {
-      newErrors.description = "Please keep your description to 3-4 lines"
+      newErrors.description = translations[language].anonymousComplaints.errors.descriptionTooLong
     }
 
     setErrors(newErrors)
@@ -94,13 +97,13 @@ export default function AnonymousComplaintsPage() {
 
     // Validate email if provided
     if (email && !validateEmail(email)) {
-      setSubmitError("Please enter a valid email address")
+      setSubmitError(translations[language].anonymousComplaints.errors.validEmail)
       return
     }
 
     // Validate phone if provided
     if (phone && !validatePhone(phone)) {
-      setSubmitError("Please enter a valid 10-digit phone number")
+      setSubmitError(translations[language].anonymousComplaints.errors.validPhone)
       return
     }
 
@@ -130,7 +133,7 @@ export default function AnonymousComplaintsPage() {
       // Ensure only one notification is shown at a time
       setShowNotification(false);
       setTimeout(() => {
-        setNotificationMessage("✅ Anonymous complaint submitted successfully! We will process your complaint and take necessary action.");
+        setNotificationMessage(translations[language].anonymousComplaints.success.submitted);
         setNotificationType("success");
         setShowNotification(true);
       }, 10);
@@ -139,8 +142,8 @@ export default function AnonymousComplaintsPage() {
     } catch (error) {
       setShowNotification(false);
       setTimeout(() => {
-        setSubmitError(error.message || "Failed to submit form. Please try again.");
-        setNotificationMessage(error.message || "Failed to submit form. Please try again.");
+        setSubmitError(error.message || translations[language].anonymousComplaints.errors.submitFailed);
+        setNotificationMessage(error.message || translations[language].anonymousComplaints.errors.submitFailed);
         setNotificationType("error");
         setShowNotification(true);
       }, 10);
@@ -151,7 +154,7 @@ export default function AnonymousComplaintsPage() {
     const value = e.target.value
     setEmail(value)
     if (value && !validateEmail(value)) {
-      setEmailError("Please enter a valid email address")
+      setEmailError(translations[language].anonymousComplaints.errors.validEmail)
     } else {
       setEmailError("")
     }
@@ -161,7 +164,7 @@ export default function AnonymousComplaintsPage() {
     const value = e.target.value.replace(/\D/g, "")
     setPhone(value.substring(0, 10))
     if (value.length > 0 && value.length !== 10) {
-      setPhoneError("Please enter a valid 10-digit phone number")
+      setPhoneError(translations[language].anonymousComplaints.errors.validPhone)
     } else {
       setPhoneError("")
     }
@@ -183,14 +186,14 @@ export default function AnonymousComplaintsPage() {
   }
 
   const complaintTypes = [
-    "Traffic Violation",
-    "Corruption",
-    "Public Nuisance",
-    "Illegal Activities",
-    "Police Misconduct",
-    "Environmental Violation",
-    "Noise Pollution",
-    "Other",
+    { key: "trafficViolation", label: translations[language].anonymousComplaints.complaintTypes.trafficViolation },
+    { key: "corruption", label: translations[language].anonymousComplaints.complaintTypes.corruption },
+    { key: "publicNuisance", label: translations[language].anonymousComplaints.complaintTypes.publicNuisance },
+    { key: "illegalActivities", label: translations[language].anonymousComplaints.complaintTypes.illegalActivities },
+    { key: "policeMisconduct", label: translations[language].anonymousComplaints.complaintTypes.policeMisconduct },
+    { key: "environmentalViolation", label: translations[language].anonymousComplaints.complaintTypes.environmentalViolation },
+    { key: "noisePollution", label: translations[language].anonymousComplaints.complaintTypes.noisePollution },
+    { key: "other", label: translations[language].anonymousComplaints.complaintTypes.other },
   ]
 
   return (
@@ -227,28 +230,28 @@ export default function AnonymousComplaintsPage() {
           {submitted ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
-              <h2 className="text-2xl font-bold text-green-700 mb-2">Complaint Submitted</h2>
+              <h2 className="text-2xl font-bold text-green-700 mb-2">{translations[language].anonymousComplaints.complaintSubmitted}</h2>
               <p className="text-gray-600 mb-4">
-                Thank you for your submission. Your complaint has been recorded anonymously.
+                {translations[language].anonymousComplaints.thankYouMessage}
               </p>
               <p className="text-sm text-gray-500">
-                For emergencies, please call 100 or visit your nearest police station.
+                {translations[language].anonymousComplaints.emergencyMessage}
               </p>
             </div>
           ) : (
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="complaintType">
-                  Type of Complaint <span className="text-red-500">*</span>
+                  {translations[language].anonymousComplaints.form.complaintType} <span className="text-red-500">*</span>
                 </Label>
                 <Select value={complaintType} onValueChange={setComplaintType}>
                   <SelectTrigger id="complaintType" className={errors.complaintType ? "border-red-500" : ""}>
-                    <SelectValue placeholder="Select complaint type" />
+                    <SelectValue placeholder={translations[language].anonymousComplaints.form.complaintTypePlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
                     {complaintTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
+                      <SelectItem key={type.key} value={type.key}>
+                        {type.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -263,11 +266,11 @@ export default function AnonymousComplaintsPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="location">
-                  Location <span className="text-red-500">*</span>
+                  {translations[language].anonymousComplaints.form.location} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="location"
-                  placeholder="Enter location details"
+                  placeholder={translations[language].anonymousComplaints.form.locationPlaceholder}
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   className={errors.location ? "border-red-500" : ""}
@@ -281,11 +284,11 @@ export default function AnonymousComplaintsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="resources">Resources (if any)</Label>
+                <Label htmlFor="resources">{translations[language].anonymousComplaints.form.resources}</Label>
                 <div className="flex gap-2">
                   <Input
                     id="resources"
-                    placeholder="Any resources or evidence available"
+                    placeholder={translations[language].anonymousComplaints.form.resourcesPlaceholder}
                     value={resources}
                     onChange={(e) => setResources(e.target.value)}
                     className="flex-1"
@@ -297,13 +300,13 @@ export default function AnonymousComplaintsPage() {
                     className="flex items-center gap-2 border-violet-300 text-violet-700 hover:bg-violet-50"
                   >
                     <Paperclip className="h-4 w-4" />
-                    Attach
+                    {translations[language].anonymousComplaints.form.attach}
                   </Button>
                   <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" multiple />
                 </div>
                 {attachments.length > 0 && (
                   <div className="mt-2 space-y-2">
-                    <p className="text-sm font-medium text-violet-700">Attachments:</p>
+                    <p className="text-sm font-medium text-violet-700">{translations[language].anonymousComplaints.form.attachments}</p>
                     <div className="flex flex-wrap gap-2">
                       {attachments.map((file, index) => (
                         <div
@@ -327,12 +330,12 @@ export default function AnonymousComplaintsPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="description">
-                  Brief Description <span className="text-red-500">*</span>
-                  <span className="text-sm text-gray-500 ml-2">(3-4 lines)</span>
+                  {translations[language].anonymousComplaints.form.description} <span className="text-red-500">*</span>
+                  <span className="text-sm text-gray-500 ml-2">{translations[language].anonymousComplaints.form.descriptionHint}</span>
                 </Label>
                 <Textarea
                   id="description"
-                  placeholder="Please describe the issue in 3-4 lines"
+                  placeholder={translations[language].anonymousComplaints.form.descriptionPlaceholder}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className={errors.description ? "border-red-500" : ""}
@@ -351,7 +354,7 @@ export default function AnonymousComplaintsPage() {
                 className="w-full bg-violet-600 hover:bg-violet-700 text-white"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit Complaint"}
+                {isSubmitting ? translations[language].anonymousComplaints.form.submitting : translations[language].anonymousComplaints.form.submit}
               </Button>
             </form>
           )}

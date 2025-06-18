@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 export default function Footer() {
   const [showBackToTop, setShowBackToTop] = useState(false)
+  const { language } = useLanguage()
+  const t = translations[language]
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,10 +62,10 @@ export default function Footer() {
                   priority
                 />
               </div>
-              <span className="font-bold text-xl">Chikkaballapura Police</span>
+              <span className="font-bold text-xl">{t.footer.departmentName}</span>
             </div>
             <p className="text-violet-200 text-sm">
-              Serving and protecting our community with dedication, integrity, and excellence.
+              {t.footer.description}
             </p>
             <div className="flex space-x-4 pt-2">
               <Link
@@ -99,31 +103,31 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b border-violet-700 pb-2">Quick Links</h3>
+            <h3 className="text-lg font-semibold border-b border-violet-700 pb-2">{t.footer.quickLinks}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/beat-police" className="text-violet-200 hover:text-white transition-colors">
-                  Beat Police
+                  {t.footer.links.beatPolice}
                 </Link>
               </li>
               <li>
                 <Link href="/nearest-station" className="text-violet-200 hover:text-white transition-colors">
-                  Nearest Station
+                  {t.footer.links.nearestStation}
                 </Link>
               </li>
               <li>
                 <Link href="/anonymous-complaints" className="text-violet-200 hover:text-white transition-colors">
-                  Anonymous Complaints
+                  {t.footer.links.anonymousComplaints}
                 </Link>
               </li>
               <li>
                 <Link href="/station-contacts" className="text-violet-200 hover:text-white transition-colors">
-                  Station Contacts
+                  {t.footer.links.stationContacts}
                 </Link>
               </li>
               <li>
                 <Link href="/lost-and-found" className="text-violet-200 hover:text-white transition-colors">
-                  Lost & Found
+                  {t.footer.links.lostAndFound}
                 </Link>
               </li>
             </ul>
@@ -131,21 +135,21 @@ export default function Footer() {
 
           {/* Services */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b border-violet-700 pb-2">Services</h3>
+            <h3 className="text-lg font-semibold border-b border-violet-700 pb-2">{t.footer.services}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/women-companion" className="text-violet-200 hover:text-white transition-colors">
-                  Women Companion
+                  {t.footer.links.womenCompanion}
                 </Link>
               </li>
               <li>
                 <Link href="/locked-house-monitoring" className="text-violet-200 hover:text-white transition-colors">
-                  Locked House Monitoring
+                  {t.footer.links.lockedHouseMonitoring}
                 </Link>
               </li>
               <li>
                 <Link href="/senior-citizen" className="text-violet-200 hover:text-white transition-colors">
-                  Senior Citizen Services
+                  {t.footer.links.seniorCitizenServices}
                 </Link>
               </li>
               <li>
@@ -153,12 +157,12 @@ export default function Footer() {
                   href="/loudspeaker-events-permission"
                   className="text-violet-200 hover:text-white transition-colors"
                 >
-                  Event Permissions
+                  {t.footer.links.eventPermissions}
                 </Link>
               </li>
               <li>
                 <Link href="/chatbot" className="text-violet-200 hover:text-white transition-colors">
-                  Chatbot Assistance
+                  {t.footer.links.chatbotAssistance}
                 </Link>
               </li>
             </ul>
@@ -166,34 +170,34 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b border-violet-700 pb-2">Contact Us</h3>
+            <h3 className="text-lg font-semibold border-b border-violet-700 pb-2">{t.footer.contactUs}</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
                 <Phone className="h-5 w-5 mr-2 text-violet-300 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium">Emergency</p>
+                  <p className="font-medium">{t.footer.contact.emergency}</p>
                   <p className="text-violet-200">112</p>
                 </div>
               </li>
               <li className="flex items-start">
                 <Phone className="h-5 w-5 mr-2 text-violet-300 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium">Control Room</p>
+                  <p className="font-medium">{t.footer.contact.controlRoom}</p>
                   <p className="text-violet-200">08156-277211</p>
                 </div>
               </li>
               <li className="flex items-start">
                 <Mail className="h-5 w-5 mr-2 text-violet-300 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium">Email</p>
+                  <p className="font-medium">{t.footer.contact.email}</p>
                   <p className="text-violet-200">spcbpura@ksp.gov.in</p>
                 </div>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 mr-2 text-violet-300 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium">Headquarters</p>
-                  <p className="text-violet-200">SP Office, Chikkaballapura - 562101</p>
+                  <p className="font-medium">{t.footer.contact.headquarters}</p>
+                  <p className="text-violet-200">{t.footer.contact.address}</p>
                 </div>
               </li>
             </ul>
@@ -202,17 +206,17 @@ export default function Footer() {
 
         <div className="border-t border-violet-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-violet-200 text-sm mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Chikkaballapura Police Department. All rights reserved.
+            &copy; {new Date().getFullYear()} {t.footer.copyright}
           </p>
           <div className="flex space-x-4">
             <Link href="/privacy-policy" className="text-violet-200 hover:text-white text-sm transition-colors">
-              Privacy Policy
+              {t.footer.legal.privacyPolicy}
             </Link>
             <Link href="/terms-of-service" className="text-violet-200 hover:text-white text-sm transition-colors">
-              Terms of Service
+              {t.footer.legal.termsOfService}
             </Link>
             <Link href="/sitemap" className="text-violet-200 hover:text-white text-sm transition-colors">
-              Sitemap
+              {t.footer.legal.sitemap}
             </Link>
           </div>
         </div>

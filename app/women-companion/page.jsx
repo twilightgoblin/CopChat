@@ -12,6 +12,8 @@ import { FadeIn } from "@/components/fade-in"
 import { Notification } from "@/components/ui/notification"
 import OTPVerification from "@/components/otp-verification"
 import { handleFormSubmit, validateEmail, validatePhone, validateAadhar, formatAadhar } from "@/utils/form-handlers"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 export default function WomenCompanionPage() {
   const [name, setName] = useState("")
@@ -40,6 +42,9 @@ export default function WomenCompanionPage() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
 
+  const { language } = useLanguage()
+  const t = translations[language].womenCompanion
+
   const fileInputRef = useRef(null)
   const additionalFilesRef = useRef(null)
 
@@ -67,19 +72,19 @@ export default function WomenCompanionPage() {
 
     // Validate email
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address")
+      setError(t.errors.validEmail)
       return
     }
 
     // Validate phone number
     if (!validatePhone(phone)) {
-      setError("Please enter a valid 10-digit phone number")
+      setError(t.errors.validPhone)
       return
     }
 
     // Validate Aadhar number
     if (!validateAadhar(aadhar)) {
-      setError("Please enter a valid 12-digit Aadhar number")
+      setError(t.errors.validAadhar)
       return
     }
 
@@ -118,7 +123,7 @@ export default function WomenCompanionPage() {
       // Ensure only one notification is shown at a time
       setShowNotification(false);
       setTimeout(() => {
-        setNotificationMessage("✅ Women companion request submitted successfully! We will process your request and get back to you soon.");
+        setNotificationMessage(t.success.submitted);
         setNotificationType("success");
         setShowNotification(true);
       }, 10);
@@ -127,8 +132,8 @@ export default function WomenCompanionPage() {
     } catch (error) {
       setShowNotification(false);
       setTimeout(() => {
-        setError(error.message || "Failed to submit form. Please try again.");
-        setNotificationMessage(error.message || "Failed to submit form. Please try again.");
+        setError(error.message || t.errors.submitFailed);
+        setNotificationMessage(error.message || t.errors.submitFailed);
         setNotificationType("error");
         setShowNotification(true);
       }, 10);
@@ -145,7 +150,7 @@ export default function WomenCompanionPage() {
     const value = e.target.value
     setEmail(value)
     if (value && !validateEmail(value)) {
-      setEmailError("Please enter a valid email address")
+      setEmailError(t.errors.validEmail)
     } else {
       setEmailError("")
     }
@@ -155,7 +160,7 @@ export default function WomenCompanionPage() {
     const value = e.target.value.replace(/\D/g, "")
     setPhone(value.substring(0, 10))
     if (value.length > 0 && value.length !== 10) {
-      setPhoneError("Please enter a valid 10-digit phone number")
+      setPhoneError(t.errors.validPhone)
     } else {
       setPhoneError("")
     }
@@ -165,7 +170,7 @@ export default function WomenCompanionPage() {
     const formatted = formatAadhar(e.target.value)
     setAadhar(formatted)
     if (formatted.replace(/\s/g, "").length > 0 && !validateAadhar(formatted)) {
-      setAadharError("Please enter a valid 12-digit Aadhar number")
+      setAadharError(t.errors.validAadhar)
     } else {
       setAadharError("")
     }
@@ -204,7 +209,7 @@ export default function WomenCompanionPage() {
       )}
       <div className="container mx-auto px-4 max-w-2xl">
         <FadeIn>
-          <h1 className="text-4xl md:text-5xl font-bold text-center text-violet-900 mb-8">Women Companion Service</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-center text-violet-900 mb-8">{t.title}</h1>
         </FadeIn>
 
         <FadeIn>
@@ -214,9 +219,9 @@ export default function WomenCompanionPage() {
                 <>
                   {showOTPVerification ? (
                     <div className="max-w-md mx-auto">
-                      <h2 className="text-xl font-semibold mb-4">Verify Your Email</h2>
+                      <h2 className="text-xl font-semibold mb-4">{t.verifyEmail}</h2>
                       <p className="text-gray-600 mb-4">
-                        Please enter the OTP sent to your email address ({email})
+                        {t.verifyEmailMessage} ({email})
                       </p>
                       <OTPVerification 
                         email={email} 
@@ -226,25 +231,25 @@ export default function WomenCompanionPage() {
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="space-y-2">
-                        <Label htmlFor="name">Name (Required)</Label>
+                        <Label htmlFor="name">{t.form.name}</Label>
                         <Input
                           id="name"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           required
-                          placeholder="Enter your name"
+                          placeholder={t.form.namePlaceholder}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email (Required)</Label>
+                        <Label htmlFor="email">{t.form.email}</Label>
                         <Input
                           id="email"
                           type="email"
                           value={email}
                           onChange={handleEmailChange}
                           required
-                          placeholder="Enter your email address"
+                          placeholder={t.form.emailPlaceholder}
                         />
                         {emailError && (
                           <div className="flex items-center text-yellow-600 mt-1">
@@ -256,10 +261,10 @@ export default function WomenCompanionPage() {
 
                       {!isVerified && (
                         <div className="space-y-2">
-                          <Label>Email Verification</Label>
+                          <Label>{t.form.emailVerification}</Label>
                           <div className="p-4 border rounded-lg bg-violet-50">
                             <p className="text-sm text-gray-600 mb-4">
-                              Please enter the OTP sent to your email address ({email})
+                              {t.form.emailVerificationMessage} ({email})
                             </p>
                             <OTPVerification 
                               email={email} 
@@ -270,13 +275,13 @@ export default function WomenCompanionPage() {
                       )}
 
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Number (Required)</Label>
+                        <Label htmlFor="phone">{t.form.phone}</Label>
                         <Input
                           id="phone"
                           value={phone}
                           onChange={handlePhoneChange}
                           required
-                          placeholder="Enter your 10-digit phone number"
+                          placeholder={t.form.phonePlaceholder}
                           type="tel"
                         />
                         {phoneError && (
@@ -288,12 +293,12 @@ export default function WomenCompanionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="aadhar">Aadhar Number (Optional)</Label>
+                        <Label htmlFor="aadhar">{t.form.aadhar}</Label>
                         <Input 
                           id="aadhar" 
                           value={aadhar} 
                           onChange={handleAadharChange} 
-                          placeholder="XXXX XXXX XXXX" 
+                          placeholder={t.form.aadharPlaceholder} 
                         />
                         {aadharError && (
                           <div className="flex items-center text-yellow-600 mt-1">
@@ -304,30 +309,30 @@ export default function WomenCompanionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="address">Current Address (Required)</Label>
+                        <Label htmlFor="address">{t.form.address}</Label>
                         <Textarea
                           id="address"
                           value={address}
                           onChange={(e) => setAddress(e.target.value)}
                           required
-                          placeholder="Enter your current address"
+                          placeholder={t.form.addressPlaceholder}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="destination">Destination (Required)</Label>
+                        <Label htmlFor="destination">{t.form.destination}</Label>
                         <Input
                           id="destination"
                           value={destination}
                           onChange={(e) => setDestination(e.target.value)}
                           required
-                          placeholder="Enter your destination"
+                          placeholder={t.form.destinationPlaceholder}
                         />
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="travelDate">Travel Date (Required)</Label>
+                          <Label htmlFor="travelDate">{t.form.travelDate}</Label>
                           <Input
                             id="travelDate"
                             type="date"
@@ -338,7 +343,7 @@ export default function WomenCompanionPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="travelTime">Travel Time (Required)</Label>
+                          <Label htmlFor="travelTime">{t.form.travelTime}</Label>
                           <Input
                             id="travelTime"
                             type="time"
@@ -350,18 +355,18 @@ export default function WomenCompanionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="description">Additional Information (Required)</Label>
+                        <Label htmlFor="description">{t.form.additionalInfo}</Label>
                         <Textarea
                           id="description"
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                           required
-                          placeholder="Provide any additional information about your travel"
+                          placeholder={t.form.additionalInfoPlaceholder}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="image">Photo (Optional)</Label>
+                        <Label htmlFor="image">{t.form.photo}</Label>
                         <div className="flex flex-col sm:flex-row gap-2">
                           <Input
                             id="image"
@@ -378,7 +383,7 @@ export default function WomenCompanionPage() {
                             className="flex items-center justify-center gap-2 border-violet-300 text-violet-700 hover:bg-violet-50 w-full sm:w-auto"
                           >
                             <Paperclip className="h-4 w-4" />
-                            Attach Photo
+                            {t.form.attachPhoto}
                           </Button>
                           {image && (
                             <div className="mt-2 p-2 bg-violet-50 rounded-md flex-grow">
@@ -389,7 +394,7 @@ export default function WomenCompanionPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="additionalFiles">Additional Documents (Optional)</Label>
+                        <Label htmlFor="additionalFiles">{t.form.additionalDocuments}</Label>
                         <div className="flex flex-col sm:flex-row gap-2">
                           <Input
                             id="additionalFiles"
@@ -407,7 +412,7 @@ export default function WomenCompanionPage() {
                             className="flex items-center justify-center gap-2 border-violet-300 text-violet-700 hover:bg-violet-50 w-full sm:w-auto"
                           >
                             <Paperclip className="h-4 w-4" />
-                            Attach Documents
+                            {t.form.attachDocuments}
                           </Button>
                         </div>
                         {additionalFiles.length > 0 && (
@@ -422,7 +427,7 @@ export default function WomenCompanionPage() {
                                   onClick={() => removeAdditionalFile(index)}
                                   className="text-red-500 hover:text-red-600"
                                 >
-                                  Remove
+                                  {t.form.remove}
                                 </Button>
                               </div>
                             ))}
@@ -431,15 +436,15 @@ export default function WomenCompanionPage() {
                       </div>
 
                       <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700" disabled={loading}>
-                        {loading ? "Submitting..." : "Submit Request"}
+                        {loading ? t.form.submitting : t.form.submit}
                       </Button>
                     </form>
                   )}
                 </>
               ) : (
                 <div className="text-center py-8">
-                  <h2 className="text-2xl font-semibold text-violet-900 mb-4">Thank You!</h2>
-                  <p className="text-gray-600">Your women companion service request has been submitted successfully.</p>
+                  <h2 className="text-2xl font-semibold text-violet-900 mb-4">{t.thankYou}</h2>
+                  <p className="text-gray-600">{t.successMessage}</p>
                 </div>
               )}
             </CardContent>

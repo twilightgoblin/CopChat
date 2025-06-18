@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { MapPin, Phone, Navigation, AlertTriangle, Search, Building, MapPinned, Shield, Landmark, Info } from "lucide-react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/app/contexts/LanguageContext"
+import { translations } from "@/app/translations"
 
 // Police stations data with coordinates
 const policeStations = [
@@ -1760,6 +1762,7 @@ export default function NearestStationPage() {
   const [searchType, setSearchType] = useState("village") // "village", "pincode", or "famous"
   const [searchMessage, setSearchMessage] = useState("")
   const suggestionsRef = useRef(null)
+  const { language } = useLanguage()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -1778,74 +1781,89 @@ export default function NearestStationPage() {
     }
   }, [])
 
+  useEffect(() => {
+    const suggestions = getSuggestions()
+    setSuggestions(suggestions)
+    setShowSuggestions(suggestions.length > 0 && searchQuery.trim().length > 0)
+  }, [searchQuery, searchType])
+
   const handleSearch = (query) => {
-    if (!query) return
+    if (!query.trim()) return
 
-    if (searchType === "famous") {
-      const place = famousPlaces.find(p => p.name.toLowerCase() === query.toLowerCase())
-      if (place) {
-        const nearestStation = findNearestStation(place.lat, place.lng)
-        setNearestStations([nearestStation])
-        setShowSuggestions(false)
-      } else {
-        setNearestStations([])
-        setShowSuggestions(true)
-      }
-    } else {
-      let pincode
-      if (searchType === "village") {
-        pincode = villagePincodeMap[query]
-      } else {
-        pincode = query
-      }
+    let results = []
+    
+    if (searchType === "village") {
+      // Search by village name
+      const matchingVillages = Object.keys(villagePincodeMap).filter(village =>
+        village.toLowerCase().includes(query.toLowerCase())
+      )
       
-      if (!pincode) {
-        setNearestStations([])
-        setShowSuggestions(true)
-        return
+      if (matchingVillages.length > 0) {
+        matchingVillages.forEach(village => {
+          const pincode = villagePincodeMap[village]
+          const stations = findNearestStationsByPincode(pincode)
+          results.push(...stations)
+        })
       }
-
-      const stations = findNearestStationsByPincode(pincode)
-      setNearestStations(stations)
-      setShowSuggestions(false)
+    } else if (searchType === "pincode") {
+      // Search by pincode
+      const matchingPincodes = Object.values(villagePincodeMap).filter(pincode =>
+        pincode.includes(query)
+      )
+      
+      if (matchingPincodes.length > 0) {
+        matchingPincodes.forEach(pincode => {
+          const stations = findNearestStationsByPincode(pincode)
+          results.push(...stations)
+        })
+      }
+    } else if (searchType === "famous") {
+      // Search by famous place
+      const matchingPlaces = famousPlaces.filter(place =>
+        place.name.toLowerCase().includes(query.toLowerCase())
+      )
+      
+      if (matchingPlaces.length > 0) {
+        matchingPlaces.forEach(place => {
+          const nearestStation = findNearestStation(place.lat, place.lng)
+          if (nearestStation) {
+            results.push(nearestStation)
+          }
+        })
+      }
     }
+
+    // Remove duplicates and sort by distance
+    const uniqueResults = results.filter((station, index, self) =>
+      index === self.findIndex(s => s.id === station.id)
+    )
+
+    setNearestStations(uniqueResults)
+    setShowSuggestions(false)
   }
 
   const getSuggestions = () => {
-    if (!searchQuery) {
-      setSuggestions([])
-      setShowSuggestions(false)
-      return
+    if (!searchQuery.trim()) return []
+
+    if (searchType === "village") {
+      return Object.keys(villagePincodeMap).filter(village =>
+        village.toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 5)
+    } else if (searchType === "pincode") {
+      return Object.values(villagePincodeMap).filter(pincode =>
+        pincode.includes(searchQuery)
+      ).slice(0, 5)
+    } else if (searchType === "famous") {
+      return famousPlaces.filter(place =>
+        place.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ).map(place => place.name).slice(0, 5)
     }
 
-    // Always show suggestions while typing, regardless of results
-    if (searchType === "famous") {
-      const filteredPlaces = famousPlaces.filter(place =>
-        place.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      setSuggestions(filteredPlaces.map(place => place.name))
-    } else if (searchType === "village") {
-      const filteredVillages = Object.keys(villagePincodeMap).filter((village) =>
-        village.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      setSuggestions(filteredVillages)
-    } else {
-      const uniquePincodes = [...new Set(Object.values(villagePincodeMap))]
-      const filteredPincodes = uniquePincodes.filter((pincode) =>
-        pincode.includes(searchQuery)
-      )
-      setSuggestions(filteredPincodes)
-    }
-    setShowSuggestions(true)
+    return []
   }
 
-  useEffect(() => {
-    getSuggestions()
-  }, [searchQuery, searchType])
-
   const openGoogleMaps = (lat, lng, name) => {
-    const url = `https://www.google.com/maps/search/${encodeURIComponent(name)}/@${lat},${lng},15z`
-    window.open(url, '_blank')
+    window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank')
   }
 
   const handleKeyPress = (e) => {
@@ -1864,13 +1882,13 @@ export default function NearestStationPage() {
     // Set appropriate message based on search type
     switch(type) {
       case "village":
-        setSearchMessage("Enter your village name. If not found, try searching by famous place or pincode.")
+        setSearchMessage(translations[language].nearestStation.searchMessages.village)
         break
       case "pincode":
-        setSearchMessage("Enter your pincode. If not found, try searching by village name or famous place.")
+        setSearchMessage(translations[language].nearestStation.searchMessages.pincode)
         break
       case "famous":
-        setSearchMessage("Enter a famous place name. If not found, try searching by village name or pincode.")
+        setSearchMessage(translations[language].nearestStation.searchMessages.famous)
         break
       default:
         setSearchMessage("")
@@ -1885,9 +1903,9 @@ export default function NearestStationPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-center text-violet-900 mb-4">Find Nearest Police Station</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-center text-violet-900 mb-4">{translations[language].nearestStation.title}</h1>
           <p className="text-lg text-violet-700 text-center mb-8">
-            Search by village name, pincode, or famous place to find the nearest police stations
+            {translations[language].nearestStation.subtitle}
           </p>
 
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
@@ -1899,7 +1917,7 @@ export default function NearestStationPage() {
                   className="flex-1"
                 >
                   <MapPin className="h-4 w-4 mr-2" />
-                  Search by Village
+                  {translations[language].nearestStation.searchByVillage}
                 </Button>
                 <Button
                   variant={searchType === "pincode" ? "default" : "outline"}
@@ -1907,7 +1925,7 @@ export default function NearestStationPage() {
                   className="flex-1"
                 >
                   <MapPinned className="h-4 w-4 mr-2" />
-                  Search by Pincode
+                  {translations[language].nearestStation.searchByPincode}
                 </Button>
                 <Button
                   variant={searchType === "famous" ? "default" : "outline"}
@@ -1915,7 +1933,7 @@ export default function NearestStationPage() {
                   className="flex-1"
                 >
                   <Landmark className="h-4 w-4 mr-2" />
-                  Search by Famous Place
+                  {translations[language].nearestStation.searchByFamousPlace}
                 </Button>
               </div>
 
@@ -1934,9 +1952,9 @@ export default function NearestStationPage() {
                   <Input
                     type="text"
                     placeholder={
-                      searchType === "village" ? "Enter village name..." :
-                      searchType === "pincode" ? "Enter pincode..." :
-                      "Enter famous place name..."
+                      searchType === "village" ? translations[language].nearestStation.villagePlaceholder :
+                      searchType === "pincode" ? translations[language].nearestStation.pincodePlaceholder :
+                      translations[language].nearestStation.famousPlacePlaceholder
                     }
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -1948,7 +1966,7 @@ export default function NearestStationPage() {
                     className="bg-violet-600 hover:bg-violet-700 px-6"
                   >
                     <Search className="h-5 w-5 mr-2" />
-                    Search
+                    {translations[language].nearestStation.search}
                   </Button>
                 </div>
 
@@ -2013,7 +2031,7 @@ export default function NearestStationPage() {
                                 <Phone className="h-4 w-4 text-violet-600" />
                               </div>
                               <div>
-                                <h3 className="text-sm font-medium text-violet-700">Contact Number</h3>
+                                <h3 className="text-sm font-medium text-violet-700">{translations[language].nearestStation.contactNumber}</h3>
                                 <p className="text-violet-900 font-semibold">{station.phone}</p>
                               </div>
                             </div>
@@ -2024,7 +2042,7 @@ export default function NearestStationPage() {
                             className="w-full bg-violet-600 hover:bg-violet-700"
                           >
                             <Navigation className="h-4 w-4 mr-2" />
-                            View on Google Maps
+                            {translations[language].nearestStation.viewOnGoogleMaps}
                           </Button>
                         </div>
                       </CardContent>
@@ -2043,11 +2061,10 @@ export default function NearestStationPage() {
                     <div className="bg-violet-100 p-2 rounded-full">
                       <Info className="h-5 w-5 text-violet-600" />
                     </div>
-                    <h3 className="text-lg font-semibold text-violet-900">Important Note</h3>
+                    <h3 className="text-lg font-semibold text-violet-900">{translations[language].nearestStation.importantNote}</h3>
                   </div>
                   <p className="text-violet-700">
-                    The police stations are displayed in order of nearest first. 
-                    <span className="font-medium text-violet-900"> The first station shown is the closest to your location.</span>
+                    {translations[language].nearestStation.noteText}
                   </p>
                 </div>
               </motion.div>
@@ -2062,9 +2079,9 @@ export default function NearestStationPage() {
                 <div className="bg-yellow-50 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
                   <AlertTriangle className="h-10 w-10 text-yellow-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-violet-900 mb-2">No Police Stations Found</h2>
+                <h2 className="text-2xl font-bold text-violet-900 mb-2">{translations[language].nearestStation.noStationsFound}</h2>
                 <p className="text-violet-700 max-w-md mx-auto">
-                  We couldn't find any police stations for your search. Please try another {searchType === "village" ? "village" : searchType === "pincode" ? "pincode" : "famous place"}.
+                  {translations[language].nearestStation.noStationsMessage} {searchType === "village" ? "ಹಳ್ಳಿ" : searchType === "pincode" ? "ಪಿನ್‌ಕೋಡ್" : "ಪ್ರಸಿದ್ಧ ಸ್ಥಳ"}.
                 </p>
               </motion.div>
             )

@@ -37,9 +37,7 @@ export default function AboutUs() {
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tighter text-violet-900">{t.about.title}</h2>
               <p className="text-violet-700">
-                {language === 'en' 
-                  ? "The Chikkaballapura Police Department is dedicated to maintaining law and order, ensuring public safety, and fostering positive community relationships. Our force consists of highly trained professionals committed to serving with integrity and compassion."
-                  : "ಚಿಕ್ಕಬಳ್ಳಾಪುರ ಪೊಲೀಸ್ ಇಲಾಖೆಯು ಕಾನೂನು ಮತ್ತು ಸುವ್ಯವಸ್ಥೆಯನ್ನು ಕಾಪಾಡಿಕೊಳ್ಳಲು, ಸಾರ್ವಜನಿಕ ಸುರಕ್ಷತೆಯನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ಮತ್ತು ಸಕಾರಾತ್ಮಕ ಸಮುದಾಯ ಸಂಬಂಧಗಳನ್ನು ಬೆಳೆಸಲು ಸಮರ್ಪಿತವಾಗಿದೆ. ನಮ್ಮ ಪಡೆಯು ಸಮಗ್ರತೆ ಮತ್ತು ಕರುಣೆಯಿಂದ ಸೇವೆ ಸಲ್ಲಿಸಲು ಬದ್ಧರಾದ ಹೆಚ್ಚು ತರಬೇತಿ ಪಡೆದ ವೃತ್ತಿಪರರನ್ನು ಒಳಗೊಂಡಿದೆ."}
+                {t.about.description}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
