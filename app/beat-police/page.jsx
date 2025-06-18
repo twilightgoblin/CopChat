@@ -16,6 +16,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/contexts/LanguageContext';
 import { translations } from '@/app/translations';
+import { getSafeTranslations } from '@/utils/helpers';
 
 const policeStations = [
   { key: 'chelur', name: 'Chelur Police Station', type: 'Rural', area: 'North' },
@@ -43,25 +44,27 @@ const BeatPolice = () => {
   const [selectedType, setSelectedType] = useState('All');
   const router = useRouter();
   const { language } = useLanguage();
-  const t = translations[language];
+  
+  // Use safe translation access
+  const t = getSafeTranslations(translations, language, 'beatPolice');
 
   // Create area and type arrays based on translations
   const areas = [
-    { key: 'All', label: t.beatPolice.filters.areas.all },
-    { key: 'North', label: t.beatPolice.filters.areas.north },
-    { key: 'Central', label: t.beatPolice.filters.areas.central },
-    { key: 'South', label: t.beatPolice.filters.areas.south },
-    { key: 'East', label: t.beatPolice.filters.areas.east }
+    { key: 'All', label: t.filters.areas.all },
+    { key: 'North', label: t.filters.areas.north },
+    { key: 'Central', label: t.filters.areas.central },
+    { key: 'South', label: t.filters.areas.south },
+    { key: 'East', label: t.filters.areas.east }
   ];
   
   const types = [
-    { key: 'All', label: t.beatPolice.filters.types.all },
-    { key: 'Town', label: t.beatPolice.filters.types.town },
-    { key: 'Rural', label: t.beatPolice.filters.types.rural }
+    { key: 'All', label: t.filters.types.all },
+    { key: 'Town', label: t.filters.types.town },
+    { key: 'Rural', label: t.filters.types.rural }
   ];
 
   const filteredStations = policeStations.filter(station => {
-    const translatedName = t.beatPolice.stations[station.key];
+    const translatedName = t.stations[station.key] || station.name;
     const matchesSearch = station.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                          translatedName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesArea = selectedArea === 'All' || station.area === selectedArea;
@@ -122,7 +125,7 @@ const BeatPolice = () => {
               }
             }}
           >
-            {t.beatPolice.title}
+            {t.title}
           </Typography>
           <Typography 
             variant="h6" 
@@ -134,7 +137,7 @@ const BeatPolice = () => {
               textShadow: '0 1px 2px rgba(0,0,0,0.2)'
             }}
           >
-            {t.beatPolice.subtitle}
+            {t.subtitle}
           </Typography>
           
           {/* Search and Filters */}
@@ -148,7 +151,7 @@ const BeatPolice = () => {
             <TextField
               fullWidth
               variant="outlined"
-              placeholder={t.beatPolice.searchPlaceholder}
+              placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               sx={{ 
@@ -292,7 +295,7 @@ const BeatPolice = () => {
                       WebkitTextFillColor: 'transparent'
                     }}
                   >
-                    {t.beatPolice.stations[station.key]}
+                    {t.stations[station.key] || station.name}
                   </Typography>
                   <ArrowForwardIcon 
                     className="arrow-icon"
@@ -328,7 +331,7 @@ const BeatPolice = () => {
                     opacity: 0.8
                   }}
                 >
-                  {t.beatPolice.viewBeatInfo}
+                  {t.viewBeatInfo}
                 </Typography>
               </CardContent>
             </Card>

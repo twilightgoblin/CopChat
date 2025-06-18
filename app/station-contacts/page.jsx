@@ -7,6 +7,7 @@ import { Search } from "lucide-react"
 import { FadeIn } from "@/components/fade-in"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import { translations } from "@/app/translations"
+import { getSafeTranslations } from "@/utils/helpers"
 
 // Contact details for police stations with translation keys
 const contactDetails = [
@@ -323,7 +324,9 @@ const contactDetails = [
 export default function StationContactsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const { language } = useLanguage()
-  const t = translations[language].stationContacts
+  
+  // Use safe translation access
+  const t = getSafeTranslations(translations, language, 'stationContacts')
 
   useEffect(() => {
     window.scrollTo(0, 0)

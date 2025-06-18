@@ -8,6 +8,7 @@ import { MapPin, Phone, Navigation, AlertTriangle, Search, Building, MapPinned, 
 import { motion } from "framer-motion"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import { translations } from "@/app/translations"
+import { getSafeTranslations } from "@/utils/helpers"
 
 // Police stations data with coordinates
 const policeStations = [
@@ -1763,6 +1764,9 @@ export default function NearestStationPage() {
   const [searchMessage, setSearchMessage] = useState("")
   const suggestionsRef = useRef(null)
   const { language } = useLanguage()
+  
+  // Use safe translation access
+  const t = getSafeTranslations(translations, language, 'nearestStation')
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -1882,13 +1886,13 @@ export default function NearestStationPage() {
     // Set appropriate message based on search type
     switch(type) {
       case "village":
-        setSearchMessage(translations[language].nearestStation.searchMessages.village)
+        setSearchMessage(t.searchMessages.village)
         break
       case "pincode":
-        setSearchMessage(translations[language].nearestStation.searchMessages.pincode)
+        setSearchMessage(t.searchMessages.pincode)
         break
       case "famous":
-        setSearchMessage(translations[language].nearestStation.searchMessages.famous)
+        setSearchMessage(t.searchMessages.famous)
         break
       default:
         setSearchMessage("")
@@ -1903,9 +1907,9 @@ export default function NearestStationPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-center text-violet-900 mb-4">{translations[language].nearestStation.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-center text-violet-900 mb-4">{t.title}</h1>
           <p className="text-lg text-violet-700 text-center mb-8">
-            {translations[language].nearestStation.subtitle}
+            {t.subtitle}
           </p>
 
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
@@ -1917,7 +1921,7 @@ export default function NearestStationPage() {
                   className="flex-1"
                 >
                   <MapPin className="h-4 w-4 mr-2" />
-                  {translations[language].nearestStation.searchByVillage}
+                  {t.searchByVillage}
                 </Button>
                 <Button
                   variant={searchType === "pincode" ? "default" : "outline"}
@@ -1925,7 +1929,7 @@ export default function NearestStationPage() {
                   className="flex-1"
                 >
                   <MapPinned className="h-4 w-4 mr-2" />
-                  {translations[language].nearestStation.searchByPincode}
+                  {t.searchByPincode}
                 </Button>
                 <Button
                   variant={searchType === "famous" ? "default" : "outline"}
@@ -1933,7 +1937,7 @@ export default function NearestStationPage() {
                   className="flex-1"
                 >
                   <Landmark className="h-4 w-4 mr-2" />
-                  {translations[language].nearestStation.searchByFamousPlace}
+                  {t.searchByFamousPlace}
                 </Button>
               </div>
 
@@ -1952,9 +1956,9 @@ export default function NearestStationPage() {
                   <Input
                     type="text"
                     placeholder={
-                      searchType === "village" ? translations[language].nearestStation.villagePlaceholder :
-                      searchType === "pincode" ? translations[language].nearestStation.pincodePlaceholder :
-                      translations[language].nearestStation.famousPlacePlaceholder
+                      searchType === "village" ? t.villagePlaceholder :
+                      searchType === "pincode" ? t.pincodePlaceholder :
+                      t.famousPlacePlaceholder
                     }
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -1966,7 +1970,7 @@ export default function NearestStationPage() {
                     className="bg-violet-600 hover:bg-violet-700 px-6"
                   >
                     <Search className="h-5 w-5 mr-2" />
-                    {translations[language].nearestStation.search}
+                    {t.search}
                   </Button>
                 </div>
 
@@ -2031,7 +2035,7 @@ export default function NearestStationPage() {
                                 <Phone className="h-4 w-4 text-violet-600" />
                               </div>
                               <div>
-                                <h3 className="text-sm font-medium text-violet-700">{translations[language].nearestStation.contactNumber}</h3>
+                                <h3 className="text-sm font-medium text-violet-700">{t.contactNumber}</h3>
                                 <p className="text-violet-900 font-semibold">{station.phone}</p>
                               </div>
                             </div>
@@ -2042,7 +2046,7 @@ export default function NearestStationPage() {
                             className="w-full bg-violet-600 hover:bg-violet-700"
                           >
                             <Navigation className="h-4 w-4 mr-2" />
-                            {translations[language].nearestStation.viewOnGoogleMaps}
+                            {t.viewOnGoogleMaps}
                           </Button>
                         </div>
                       </CardContent>
@@ -2061,10 +2065,10 @@ export default function NearestStationPage() {
                     <div className="bg-violet-100 p-2 rounded-full">
                       <Info className="h-5 w-5 text-violet-600" />
                     </div>
-                    <h3 className="text-lg font-semibold text-violet-900">{translations[language].nearestStation.importantNote}</h3>
+                    <h3 className="text-lg font-semibold text-violet-900">{t.importantNote}</h3>
                   </div>
                   <p className="text-violet-700">
-                    {translations[language].nearestStation.noteText}
+                    {t.noteText}
                   </p>
                 </div>
               </motion.div>
@@ -2079,9 +2083,9 @@ export default function NearestStationPage() {
                 <div className="bg-yellow-50 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
                   <AlertTriangle className="h-10 w-10 text-yellow-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-violet-900 mb-2">{translations[language].nearestStation.noStationsFound}</h2>
+                <h2 className="text-2xl font-bold text-violet-900 mb-2">{t.noStationsFound}</h2>
                 <p className="text-violet-700 max-w-md mx-auto">
-                  {translations[language].nearestStation.noStationsMessage} {searchType === "village" ? "ಹಳ್ಳಿ" : searchType === "pincode" ? "ಪಿನ್‌ಕೋಡ್" : "ಪ್ರಸಿದ್ಧ ಸ್ಥಳ"}.
+                  {t.noStationsMessage} {searchType === "village" ? "ಹಳ್ಳಿ" : searchType === "pincode" ? "ಪಿನ್‌ಕೋಡ್" : "ಪ್ರಸಿದ್ಧ ಸ್ಥಳ"}.
                 </p>
               </motion.div>
             )
