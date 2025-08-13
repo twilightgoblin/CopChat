@@ -18,7 +18,8 @@ const allowedOrigins = [
   'https://your-frontend-app.netlify.app',
   'https://*.netlify.app',
   'https://*.onrender.com',
-  'https://*.vercel.app'
+  'https://*.vercel.app',
+  'https://chikkaballapurapoliceservice.vercel.app'
 ];
 
 app.use(cors({

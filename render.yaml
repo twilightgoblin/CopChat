@@ -12,5 +12,9 @@ services:
         sync: false
       - key: PORT
         value: 10000
+      - key: NEXT_PUBLIC_API_URL
+        value: https://copchat-r96a.onrender.com/api
+      - key: CORS_ORIGIN
+        value: https://chikkaballapurapoliceservice.vercel.app
     healthCheckPath: /
     autoDeploy: true
