@@ -16,7 +16,9 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'https://your-frontend-app.netlify.app',
-  'https://*.netlify.app'
+  'https://*.netlify.app',
+  'https://*.onrender.com',
+  'https://*.vercel.app'
 ];
 
 app.use(cors({
