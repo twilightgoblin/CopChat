@@ -1,7 +1,10 @@
 const getApiUrl = () => {
   // In production, this should be your actual backend URL
   // You'll need to set this in Netlify's environment variables
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+  
+  // Remove trailing /api if it exists to avoid double /api/api/
+  return baseUrl.replace(/\/api\/?$/, '');
 };
 
 export const API_ENDPOINTS = {
