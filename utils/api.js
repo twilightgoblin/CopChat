@@ -4,6 +4,7 @@ const getApiUrl = () => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
   
   // Remove trailing /api if it exists to avoid double /api/api/
+  // Force redeploy to pick up environment variable changes
   return baseUrl.replace(/\/api\/?$/, '');
 };
 
