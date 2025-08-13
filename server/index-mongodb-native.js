@@ -2,12 +2,12 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
 const path = require('path');
-const serviceFormsRoutes = require('./routes/serviceForms');
-const testimonialsRoutes = require('./routes/testimonials');
-const updatesRoutes = require('./routes/updates');
-const uploadRoutes = require('./routes/upload');
-const beatPoliceRoutes = require('./routes/beatPolice');
-const chatbotRoutes = require('./routes/chatbot');
+const serviceFormsRoutes = require('./test-routes');
+const testimonialsRoutes = require('./test-routes');
+const updatesRoutes = require('./test-routes');
+const uploadRoutes = require('./test-routes');
+const beatPoliceRoutes = require('./test-routes');
+const chatbotRoutes = require('./test-routes');
 require('dotenv').config();
 
 const app = express();
