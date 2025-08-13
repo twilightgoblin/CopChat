@@ -28,6 +28,10 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.local
+.env.development
+.env.production
+.env.test
 
 # vercel
 .vercel
@@ -50,3 +54,16 @@ next-env.d.ts
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# server specific
+server/.env
+server/.env.local
+server/.env.production
+server/uploads/*
+!server/uploads/.gitkeep
+
+# sensitive files
+*.key
+*.crt
+secrets.json
+config.json
