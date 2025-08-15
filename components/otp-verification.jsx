@@ -15,21 +15,39 @@ export default function OTPVerification({ email, onVerified }) {
   const [isVerified, setIsVerified] = useState(false)
   const [otpSent, setOtpSent] = useState(false)
 
+  console.log("Rendering OTPVerification with email:", email);
+
   const handleSendOTP = async () => {
     console.log('[OTP] handleSendOTP called with email:', email)
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
       setError("Email is required to send OTP")
       return
     }
+    
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address")
+      return
+    }
+    
+    console.log('[OTP] Email validation passed:', email)
 
     setResendLoading(true)
     setError("")
     try {
+      console.log('[OTP] Calling API endpoint:', API_ENDPOINTS.serviceForms.resendOtp)
+      console.log('[OTP] Request payload:', { email })
+      
       const response = await fetch(API_ENDPOINTS.serviceForms.resendOtp, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
+      
+      console.log('[OTP] Response status:', response.status)
+      console.log('[OTP] Response headers:', Object.fromEntries(response.headers.entries()))
   
       if (!response.ok) {
          if (!response.headers.get("content-type")?.includes("application/json")) {
@@ -40,13 +58,28 @@ export default function OTPVerification({ email, onVerified }) {
       }
   
       const data = await response.json();
+      console.log('[OTP] Response data:', data)
+      console.log('[OTP] Response success:', data.success)
+      console.log('[OTP] Response message:', data.message)
   
       setOtp(""); // reset the OTP input
       setError(""); // clear any previous errors
       setOtpSent(true)
+      
+      // Show success message
+      console.log('[OTP] OTP sent successfully to:', email)
+      console.log('[OTP] OTP input reset, showing verification form')
     } catch (error) {
       console.error('Error sending OTP:', error);
-      setError(error.message || 'Failed to send OTP. Please try again.');
+      
+      // Handle different types of errors
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        setError('Network error. Please check your internet connection and try again.');
+      } else if (error.message.includes('429')) {
+        setError('Too many requests. Please wait a moment before trying again.');
+      } else {
+        setError(error.message || 'Failed to send OTP. Please try again.');
+      }
     } finally {
       setResendLoading(false);
     }
@@ -103,7 +136,10 @@ export default function OTPVerification({ email, onVerified }) {
   return (
     <div className="space-y-4">
       <Button
-        onClick={handleSendOTP}
+        onClick={(e) => {
+          e.preventDefault();
+          handleSendOTP();
+        }}
         disabled={resendLoading || !email}
         className="w-full bg-violet-600 hover:bg-violet-700"
       >
@@ -111,6 +147,10 @@ export default function OTPVerification({ email, onVerified }) {
       </Button>
       {otpSent && (
         <div className="space-y-2">
+          <div className="flex items-center text-green-600 mb-2">
+            <CheckCircle2 className="h-4 w-4 mr-1" />
+            <span className="text-sm">OTP sent successfully! Check your email.</span>
+          </div>
           <Label>Enter Verification Code</Label>
           <InputOTP
             maxLength={6}
@@ -139,14 +179,27 @@ export default function OTPVerification({ email, onVerified }) {
           <span>OTP verified successfully!</span>
         </div>
       )}
-      {otpSent && ( (otp.length === 6) && ( !isVerified ) ) && (
-        <Button
-          onClick={handleVerify}
-          disabled={loading}
-          className="flex-1 bg-violet-600 hover:bg-violet-700"
-        >
-          {loading ? "Verifying..." : "Verify"}
-        </Button>
+      {otpSent && (
+        <div className="space-y-3">
+          {otp.length === 6 && !isVerified && (
+            <Button
+              onClick={handleVerify}
+              disabled={loading}
+              className="w-full bg-violet-600 hover:bg-violet-700"
+            >
+              {loading ? "Verifying..." : "Verify"}
+            </Button>
+          )}
+          
+          <Button
+            onClick={handleSendOTP}
+            disabled={resendLoading}
+            variant="outline"
+            className="w-full"
+          >
+            {resendLoading ? "Sending..." : "Resend OTP"}
+          </Button>
+        </div>
       )}
     </div>
   )

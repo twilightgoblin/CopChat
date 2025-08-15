@@ -12,6 +12,7 @@ const SeniorCitizenForm = require('../models/SeniorCitizenForm');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+const sendOtpEmail = require('../sendOtpEmail');
 
 // Create a schema for OTP storage
 const OTPSchema = new mongoose.Schema({
@@ -122,20 +123,8 @@ router.post('/send-otp', async (req, res) => {
       { upsert: true, new: true }
     );
 
-    // Send OTP email
-    const mailOptions = {
-      from: 'botchat879@gmail.com',
-      to: email,
-      subject: 'OTP for Police Service Request',
-      html: `
-        <h2>OTP for Police Service Request</h2>
-        <p>Your OTP is: <strong>${otp}</strong></p>
-        <p>This OTP will expire in 10 minutes.</p>
-        <p>Please enter this OTP to submit your service request.</p>
-      `
-    };
-
-    await transporter.sendMail(mailOptions);
+    // Send OTP email using the utility function
+    await sendOtpEmail(email, otp);
 
     res.status(200).json({
       message: 'OTP sent successfully'
@@ -206,72 +195,55 @@ router.post('/verify-otp', async (req, res) => {
 
 // Send OTP before form submission
 router.post('/resend-otp', async (req, res) => {
+  console.log('[resend-otp] ====== OTP REQUEST START ======');
+  console.log('[resend-otp] Request body:', req.body);
+  console.log('[resend-otp] Request headers:', req.headers);
+  
+  const { email } = req.body;
+  if (!email) {
+    console.log('[resend-otp] No email provided');
+    return res.status(400).json({ message: 'Email is required' });
+  }
+  
+  console.log('[resend-otp] Email extracted:', email);
+  
+  // Generate OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const otpExpires = new Date();
+  otpExpires.setMinutes(otpExpires.getMinutes() + 10); // OTP expires in 10 minutes
+  
+  console.log('[resend-otp] Generated OTP:', otp);
+  console.log('[resend-otp] OTP expires:', otpExpires);
+  console.log('[resend-otp] Sending OTP to:', email, 'Code:', otp);
+  
   try {
-    const { email } = req.body;
-    console.log("[resend-otp] Route hit with email:", email); // Debug log (nodemailer connection check)
-    console.log('Resending OTP to:', email); // (existing debug log)
-
-    if (!email) {
-      console.log('Email is required'); // Debug log
-      return res.status(400).json({
-        message: 'Email is required'
-      });
-    }
-
-    // Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date();
-    otpExpires.setMinutes(otpExpires.getMinutes() + 10); // OTP expires in 10 minutes
-
-    console.log('Generated OTP:', { email, otp, expires: otpExpires }); // Debug log
-
     // Store OTP in MongoDB
+    console.log('[resend-otp] Storing OTP in MongoDB...');
     const storedOTP = await OTP.findOneAndUpdate(
       { email },
-      { 
-        email,
-        otp,
-        expires: otpExpires
-      },
+      { email, otp, expires: otpExpires },
       { upsert: true, new: true }
     );
-    console.log('Stored OTP in database:', storedOTP); // Debug log
-
-    // Send OTP email
-    const mailOptions = {
-      from: {
-        name: 'Police Service Portal',
-        address: 'botchat879@gmail.com'
-      },
-      to: email,
-      subject: 'OTP for Police Service Request',
-      html: `
-        <h2>OTP for Police Service Request</h2>
-        <p>Your OTP is: <strong>${otp}</strong></p>
-        <p>This OTP will expire in 10 minutes.</p>
-        <p>Please enter this OTP to submit your service request.</p>
-      `
-    };
-
-    console.log('Attempting to send email with options:', mailOptions); // Debug log
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info); // Debug log
-
-    res.status(200).json({
-      message: 'OTP sent successfully'
+    console.log('[resend-otp] OTP stored in MongoDB:', storedOTP);
+    
+    // Send OTP email using the new utility
+    console.log('[resend-otp] Calling sendOtpEmail...');
+    await sendOtpEmail(email, otp);
+    console.log('[resend-otp] Email sent successfully via sendOtpEmail');
+    
+    const response = { success: true, message: 'OTP sent successfully', email };
+    console.log('[resend-otp] Sending response:', response);
+    res.status(200).json(response);
+    
+    console.log('[resend-otp] ====== OTP REQUEST COMPLETE ======');
+  } catch (err) {
+    console.error('[resend-otp] Error sending email:', err);
+    console.error('[resend-otp] Error details:', {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
     });
-  } catch (error) {
-    console.error('Error sending OTP:', error);
-    console.error('Error details:', {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-      code: error.code
-    });
-    res.status(500).json({
-      message: 'Error sending OTP',
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: 'Failed to send OTP', error: err.message });
   }
 });
 

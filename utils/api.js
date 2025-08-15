@@ -12,7 +12,7 @@ export const API_ENDPOINTS = {
   serviceForms: {
     submit: `${getApiUrl()}/api/service-forms/submit`,
     verifyOtp: `${getApiUrl()}/api/verify-otp`,
-    resendOtp: `${getApiUrl()}/api/resend-otp`,
+    resendOtp: `${getApiUrl()}/api/resend-otp`, // Using the direct working route
   },
   updates: {
     list: `${getApiUrl()}/api/updates`,
