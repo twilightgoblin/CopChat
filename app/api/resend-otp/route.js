@@ -5,8 +5,8 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_BASE_URL}/api/service-forms`, {
-      method: 'PATCH',
+    const response = await fetch(`${process.env.BACKEND_BASE_URL}/api/service-forms/resend-otp`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
