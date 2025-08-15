@@ -140,6 +140,7 @@ app.use('/api/updates', updatesRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/beat-police', beatPoliceRoutes);
 app.use('/api/chatbot', chatbotRoutes);
+app.use("/api", router);
 
 app.get('/', (req, res) => {
   res.send('Backend server is running');
