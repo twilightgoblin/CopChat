@@ -93,7 +93,10 @@ export default function LockedHouseMonitoringPage() {
     }
 
     try {
-      const formData = {
+      const hasFiles = !!image || additionalFiles.length > 0
+      const payload = hasFiles ? new FormData() : {}
+
+      const baseFields = {
         name,
         email,
         phone,
@@ -105,8 +108,16 @@ export default function LockedHouseMonitoringPage() {
         otp: verifiedOTP
       }
 
+      if (hasFiles) {
+        Object.entries(baseFields).forEach(([k, v]) => payload.append(k, String(v ?? '')))
+        if (image) payload.append('image', image)
+        additionalFiles.forEach((file) => payload.append('additionalFiles', file))
+      } else {
+        Object.assign(payload, baseFields)
+      }
+
       await handleFormSubmit(
-        formData,
+        payload,
         setLoading,
         setError,
         setSuccess,

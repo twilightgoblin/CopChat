@@ -278,6 +278,13 @@ router.post('/submit', upload.fields([
           details.additionalFiles = req.files.additionalFiles.map(file => `/uploads/${file.filename}`);
         }
       }
+
+      // Map files to evidence for anonymous-complaint service
+      if (serviceType === 'anonymous-complaint') {
+        if (Array.isArray(details.additionalFiles) && details.additionalFiles.length > 0) {
+          details.evidence = details.additionalFiles;
+        }
+      }
     } else {
       console.log(`[${requestId}] 📦 Processing as JSON`);
       // Handle JSON data

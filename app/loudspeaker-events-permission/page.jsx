@@ -75,7 +75,10 @@ export default function LoudspeakerEventsPermissionPage() {
     }
 
     try {
-      const formData = {
+      const hasFiles = false // No file inputs on this form currently
+      const payload = hasFiles ? new FormData() : {}
+
+      const baseFields = {
         name: eventName,
         email,
         phone: contactPhone,
@@ -89,8 +92,14 @@ export default function LoudspeakerEventsPermissionPage() {
         otp: verifiedOTP,
       }
 
+      if (hasFiles) {
+        Object.entries(baseFields).forEach(([k, v]) => payload.append(k, String(v ?? '')))
+      } else {
+        Object.assign(payload, baseFields)
+      }
+
       await handleFormSubmit(
-        formData,
+        payload,
         setIsSubmitting,
         setSubmitError,
         setSubmitted,

@@ -1,5 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const serviceFormsRoutes = require('./routes/serviceForms');
@@ -35,7 +36,7 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS', 'PATCH', 'PUT'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -129,6 +130,25 @@ async function connectToMongoDB() {
 
 // Connect to MongoDB
 connectToMongoDB();
+
+// Also connect Mongoose for model-based routes
+(async function connectMongoose() {
+  try {
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000
+      });
+      console.log('Mongoose connected successfully');
+    }
+  } catch (err) {
+    console.error('Mongoose connection error:', {
+      name: err.name,
+      message: err.message,
+      code: err.code
+    });
+    // Do not exit; native driver may still be serving non-mongoose routes
+  }
+})();
 
 // Routes
 app.use('/api/service-forms', serviceFormsRoutes);

@@ -112,7 +112,9 @@ export default function AnonymousComplaintsPage() {
       return
     }
 
-    const formData = {
+    // Build payload
+    const hasAttachments = attachments && attachments.length > 0
+    const formData = hasAttachments ? new FormData() : {
       name,
       email,
       phone,
@@ -121,6 +123,19 @@ export default function AnonymousComplaintsPage() {
       resources,
       description,
       additionalInfo
+    }
+
+    if (hasAttachments) {
+      formData.append('name', name || '')
+      formData.append('email', email || '')
+      formData.append('phone', phone || '')
+      formData.append('complaintType', complaintType)
+      formData.append('location', location)
+      formData.append('resources', resources || '')
+      formData.append('description', description)
+      formData.append('additionalInfo', additionalInfo || '')
+      // Append files under additionalFiles so backend maps to evidence
+      attachments.forEach((file) => formData.append('additionalFiles', file))
     }
 
     try {

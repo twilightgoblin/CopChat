@@ -1,5 +1,5 @@
-// Get API URL from environment variable or use default
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+// Central API endpoints
+import { API_ENDPOINTS } from '@/utils/api'
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY = 1000; // 1 second
@@ -48,8 +48,8 @@ export const handleFormSubmit = async (
       return;
     }
 
-    // Validate API URL
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    // Validate API base URL (used by API_ENDPOINTS)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
     if (!apiUrl) {
       console.error('API URL not configured');
       if (typeof setError === 'function') setError('Server configuration error. Please try again later.');
@@ -108,7 +108,7 @@ export const handleFormSubmit = async (
         console.log('formData type:', isFormData ? 'FormData' : 'JSON');
         console.log('formData:', formData);
 
-        const response = await fetch(`${apiUrl}/service-forms/submit`, {
+        const response = await fetch(API_ENDPOINTS.serviceForms.submit, {
           method: 'POST',
           headers,
           body: requestBody,
@@ -130,8 +130,9 @@ export const handleFormSubmit = async (
 
         const data = await response.json();
         console.log('Server response:', data);
-        
-        if (data.success) {
+
+        // Treat any successful HTTP response as success regardless of a 'success' flag
+        if (response.ok) {
           if (typeof setSuccess === 'function') setSuccess(true);
           if (typeof setNotificationMessage === 'function') setNotificationMessage(data.message || 'Form submitted successfully');
           if (typeof setNotificationType === 'function') setNotificationType('success');

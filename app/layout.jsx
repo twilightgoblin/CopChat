@@ -38,5 +38,3 @@ export const metadata = {
     apple: '/images/karnataka-state-emblem.png',
   },
 }
-
-import "./globals.css" 

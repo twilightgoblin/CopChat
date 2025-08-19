@@ -134,8 +134,11 @@ export default function LostAndFoundPage() {
     try {
       setLoading(true)
 
-      // First, prepare the form data as a plain object
-      const formFields = {
+      // Use FormData when files are present so backend saves paths with the record
+      const hasFiles = !!image || additionalFiles.length > 0
+      const payload = hasFiles ? new FormData() : {}
+
+      const baseFields = {
         isLost,
         name,
         email,
@@ -143,17 +146,20 @@ export default function LostAndFoundPage() {
         item,
         location,
         description,
-        otp: verifiedOTP
+        otp: verifiedOTP,
       }
-      
-      // Add optional fields if they exist
-      if (aadhar) formFields.aadhar = aadhar
+      if (aadhar) baseFields.aadhar = aadhar
 
-      console.log('🚀 Submitting form data:', JSON.stringify(formFields, null, 2))
+      if (hasFiles) {
+        Object.entries(baseFields).forEach(([k, v]) => payload.append(k, String(v ?? '')))
+        if (image) payload.append('image', image)
+        additionalFiles.forEach((file) => payload.append('additionalFiles', file))
+      } else {
+        Object.assign(payload, baseFields)
+      }
 
-      // Submit the form data first
       await handleFormSubmit(
-        formFields,
+        payload,
         setLoading,
         setError,
         setSuccess,
@@ -164,7 +170,6 @@ export default function LostAndFoundPage() {
         'lost-and-found'
       )
 
-      // If we get here, the form submission was successful
       setShowNotification(false);
       setTimeout(() => {
         setNotificationMessage(t.success.submitted);
@@ -173,31 +178,6 @@ export default function LostAndFoundPage() {
       }, 10);
       setSubmitted(true);
       resetForm();
-
-      // If we have files and the form submission was successful, upload the files
-      if (image || additionalFiles.length > 0) {
-        console.log('📤 Uploading files...')
-        
-        const formData = new FormData()
-        if (image) {
-          formData.append('image', image)
-        }
-        additionalFiles.forEach((file) => {
-          formData.append('additionalFiles', file)
-        })
-
-        // Upload files in a separate request
-        const uploadResponse = await fetch('/api/upload-files', {
-          method: 'POST',
-          body: formData
-        })
-
-        if (!uploadResponse.ok) {
-          throw new Error('Failed to upload files')
-        }
-
-        console.log('✅ Files uploaded successfully')
-      }
 
     } catch (err) {
       setShowNotification(false);

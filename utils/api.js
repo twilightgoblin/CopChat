@@ -1,4 +1,4 @@
-const getApiUrl = () => {
+export const getApiUrl = () => {
   // In production, this should be your actual backend URL
   // You'll need to set this in Netlify's environment variables
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
@@ -20,4 +20,14 @@ export const API_ENDPOINTS = {
   },
   upload: `${getApiUrl()}/api/upload`,
   testimonials: `${getApiUrl()}/api/testimonials`,
+  admin: {
+    // Service forms admin endpoints
+    serviceFormsList: (serviceType) => `${getApiUrl()}/api/service-forms/${serviceType}`,
+    serviceFormsDelete: (serviceType, id) => `${getApiUrl()}/api/service-forms/${serviceType}/${id}`,
+
+    // Testimonials admin endpoints
+    testimonialsList: `${getApiUrl()}/api/testimonials/admin`,
+    testimonialsDelete: (id) => `${getApiUrl()}/api/testimonials/${id}`,
+    testimonialsUpdateStatus: (id) => `${getApiUrl()}/api/testimonials/${id}/status`,
+  },
 }; 

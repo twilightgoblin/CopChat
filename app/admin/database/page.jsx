@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { Notification } from "@/components/ui/notification";
+import { API_ENDPOINTS, getApiUrl } from "@/utils/api";
 
 const SERVICE_TYPES = [
   { key: 'lost-and-found', label: 'Lost and Found' },
@@ -35,6 +36,11 @@ export default function DatabasePortal() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("success");
+  const resolveFileUrl = (filePath) => {
+    if (!filePath) return '';
+    if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
+    return `${getApiUrl()}${filePath}`;
+  };
 
   useEffect(() => {
     fetchData();
@@ -44,14 +50,11 @@ export default function DatabasePortal() {
     setLoading(true);
     setError(null);
     try {
-      let endpoint;
-      if (serviceType === 'testimonials') {
-        endpoint = '/api/testimonials?admin=true';
-      } else {
-        endpoint = `http://localhost:5001/api/service-forms/${serviceType}`;
-      }
+      const endpoint = serviceType === 'testimonials'
+        ? API_ENDPOINTS.admin.testimonialsList
+        : API_ENDPOINTS.admin.serviceFormsList(serviceType);
       console.log('Fetching data from:', endpoint);
-      const res = await fetch(endpoint);
+      const res = await fetch(endpoint, { credentials: 'include' });
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Failed to fetch data');
@@ -74,11 +77,10 @@ export default function DatabasePortal() {
 
   const handleDelete = async () => {
     try {
-      let endpoint = `http://localhost:5001/api/service-forms/${serviceType}/${deleteId}`;
-      if (serviceType === 'testimonials') {
-        endpoint = `http://localhost:5001/api/testimonials/${deleteId}`;
-      }
-      const res = await fetch(endpoint, { method: 'DELETE' });
+      const endpoint = serviceType === 'testimonials'
+        ? API_ENDPOINTS.admin.testimonialsDelete(deleteId)
+        : API_ENDPOINTS.admin.serviceFormsDelete(serviceType, deleteId);
+      const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
       if (!res.ok) throw new Error('Failed to delete');
       await fetchData();
       setShowNotification(true);
@@ -96,12 +98,13 @@ export default function DatabasePortal() {
   const handleStatusUpdate = async (id, newStatus) => {
     try {
       console.log('Updating testimonial status:', { id, newStatus });
-      const res = await fetch(`/api/testimonials?id=${id}`, {
+      const res = await fetch(API_ENDPOINTS.admin.testimonialsUpdateStatus(id), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status: newStatus }),
+        credentials: 'include'
       });
 
       if (!res.ok) {
@@ -276,11 +279,47 @@ export default function DatabasePortal() {
                           .filter((key) => !['__v', '_id'].includes(key))
                           .map((key) => (
                             <td key={key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {typeof item[key] === 'object' && item[key] !== null
-                                ? JSON.stringify(item[key])
-                                : key === 'createdAt' || key === 'updatedAt'
-                                ? new Date(item[key]).toLocaleDateString()
-                                : String(item[key])}
+                              {(() => {
+                                const value = item[key];
+                                if ((key === 'image' || key.toLowerCase().includes('image')) && typeof value === 'string' && value) {
+                                  const url = resolveFileUrl(value);
+                                  return (
+                                    <a href={url} target="_blank" rel="noopener noreferrer">
+                                      <img src={url} alt="uploaded" className="h-12 w-12 object-cover rounded border" />
+                                    </a>
+                                  );
+                                }
+                                if ((key === 'additionalFiles' || key === 'evidence') && Array.isArray(value) && value.length > 0) {
+                                  const filesToShow = value.slice(0, 3);
+                                  return (
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      {filesToShow.map((file, idx) => {
+                                        const url = resolveFileUrl(file);
+                                        const isImage = /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(file);
+                                        return isImage ? (
+                                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer">
+                                            <img src={url} alt={`file-${idx}`} className="h-10 w-10 object-cover rounded border" />
+                                          </a>
+                                        ) : (
+                                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                                            File
+                                          </a>
+                                        );
+                                      })}
+                                      {value.length > 3 && (
+                                        <span className="text-xs text-gray-400">+{value.length - 3} more</span>
+                                      )}
+                                    </div>
+                                  );
+                                }
+                                if (typeof value === 'object' && value !== null) {
+                                  return JSON.stringify(value);
+                                }
+                                if (key === 'createdAt' || key === 'updatedAt') {
+                                  return value ? new Date(value).toLocaleDateString() : '';
+                                }
+                                return String(value);
+                              })()}
                             </td>
                           ))}
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

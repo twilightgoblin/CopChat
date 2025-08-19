@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5001';
 
 export async function GET(req, { params }) {
   const { serviceType } = params;
   try {
-    const res = await fetch(`${BACKEND_URL}/serviceForms/${serviceType}`);
+    const res = await fetch(`${BACKEND_URL}/api/service-forms/${serviceType}`);
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
@@ -18,7 +18,7 @@ export async function DELETE(req, { params }) {
   const url = new URL(req.url);
   const id = url.pathname.split('/').pop();
   try {
-    const res = await fetch(`${BACKEND_URL}/serviceForms/${serviceType}/${id}`, {
+    const res = await fetch(`${BACKEND_URL}/api/service-forms/${serviceType}/${id}`, {
       method: 'DELETE',
     });
     const data = await res.json();
