@@ -29,12 +29,8 @@ const loudSpeakerFormSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  startTime: {
-    type: String,
-    required: true
-  },
-  endTime: {
-    type: String,
+  endDate: {
+    type: Date,
     required: true
   },
   location: {

@@ -35,7 +35,8 @@ const policeStations = [
   { key: 'kencharalahalli', name: 'Kencharalahalli Police Station', type: 'Rural', area: 'East' },
   { key: 'shidlaghattaTown', name: 'Shidlaghatta Town Police Station', type: 'Town', area: 'North' },
   { key: 'shidlaghattaRural', name: 'Shidlaghatta Rural Police Station', type: 'Rural', area: 'North' },
-  { key: 'dibburahalli', name: 'Dibburahalli Police Station', type: 'Rural', area: 'East' }
+  { key: 'dibburahalli', name: 'Dibburahalli Police Station', type: 'Rural', area: 'East' },
+  { key: 'peresandra', name: 'Peresandra Police Station', type: 'Rural', area: 'Central' }
 ];
 
 const BeatPolice = () => {

@@ -177,6 +177,11 @@ export default function SeniorCitizenPage() {
     }
   }
 
+  const handleEmergencyContactChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "")
+    setEmergencyContact(value)
+  }
+
   const handleAadharChange = (e) => {
     const formatted = formatAadhar(e.target.value)
     setAadhar(formatted)
@@ -345,9 +350,12 @@ export default function SeniorCitizenPage() {
                         <Input
                           id="emergencyContact"
                           value={emergencyContact}
-                          onChange={(e) => setEmergencyContact(e.target.value)}
+                          onChange={handleEmergencyContactChange}
                           required
                           placeholder={t.form.emergencyContactPlaceholder}
+                          type="tel"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
                         />
                       </div>
 

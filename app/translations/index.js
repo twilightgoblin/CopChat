@@ -157,7 +157,8 @@ export const translations = {
         kencharalahalli: "Kencharalahalli Police Station",
         shidlaghattaTown: "Shidlaghatta Town Police Station",
         shidlaghattaRural: "Shidlaghatta Rural Police Station",
-        dibburahalli: "Dibburahalli Police Station"
+        dibburahalli: "Dibburahalli Police Station",
+        peresandra: "Peresandra Police Station"
       }
     },
     nearestStation: {
@@ -644,7 +645,8 @@ export const translations = {
         kencharalahalli: "ಕೆಂಚರ್ಲಹಳ್ಳಿ ಪೊಲೀಸ್ ಠಾಣೆ",
         shidlaghattaTown: "ಶಿಡ್ಲಘಟ್ಟ ಪಟ್ಟಣ ಪೊಲೀಸ್ ಠಾಣೆ",
         shidlaghattaRural: "ಶಿಡ್ಲಘಟ್ಟ ಗ್ರಾಮೀಣ ಪೊಲೀಸ್ ಠಾಣೆ",
-        dibburahalli: "ದಿಬ್ಬುರಹಳ್ಳಿ ಪೊಲೀಸ್ ಠಾಣೆ"
+        dibburahalli: "ದಿಬ್ಬುರಹಳ್ಳಿ ಪೊಲೀಸ್ ಠಾಣೆ",
+        peresandra: "ಪೆರಸಂದ್ರ ಪೊಲೀಸ್ ಠಾಣೆ"
       }
     },
     nearestStation: {

@@ -341,11 +341,23 @@ router.post('/submit', upload.fields([
 
       case 'loud-speaker':
         form = new LoudSpeakerForm({
-          ...details,
-          name: details.eventName,
-          eventDate: details.date,
-          startTime: details.time,
-          endTime: details.duration
+          // Core identity/contact fields
+          name: details.name || details.eventName || details.contactName,
+          email: details.email,
+          phone: details.phone || details.contactPhone,
+          aadhar: details.aadhar,
+          
+          // Address/Location
+          address: details.address || details.location,
+          location: details.location || details.address,
+          
+          // Event specifics (align with frontend fields)
+          eventType: details.eventType || details.eventDetails,
+          eventDate: details.eventDate || details.startDate,
+          endDate: details.endDate,
+          
+          // Description
+          description: details.description || details.eventDetails,
         });
         break;
 
