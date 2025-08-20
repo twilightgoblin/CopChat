@@ -14,8 +14,7 @@ const loudSpeakerFormSchema = new mongoose.Schema({
     required: true
   },
   aadhar: {
-    type: String,
-    required: true
+    type: String
   },
   address: {
     type: String,
