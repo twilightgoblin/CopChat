@@ -262,7 +262,7 @@ export default function DatabasePortal() {
                       <>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.email}</td>
-                        <td className="px-6 py-4 text-sm text-gray-500 max-w-md truncate">{item.content}</td>
+                        <td className="px-6 py-4 text-sm text-gray-500 max-w-2xl whitespace-pre-wrap break-words">{item.content}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <div className="flex">{renderStars(item.rating)}</div>
                         </td>
