@@ -85,7 +85,7 @@ export default function Navbar() {
               <span className="sr-only">Toggle menu</span>
             </div>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[80%] sm:w-[350px] gradient-violet-dark">
+          <SheetContent side="right" className="w-[80%] sm:w-[350px] gradient-violet-dark [&>button]:text-white [&>button]:hover:text-violet-200 [&>button]:h-8 [&>button]:w-8 [&>button>svg]:h-6 [&>button>svg]:w-6">
             <div className="flex flex-col h-full text-white">
               <div className="mb-8">
                 <span className="font-bold text-xl">{t.navbar.menu}</span>
