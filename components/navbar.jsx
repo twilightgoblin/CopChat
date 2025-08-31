@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Shield, Facebook, Instagram, Twitter, MessageSquare, Menu, X, Bot, Users, Home, Phone, Search, FileText, AlertTriangle } from "lucide-react"
+import { Shield, Facebook, Instagram, Twitter, MessageSquare, Menu, Bot, Users, Home, Phone, Search, FileText, AlertTriangle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -87,14 +87,8 @@ export default function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="w-[80%] sm:w-[350px] gradient-violet-dark">
             <div className="flex flex-col h-full text-white">
-              <div className="flex justify-between items-center mb-8">
+              <div className="mb-8">
                 <span className="font-bold text-xl">{t.navbar.menu}</span>
-                <div 
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 text-white"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <X className="h-5 w-5" />
-                </div>
               </div>
               <nav className="flex flex-col space-y-6">
                 <MobileNavLink href="/" onClick={() => setIsOpen(false)}>
