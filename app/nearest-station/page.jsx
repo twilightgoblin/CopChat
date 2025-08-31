@@ -1914,30 +1914,30 @@ export default function NearestStationPage() {
 
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <div className="flex flex-col space-y-4">
-              <div className="flex justify-center space-x-4 mb-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-4">
                 <Button
                   variant={searchType === "village" ? "default" : "outline"}
                   onClick={() => handleSearchTypeChange("village")}
-                  className="flex-1"
+                  className="w-full sm:flex-1 text-sm sm:text-base"
                 >
                   <MapPin className="h-4 w-4 mr-2" />
-                  {t.searchByVillage}
+                  <span className="truncate">{t.searchByVillage}</span>
                 </Button>
                 <Button
                   variant={searchType === "pincode" ? "default" : "outline"}
                   onClick={() => handleSearchTypeChange("pincode")}
-                  className="flex-1"
+                  className="w-full sm:flex-1 text-sm sm:text-base"
                 >
                   <MapPinned className="h-4 w-4 mr-2" />
-                  {t.searchByPincode}
+                  <span className="truncate">{t.searchByPincode}</span>
                 </Button>
                 <Button
                   variant={searchType === "famous" ? "default" : "outline"}
                   onClick={() => handleSearchTypeChange("famous")}
-                  className="flex-1"
+                  className="w-full sm:flex-1 text-sm sm:text-base"
                 >
                   <Landmark className="h-4 w-4 mr-2" />
-                  {t.searchByFamousPlace}
+                  <span className="truncate">{t.searchByFamousPlace}</span>
                 </Button>
               </div>
 
@@ -1952,7 +1952,7 @@ export default function NearestStationPage() {
               )}
 
               <div className="relative" ref={suggestionsRef}>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Input
                     type="text"
                     placeholder={
@@ -1963,14 +1963,14 @@ export default function NearestStationPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="flex-1 text-lg"
+                    className="flex-1 text-base sm:text-lg"
                   />
                   <Button 
                     onClick={() => handleSearch(searchQuery)} 
-                    className="bg-violet-600 hover:bg-violet-700 px-6"
+                    className="bg-violet-600 hover:bg-violet-700 px-4 sm:px-6 w-full sm:w-auto"
                   >
-                    <Search className="h-5 w-5 mr-2" />
-                    {t.search}
+                    <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                    <span className="text-sm sm:text-base">{t.search}</span>
                   </Button>
                 </div>
 
