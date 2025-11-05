@@ -362,6 +362,7 @@ router.post('/submit', upload.fields([
         break;
 
       case 'anonymous-complaint':
+        console.log(`[${requestId}] Creating Anonymous Complaint form with details:`, JSON.stringify(details, null, 2));
         form = new AnonymousComplaintForm(details);
         break;
 

@@ -100,6 +100,12 @@ export default function AnonymousComplaintsPage() {
     e.preventDefault()
     setSubmitError("")
 
+    // Validate form fields
+    if (!validateForm()) {
+      setSubmitError("Please fill in all required fields correctly")
+      return
+    }
+
     // Validate email if provided
     if (email && !validateEmail(email)) {
       setSubmitError(t.errors.validEmail)
@@ -150,23 +156,15 @@ export default function AnonymousComplaintsPage() {
         resetForm,
         'anonymous-complaint'
       )
-      // Ensure only one notification is shown at a time
-      setShowNotification(false);
-      setTimeout(() => {
-        setNotificationMessage(t.success.submitted);
-        setNotificationType("success");
-        setShowNotification(true);
-      }, 10);
-      setSubmitted(true);
-      resetForm();
+      
+      // Success is handled by the handleFormSubmit function
+      console.log('Form submitted successfully');
     } catch (error) {
-      setShowNotification(false);
-      setTimeout(() => {
-        setSubmitError(error.message || t.errors.submitFailed);
-        setNotificationMessage(error.message || t.errors.submitFailed);
-        setNotificationType("error");
-        setShowNotification(true);
-      }, 10);
+      console.error('Form submission error:', error);
+      setSubmitError(error.message || t.errors.submitFailed);
+      setNotificationMessage(error.message || t.errors.submitFailed);
+      setNotificationType("error");
+      setShowNotification(true);
     }
   }
 

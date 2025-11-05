@@ -118,30 +118,25 @@ export const handleFormSubmit = async (
 
         clearTimeout(timeoutId);
 
+        const data = await response.json().catch(() => ({}));
+        console.log('Server response:', data);
+
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
           console.error('Server response error:', {
             status: response.status,
             statusText: response.statusText,
-            errorData
+            errorData: data
           });
-          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+          throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-        console.log('Server response:', data);
-
-        // Treat any successful HTTP response as success regardless of a 'success' flag
-        if (response.ok) {
-          if (typeof setSuccess === 'function') setSuccess(true);
-          if (typeof setNotificationMessage === 'function') setNotificationMessage(data.message || 'Form submitted successfully');
-          if (typeof setNotificationType === 'function') setNotificationType('success');
-          if (typeof setShowNotification === 'function') setShowNotification(true);
-          if (typeof resetForm === 'function') resetForm();
-          return;
-        } else {
-          throw new Error(data.message || 'Form submission failed');
-        }
+        // Success response
+        if (typeof setSuccess === 'function') setSuccess(true);
+        if (typeof setNotificationMessage === 'function') setNotificationMessage(data.message || 'Form submitted successfully');
+        if (typeof setNotificationType === 'function') setNotificationType('success');
+        if (typeof setShowNotification === 'function') setShowNotification(true);
+        if (typeof resetForm === 'function') resetForm();
+        return;
       } catch (error) {
         console.error('Error submitting form:', error);
         lastError = error;
@@ -161,6 +156,7 @@ export const handleFormSubmit = async (
         if (typeof setNotificationMessage === 'function') setNotificationMessage(error.message || 'Failed to submit form. Please try again.');
         if (typeof setNotificationType === 'function') setNotificationType('error');
         if (typeof setShowNotification === 'function') setShowNotification(true);
+        return; // Return early to prevent success notification
         break;
       } finally {
         if (typeof setLoading === 'function') setLoading(false);
