@@ -69,12 +69,13 @@ app.use((req, res, next) => {
 });
 
 // MongoDB Connection with native driver
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://chatbot:botchat879@chatbot.elbegly.mongodb.net/?retryWrites=true&w=majority&appName=ChatBot';
+const MONGODB_URI = process.env.MONGODB_URI;
 
 let db;
 
 if (!process.env.MONGODB_URI) {
-  console.warn('Warning: MONGODB_URI not found in environment variables. Using fallback connection string.');
+  console.error('Error: MONGODB_URI not found in environment variables. Please set it in your .env file.');
+  process.exit(1);
 }
 
 console.log('Attempting to connect to MongoDB...');
