@@ -1,14 +1,42 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { X, Send, ChevronLeft, Bot, Loader2, ChevronDown } from 'lucide-react';
+import { X, Send, ChevronLeft, Bot, Loader2, ChevronDown, Home, Trash2, Phone, Copy, Check, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { cn } from '../../utils/helpers';
 
 // Memoized message component to prevent unnecessary re-renders
-const Message = React.memo(({ message, onOptionSelect }) => {
+const Message = React.memo(({ message, onOptionSelect, onCopy, onFeedback, messageIndex }) => {
+  const [copied, setCopied] = React.useState(false);
+  const [feedback, setFeedback] = React.useState(message.feedback || null);
+
+  const handleCopy = () => {
+    const textContent = typeof message.content === 'string' 
+      ? message.content 
+      : message.content?.props?.children || '';
+    
+    // Extract text from React elements
+    const extractText = (element) => {
+      if (typeof element === 'string') return element;
+      if (Array.isArray(element)) return element.map(extractText).join(' ');
+      if (element?.props?.children) return extractText(element.props.children);
+      return '';
+    };
+    
+    const text = extractText(textContent);
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    onCopy && onCopy(messageIndex);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleFeedback = (type) => {
+    setFeedback(type);
+    onFeedback && onFeedback(messageIndex, type);
+  };
+
   return (
     <div className={cn(
       "flex w-full",
@@ -44,6 +72,59 @@ const Message = React.memo(({ message, onOptionSelect }) => {
             ))}
           </div>
         )}
+        
+        {/* Copy and Feedback buttons for bot messages */}
+        {message.type === "bot" && message.content && (
+          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCopy}
+              className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700"
+              title="Copy message"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-3 w-3 mr-1" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3 w-3 mr-1" />
+                  Copy
+                </>
+              )}
+            </Button>
+            
+            <div className="flex items-center gap-1 ml-auto">
+              <span className="text-xs text-gray-500 mr-1">Helpful?</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleFeedback('positive')}
+                className={cn(
+                  "h-6 w-6 p-0",
+                  feedback === 'positive' ? "text-green-600" : "text-gray-400 hover:text-green-600"
+                )}
+                title="Helpful"
+              >
+                <ThumbsUp className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleFeedback('negative')}
+                className={cn(
+                  "h-6 w-6 p-0",
+                  feedback === 'negative' ? "text-red-600" : "text-gray-400 hover:text-red-600"
+                )}
+                title="Not helpful"
+              >
+                <ThumbsDown className="h-3 w-3" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -77,9 +158,21 @@ export default function ChatbotUI({
   const [hasNewMessages, setHasNewMessages] = useState(false);
   const typingIntervalRef = useRef(null);
   const initialMessageSetRef = useRef(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [feedbackStats, setFeedbackStats] = useState({ positive: 0, negative: 0 });
+  const [error, setError] = useState(null);
 
   // Memoize the main options to prevent unnecessary re-renders
   const memoizedMainOptions = useMemo(() => mainOptions, [mainOptions]);
+
+  // Suggested queries for users
+  const suggestedQueries = [
+    "How to file FIR?",
+    "Traffic fines",
+    "Emergency numbers",
+    "Report lost items",
+    "Cybercrime helpline",
+  ];
 
   // Cleanup typing interval on unmount
   useEffect(() => {
@@ -124,6 +217,12 @@ export default function ChatbotUI({
     typingIntervalRef.current = requestAnimationFrame(animate);
   }, []);
 
+  // Load chat history from localStorage
+  useEffect(() => {
+    // Don't load from localStorage - React elements can't be serialized
+    // Chat will start fresh each time
+  }, []);
+
   // Initialize with welcome message
   useEffect(() => {
     if (!initialMessageSetRef.current) {
@@ -135,6 +234,9 @@ export default function ChatbotUI({
       initialMessageSetRef.current = true;
     }
   }, [initialMessageTyped, initialMessage, memoizedMainOptions, simulateBotTyping]);
+
+  // Note: We don't save chat history because messages contain React elements
+  // which can't be serialized to JSON. This is a limitation of the current design.
 
   // Auto-scroll to bottom on initial load
   useEffect(() => {
@@ -210,14 +312,13 @@ export default function ChatbotUI({
         ...prev,
         {
           type: "bot",
-          content: `You've selected ${option.label}. Please choose a sub-option:`,
+          content: `Here's what I can help you with regarding ${option.label}:`,
           options: option.subOptions,
         },
       ]);
     } else if (option.info) {
       setMessages((prev) => [
         ...prev,
-        { type: "bot", content: "Here's the information you requested:" },
         { type: "bot", content: option.info, options: undefined },
       ]);
     } else {
@@ -265,16 +366,19 @@ export default function ChatbotUI({
    * @returns {Object|null} - Response object or null
    */
   const handleYesNo = (input) => {
-    const lowercaseInput = input.toLowerCase();
+    const lowercaseInput = input.toLowerCase().trim();
+    
+    // Only match if the input is EXACTLY one of these patterns (not just contains)
     const yesPatterns = ["yes", "yeah", "yep", "sure", "okay", "ok", "alright", "fine", "correct", "right", "absolutely", "definitely", "certainly", "indeed", "agreed", "roger", "affirmative", "aye"];
-    const noPatterns = ["no", "nope", "nah", "negative", "not", "never", "don't", "won't", "can't", "shouldn't", "wouldn't", "couldn't", "refuse", "decline", "reject"];
+    const noPatterns = ["no", "nope", "nah", "negative", "never"];
 
-    if (yesPatterns.some((pattern) => lowercaseInput.includes(pattern))) {
+    // Check for exact match only
+    if (yesPatterns.includes(lowercaseInput)) {
       return {
         message: "Great! How else can I assist you?",
         showOptions: true,
       };
-    } else if (noPatterns.some((pattern) => lowercaseInput.includes(pattern))) {
+    } else if (noPatterns.includes(lowercaseInput)) {
       return {
         message: "I understand. Would you like to try something else?",
         showOptions: true,
@@ -450,23 +554,36 @@ export default function ChatbotUI({
    * @returns {import('./types').Option|undefined} - Matching option or undefined
    */
   const findMatchingOption = (input, options) => {
-    const lowercaseInput = input.toLowerCase();
+    const lowercaseInput = input.toLowerCase().trim();
     const words = lowercaseInput.split(/\s+/);
 
-    // First, try exact keyword matching
-    const exactMatch = options.find((option) =>
+    // First, try exact full keyword matching (e.g., "cybercrime" matches "cybercrime" not "cyber")
+    const exactFullMatch = options.find((option) =>
+      option.keywords.some((keyword) => lowercaseInput === keyword.toLowerCase())
+    );
+
+    if (exactFullMatch) {
+      return exactFullMatch;
+    }
+
+    // Second, try exact word matching
+    const exactWordMatch = options.find((option) =>
       option.keywords.some((keyword) => words.includes(keyword.toLowerCase()))
     );
 
-    if (exactMatch) {
-      return exactMatch;
+    if (exactWordMatch) {
+      return exactWordMatch;
     }
 
-    // If no exact match, try partial matching
+    // If no exact match, try partial matching with scoring
     return options.reduce(
       (bestMatch, option) => {
         const matchScore = option.keywords.reduce((score, keyword) => {
           const keywordLower = keyword.toLowerCase();
+          // Prefer longer matches
+          if (lowercaseInput.includes(keywordLower)) {
+            return score + keywordLower.length;
+          }
           return words.some((word) => 
             word.includes(keywordLower) || keywordLower.includes(word)
           ) ? score + 1 : score;
@@ -489,16 +606,34 @@ export default function ChatbotUI({
   /**
    * Handle sending a message
    */
-  const handleSend = () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = (messageText) => {
+    const textToSend = messageText || input;
+    if (!textToSend.trim() || isLoading) return;
 
     setIsLoading(true);
+    setShowSuggestions(false);
 
-    const userInput = input.toLowerCase();
-    setMessages((prev) => [...prev, { type: "user", content: input }]);
+    const userInput = textToSend.toLowerCase();
+    setMessages((prev) => [...prev, { type: "user", content: textToSend }]);
     setInput("");
 
-    // Check for contextual responses first (including thank you)
+    // PRIORITY 1: Search through current options first
+    let matchingOption = findMatchingOption(userInput, currentOptions);
+
+    // If no match in current options, search all options
+    if (!matchingOption) {
+      matchingOption = searchAllOptions(userInput, mainOptions);
+    }
+
+    // If we found a matching option, handle it immediately
+    if (matchingOption) {
+      handleOptionSelect(matchingOption);
+      setIsLoading(false);
+      setTimeout(scrollToBottom, 100);
+      return;
+    }
+
+    // PRIORITY 2: Check for contextual responses (including thank you)
     const contextResponse = getContextualResponse(userInput);
     if (contextResponse) {
       setMessages((prev) => [
@@ -514,7 +649,7 @@ export default function ChatbotUI({
       return;
     }
 
-    // Then check for greetings
+    // PRIORITY 3: Check for greetings
     const greetingResponse = handleGreeting(userInput);
     if (greetingResponse) {
       setMessages((prev) => [
@@ -530,7 +665,7 @@ export default function ChatbotUI({
       return;
     }
 
-    // Check for yes/no responses
+    // PRIORITY 4: Check for yes/no responses (only if no other match found)
     const yesNoResponse = handleYesNo(userInput);
     if (yesNoResponse) {
       setMessages((prev) => [
@@ -538,7 +673,7 @@ export default function ChatbotUI({
         {
           type: "bot",
           content: yesNoResponse.message,
-          options: undefined,
+          options: mainOptions,
         },
       ]);
       setIsLoading(false);
@@ -546,49 +681,37 @@ export default function ChatbotUI({
       return;
     }
 
-    // Search through current options first
-    let matchingOption = findMatchingOption(userInput, currentOptions);
+    // PRIORITY 5: No match found - suggest related topics
+    const words = userInput.split(/\s+/);
+    const suggestions = mainOptions.filter((option) =>
+      words.some((word) => option.keywords.some((keyword) => keyword.includes(word) || word.includes(keyword))),
+    );
 
-    // If no match in current options, search all options
-    if (!matchingOption) {
-      matchingOption = searchAllOptions(userInput, mainOptions);
-    }
-
-    if (matchingOption) {
-      handleOptionSelect(matchingOption);
+    let response = "I understand you're asking about something. ";
+    if (suggestions.length > 0) {
+      response += "Here are some topics that might be relevant to your query: \n";
+      suggestions.forEach((option) => {
+        response += `- ${option.label}\n`;
+      });
+      response += "\nPlease select one of these options or try rephrasing your question.";
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "bot",
+          content: response,
+          options: suggestions,
+        },
+      ]);
     } else {
-      // Check for partial matches or related topics
-      const words = userInput.split(/\s+/);
-      const suggestions = mainOptions.filter((option) =>
-        words.some((word) => option.keywords.some((keyword) => keyword.includes(word) || word.includes(keyword))),
-      );
-
-      let response = "I understand you're asking about something. ";
-      if (suggestions.length > 0) {
-        response += "Here are some topics that might be relevant to your query: \n";
-        suggestions.forEach((option) => {
-          response += `- ${option.label}\n`;
-        });
-        response += "\nPlease select one of these options or try rephrasing your question.";
-        setMessages((prev) => [
-          ...prev,
-          {
-            type: "bot",
-            content: response,
-            options: suggestions,
-          },
-        ]);
-      } else {
-        response += "Could you please rephrasing your question? I'm here to help with police-related services and information.";
-        setMessages((prev) => [
-          ...prev,
-          {
-            type: "bot",
-            content: response,
-            options: undefined, // Don't show options for unclear queries
-          },
-        ]);
-      }
+      response += "Could you please rephrase your question? I'm here to help with police-related services and information.";
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "bot",
+          content: response,
+          options: mainOptions,
+        },
+      ]);
     }
     setIsLoading(false);
     setTimeout(scrollToBottom, 100);
@@ -613,35 +736,131 @@ export default function ChatbotUI({
     }
   };
 
+  /**
+   * Handle going to home/main menu
+   */
+  const handleHome = () => {
+    setCurrentOptions(mainOptions);
+    setHistory([]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        type: "bot",
+        content: "Back to main menu. How can I assist you?",
+        options: mainOptions,
+      },
+    ]);
+  };
+
+  /**
+   * Clear chat history
+   */
+  const handleClearChat = () => {
+    setMessages([]);
+    setHistory([]);
+    setCurrentOptions(mainOptions);
+    setShowSuggestions(true);
+    initialMessageSetRef.current = false;
+    
+    // Re-initialize with welcome message
+    setTimeout(() => {
+      setMessages([{ type: "bot", content: initialMessage, options: mainOptions }]);
+      initialMessageSetRef.current = true;
+    }, 100);
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-gradient-to-br from-blue-50 to-purple-50 backdrop-blur-sm overflow-hidden flex items-center justify-center p-4">
       <div className="flex flex-col h-[90vh] w-full max-w-7xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden border border-blue-100">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-600 to-purple-600">
-          <div className="flex items-center gap-2">
-            <img
-              src="/images/karnataka-state-emblem.png"
-              alt="Karnataka State Emblem"
-              className="h-10 w-auto mr-2 rounded-sm bg-white/80 p-1 shadow"
-              style={{ maxHeight: 40 }}
-            />
-            <h1 className="text-lg sm:text-xl font-semibold flex items-center text-white">
-              <Bot className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
-              <span className="hidden xs:inline">Chikkaballapura Police Services Assistant</span>
-              <span className="xs:hidden">Police Assistant</span>
-            </h1>
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center gap-2">
+              <img
+                src="/images/karnataka-state-emblem.png"
+                alt="Karnataka State Emblem"
+                className="h-10 w-auto mr-2 rounded-sm bg-white/80 p-1 shadow"
+                style={{ maxHeight: 40 }}
+              />
+              <h1 className="text-lg sm:text-xl font-semibold flex items-center text-white">
+                <Bot className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="hidden xs:inline">Chikkaballapura Police Services Assistant</span>
+                <span className="xs:hidden">Police Assistant</span>
+              </h1>
+            </div>
+            <div className="flex items-center gap-2">
+              {history.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleHome}
+                  className="text-white hover:text-blue-200 relative overflow-hidden group"
+                  aria-label="Go to home"
+                  title="Home"
+                >
+                  <span className="absolute inset-0 scale-0 rounded-full bg-white/20 group-hover:scale-100 transition-transform duration-300"></span>
+                  <Home className="h-4 w-4 relative z-10" />
+                </Button>
+              )}
+              {messages.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClearChat}
+                  className="text-white hover:text-blue-200 relative overflow-hidden group"
+                  aria-label="Clear chat"
+                  title="Clear Chat"
+                >
+                  <span className="absolute inset-0 scale-0 rounded-full bg-white/20 group-hover:scale-100 transition-transform duration-300"></span>
+                  <Trash2 className="h-4 w-4 relative z-10" />
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white hover:text-blue-200 relative overflow-hidden group"
+                aria-label="Close chatbot"
+              >
+                <a href="/">
+                  <span className="absolute inset-0 scale-0 rounded-full bg-white/20 group-hover:scale-100 transition-transform duration-300"></span>
+                  <X className="h-4 w-4 relative z-10" />
+                </a>
+              </Button>
+            </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white hover:text-blue-200 relative overflow-hidden group"
-            aria-label="Close chatbot"
-          >
-            <a href="/">
-              <span className="absolute inset-0 scale-0 rounded-full bg-white/20 group-hover:scale-100 transition-transform duration-300"></span>
-              <X className="h-4 w-4 relative z-10" />
-            </a>
-          </Button>
+          
+          {/* Quick Action Buttons */}
+          <div className="px-4 pb-3 flex gap-2 overflow-x-auto scrollbar-none">
+            <Button
+              size="sm"
+              onClick={() => handleSend("emergency")}
+              className="bg-red-500 hover:bg-red-600 text-white text-xs whitespace-nowrap flex items-center gap-1 flex-shrink-0"
+            >
+              <Phone className="h-3 w-3" />
+              Emergency 112
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => handleSend("traffic")}
+              className="bg-white/20 hover:bg-white/30 text-white text-xs whitespace-nowrap flex-shrink-0"
+            >
+              Traffic Rules
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => handleSend("complaint")}
+              className="bg-white/20 hover:bg-white/30 text-white text-xs whitespace-nowrap flex-shrink-0"
+            >
+              File Complaint
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => handleSend("cybercrime")}
+              className="bg-white/20 hover:bg-white/30 text-white text-xs whitespace-nowrap flex-shrink-0"
+            >
+              Cybercrime
+            </Button>
+          </div>
         </div>
 
         {/* Messages */}
@@ -649,6 +868,30 @@ export default function ChatbotUI({
           ref={chatContainerRef}
           className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-blue-100 relative"
         >
+          {/* Suggested Queries */}
+          {showSuggestions && messages.length <= 1 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4"
+            >
+              <p className="text-sm font-medium text-gray-700 mb-3">Try asking:</p>
+              <div className="flex flex-wrap gap-2">
+                {suggestedQueries.map((query, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSend(query)}
+                    className="text-xs bg-white hover:bg-blue-100 border-blue-300 text-blue-700"
+                  >
+                    {query}
+                  </Button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
           {visibleMessages.map((message, i) => (
             <motion.div
               key={i}
@@ -746,7 +989,7 @@ export default function ChatbotUI({
               className="flex-1 bg-white text-gray-800 placeholder-gray-400 border-blue-300 h-10"
             />
             <Button
-              onClick={handleSend}
+              onClick={() => handleSend()}
               className="transition-all hover:scale-105 bg-blue-600 text-white hover:bg-blue-700 h-10 w-10 flex-shrink-0"
               aria-label="Send message"
               disabled={isLoading}
