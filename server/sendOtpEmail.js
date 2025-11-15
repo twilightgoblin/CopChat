@@ -1,43 +1,18 @@
-const nodemailer = require("nodemailer");
+const sgMail = require('@sendgrid/mail');
+require('dotenv').config();
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: 'botchat879@gmail.com',
-    pass: 'kogt hqxd tfsx hzly' // App password for Gmail
-  },
-  debug: true, // Enable debug logging
-  logger: true // Enable logger
-});
-
-// Verify transporter configuration
-transporter.verify(function(error, success) {
-  if (error) {
-    console.error('SMTP configuration error:', error);
-  } else {
-    console.log('SMTP server is ready to take our messages');
-  }
-});
+// Set SendGrid API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function sendOtpEmail(to, otp) {
   try {
     console.log(`[sendOtpEmail] Starting email send process...`);
     console.log(`[sendOtpEmail] Recipient: ${to}`);
     console.log(`[sendOtpEmail] OTP: ${otp}`);
-    console.log(`[sendOtpEmail] Transporter config:`, {
-      service: transporter.options.service,
-      host: transporter.options.host,
-      port: transporter.options.port,
-      secure: transporter.options.secure,
-      auth: {
-        user: transporter.options.auth.user,
-        pass: transporter.options.auth.pass ? '***' : 'undefined'
-      }
-    });
     
-    const mailOptions = {
-      from: '"Police Service Portal" <botchat879@gmail.com>',
+    const msg = {
       to,
+      from: process.env.SENDGRID_FROM_EMAIL || 'botchat879@gmail.com',
       subject: "OTP Verification - Police Service Portal",
       html: `
         <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; max-width: 600px; margin: 0 auto;">
@@ -73,29 +48,17 @@ async function sendOtpEmail(to, otp) {
       `,
     };
 
-    console.log(`[sendOtpEmail] Mail options prepared, sending email...`);
-    let info = await transporter.sendMail(mailOptions);
-    console.log(`[sendOtpEmail] Email sent successfully to ${to}:`, info.response);
-    console.log(`[sendOtpEmail] Message ID:`, info.messageId);
+    console.log(`[sendOtpEmail] Sending email via SendGrid...`);
+    await sgMail.send(msg);
+    console.log(`[sendOtpEmail] Email sent successfully to ${to}`);
     return true;
   } catch (err) {
     console.error(`[sendOtpEmail] Error sending email to ${to}:`, err);
     console.error(`[sendOtpEmail] Error details:`, {
-      name: err.name,
       message: err.message,
       code: err.code,
-      command: err.command
+      response: err.response?.body
     });
-    
-    // Handle common email errors
-    if (err.code === 'EAUTH') {
-      console.error(`[sendOtpEmail] Authentication failed. Check email credentials.`);
-    } else if (err.code === 'ECONNECTION') {
-      console.error(`[sendOtpEmail] Connection failed. Check network and SMTP settings.`);
-    } else if (err.code === 'ETIMEDOUT') {
-      console.error(`[sendOtpEmail] Connection timed out.`);
-    }
-    
     throw err;
   }
 }
