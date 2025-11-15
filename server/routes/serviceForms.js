@@ -9,10 +9,14 @@ const WomenCompanionForm = require('../models/WomenCompanionForm');
 const LoudSpeakerForm = require('../models/LoudSpeakerForm');
 const AnonymousComplaintForm = require('../models/AnonymousComplaintForm');
 const SeniorCitizenForm = require('../models/SeniorCitizenForm');
-const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const sendOtpEmail = require('../sendOtpEmail');
+const sgMail = require('@sendgrid/mail');
+require('dotenv').config();
+
+// Set SendGrid API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Create a schema for OTP storage
 const OTPSchema = new mongoose.Schema({
@@ -32,26 +36,6 @@ const OTPSchema = new mongoose.Schema({
 });
 
 const OTP = mongoose.model('OTP', OTPSchema);
-
-// Create a transporter for sending emails
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'botchat879@gmail.com',
-    pass: 'kogt hqxd tfsx hzly' // App password for Gmail
-  },
-  debug: true, // Enable debug logging
-  logger: true // Enable logger
-});
-
-// Verify transporter configuration
-transporter.verify(function(error, success) {
-  if (error) {
-    console.error('SMTP configuration error:', error);
-  } else {
-    console.log('SMTP server is ready to take our messages');
-  }
-});
 
 // Configure multer for file storage
 const storage = multer.diskStorage({
@@ -389,9 +373,9 @@ router.post('/submit', upload.fields([
     if (details.email) {
       try {
         console.log(`[${requestId}] Sending confirmation email to:`, details.email);
-        const mailOptions = {
-          from: 'botchat879@gmail.com',
+        const msg = {
           to: details.email,
+          from: process.env.SENDGRID_FROM_EMAIL || 'botchat879@gmail.com',
           subject: 'Service Request Confirmation',
           html: `
             <h2>Service Request Confirmation</h2>
@@ -402,7 +386,7 @@ router.post('/submit', upload.fields([
           `
         };
 
-        await transporter.sendMail(mailOptions);
+        await sgMail.send(msg);
         console.log(`[${requestId}] Confirmation email sent successfully`);
       } catch (emailError) {
         console.error(`[${requestId}] Email error:`, emailError.message);
