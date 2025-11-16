@@ -1,10 +1,10 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Shield, Users, Target, Award } from "lucide-react"
 import { ScrollAnimation } from "@/components/scroll-animation"
 import { useLanguage } from "@/app/contexts/LanguageContext"
 import { translations } from "@/app/translations"
+import { ParticleCard } from "@/components/particle-card"
 
 const features = [
   {
@@ -45,13 +45,13 @@ export default function AboutUs() {
                 const Icon = feature.icon
                 const featureContent = t.about[feature.key]
                 return (
-                  <Card key={index} className="bg-white/80 backdrop-blur-sm border-violet-200 hover:border-violet-300 transition-all duration-300">
-                    <CardContent className="p-6">
-                      <Icon className="h-8 w-8 mb-4 text-violet-600" />
-                      <h3 className="font-bold mb-2 text-violet-900">{featureContent.title}</h3>
-                      <p className="text-sm text-violet-700">{featureContent.description}</p>
-                    </CardContent>
-                  </Card>
+                  <ParticleCard
+                    key={index}
+                    icon={Icon}
+                    title={featureContent.title}
+                    description={featureContent.description}
+                    index={index}
+                  />
                 )
               })}
             </div>
