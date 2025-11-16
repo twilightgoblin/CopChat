@@ -233,6 +233,7 @@ export default function DatabasePortal() {
                 <tr>
                   {serviceType === 'testimonials' ? (
                     <>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference ID</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Content</th>
@@ -242,6 +243,7 @@ export default function DatabasePortal() {
                     </>
                   ) : (
                     <>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference ID</th>
                       {data[0] &&
                         Object.keys(data[0])
                           .filter((key) => !['__v', '_id'].includes(key))
@@ -260,6 +262,7 @@ export default function DatabasePortal() {
                   <tr key={item._id}>
                     {serviceType === 'testimonials' ? (
                       <>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">{item._id}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.email}</td>
                         <td className="px-6 py-4 text-sm text-gray-500 max-w-2xl whitespace-pre-wrap break-words">{item.content}</td>
@@ -275,6 +278,7 @@ export default function DatabasePortal() {
                       </>
                     ) : (
                       <>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">{item._id}</td>
                         {Object.keys(item)
                           .filter((key) => !['__v', '_id'].includes(key))
                           .map((key) => (
