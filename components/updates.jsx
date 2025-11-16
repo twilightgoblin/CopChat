@@ -27,11 +27,44 @@ export default function Updates() {
   useEffect(() => {
     const fetchUpdates = async () => {
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setUpdates(defaultUpdates)
+        const response = await fetch('/api/updates')
+        if (!response.ok) {
+          throw new Error('Failed to fetch updates')
+        }
+        const data = await response.json()
+        
+        // Map API data to component format
+        const mappedUpdates = data.map(update => {
+          let icon = Info
+          let type = 'info'
+          
+          // Map priority to icon and type
+          if (update.priority === 'high') {
+            icon = AlertTriangle
+            type = 'warning'
+          } else if (update.priority === 'medium') {
+            icon = Bell
+            type = 'info'
+          } else {
+            icon = Info
+            type = 'success'
+          }
+          
+          return {
+            icon,
+            type,
+            title: update.title,
+            content: update.content,
+            category: update.category,
+            createdAt: update.createdAt
+          }
+        })
+        
+        setUpdates(mappedUpdates.length > 0 ? mappedUpdates : defaultUpdates)
       } catch (error) {
         console.error('Error fetching updates:', error)
+        // Fallback to default updates on error
+        setUpdates(defaultUpdates)
       } finally {
         setLoading(false)
       }
@@ -94,10 +127,20 @@ export default function Updates() {
                         <div className={`p-3 rounded-lg bg-violet-50 ${getIconColor(update.type)}`}>
                           <Icon className="h-6 w-6" />
                         </div>
-                        <div>
-                          <p className="text-violet-900 font-medium">
-                            {t.updates.updates[update.key]}
+                        <div className="flex-1">
+                          {update.title && (
+                            <h3 className="text-violet-900 font-semibold mb-2">
+                              {update.title}
+                            </h3>
+                          )}
+                          <p className="text-violet-800 text-sm">
+                            {update.content || (update.key && t.updates.updates[update.key])}
                           </p>
+                          {update.category && (
+                            <span className="inline-block mt-2 text-xs text-violet-600 bg-violet-100 px-2 py-1 rounded">
+                              {update.category}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
