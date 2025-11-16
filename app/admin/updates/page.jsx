@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Shield, LogOut } from "lucide-react"
 import Cookies from "js-cookie"
+import { API_ENDPOINTS } from "@/utils/api"
 
 export default function AdminUpdates() {
   const router = useRouter()
@@ -43,7 +44,7 @@ export default function AdminUpdates() {
 
   const fetchUpdates = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/updates')
+      const response = await fetch(API_ENDPOINTS.updates.list)
       if (!response.ok) throw new Error('Failed to fetch updates')
       const data = await response.json()
       setUpdates(data)
@@ -57,7 +58,7 @@ export default function AdminUpdates() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('http://localhost:5001/api/updates', {
+      const response = await fetch(API_ENDPOINTS.updates.list, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export default function AdminUpdates() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/updates/${id}`, {
+      const response = await fetch(API_ENDPOINTS.updates.single(id), {
         method: 'DELETE'
       })
 
