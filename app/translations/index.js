@@ -35,6 +35,7 @@ export const translations = {
     updates: {
       title: "Latest Updates",
       subtitle: "Stay informed with our latest announcements and news",
+      stayInformed: "Stay Informed",
       noUpdates: "No updates available at the moment.",
       updates: {
         trafficRegulations: "New traffic regulations in effect from March 1st",
@@ -523,6 +524,7 @@ export const translations = {
     updates: {
       title: "ಇತ್ತೀಚಿನ ಅಪ್‌ಡೇಟ್‌ಗಳು",
       subtitle: "ನಮ್ಮ ಇತ್ತೀಚಿನ ಘೋಷಣೆಗಳು ಮತ್ತು ಸುದ್ದಿಗಳೊಂದಿಗೆ ತಿಳಿದಿರಿ",
+      stayInformed: "ತಿಳಿದಿರಿ",
       noUpdates: "ಈ ಕ್ಷಣದಲ್ಲಿ ಯಾವುದೇ ಅಪ್‌ಡೇಟ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ.",
       updates: {
         trafficRegulations: "ಮಾರ್ಚ್ 1 ರಿಂದ ಹೊಸ ಸಾರಿಗೆ ನಿಯಮಗಳು ಜಾರಿಗೆ ಬಂದಿವೆ",

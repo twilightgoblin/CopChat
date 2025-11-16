@@ -12,13 +12,17 @@ if (!mongoose.connection.readyState) {
   });
 }
 
-// Update Schema
+// Update Schema - unified with admin
 const updateSchema = new mongoose.Schema({
-  title: String,
-  content: String,
-  category: String,
-  priority: { type: String, enum: ['low', 'medium', 'high'] },
-  createdAt: { type: Date, default: Date.now },
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  category: { 
+    type: String, 
+    enum: ['Announcement', 'Event', 'News', 'Alert'],
+    default: 'Announcement'
+  },
+  date: { type: Date, default: Date.now },
+  isImportant: { type: Boolean, default: false },
   active: { type: Boolean, default: true }
 });
 
@@ -29,7 +33,7 @@ const Update = mongoose.models.Update || mongoose.model('Update', updateSchema);
 export async function GET() {
   try {
     const updates = await Update.find({ active: true })
-      .sort({ priority: -1, createdAt: -1 })
+      .sort({ isImportant: -1, date: -1 })
       .limit(20);
     
     return NextResponse.json(updates);
@@ -106,6 +110,40 @@ export async function PUT(request) {
     });
   } catch (error) {
     console.error('Error updating update:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// Delete an update (admin only)
+export async function DELETE(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Update ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const update = await Update.findByIdAndDelete(id);
+
+    if (!update) {
+      return NextResponse.json(
+        { error: 'Update not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: 'Update deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting update:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

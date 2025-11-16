@@ -100,7 +100,7 @@
     "eslint-config-next": "14.1.0",
     "typescript": "^5.3.3"
   },
-  "resolutions": {
+  "overrides": {
     "glob": "^10.3.10",
     "rimraf": "^5.0.5",
     "@babel/plugin-transform-class-properties": "^7.23.3",
