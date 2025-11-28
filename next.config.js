@@ -16,10 +16,27 @@ const nextConfig = {
     domains: ['localhost', '*.netlify.app'],
     remotePatterns: [
       {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5001',
+        pathname: '/uploads/**',
+      },
+      {
         protocol: 'https',
         hostname: '**',
       },
     ],
+  },
+  
+  // Proxy uploads to backend
+  async rewrites() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${apiUrl.replace('/api', '')}/uploads/:path*`,
+      },
+    ];
   },
   
   // ESLint and TypeScript

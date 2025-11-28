@@ -36,10 +36,14 @@ export default function DatabasePortal() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("success");
+  const [viewAllImages, setViewAllImages] = useState(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const resolveFileUrl = (filePath) => {
     if (!filePath) return '';
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
-    return `${getApiUrl()}${filePath}`;
+    const resolvedUrl = `${getApiUrl()}${filePath}`;
+    console.log('Resolving file URL:', { filePath, resolvedUrl });
+    return resolvedUrl;
   };
 
   useEffect(() => {
@@ -288,8 +292,22 @@ export default function DatabasePortal() {
                                 if ((key === 'image' || key.toLowerCase().includes('image')) && typeof value === 'string' && value) {
                                   const url = resolveFileUrl(value);
                                   return (
-                                    <a href={url} target="_blank" rel="noopener noreferrer">
-                                      <img src={url} alt="uploaded" className="h-12 w-12 object-cover rounded border" />
+                                    <a href={url} target="_blank" rel="noopener noreferrer" className="group relative inline-block">
+                                      <img 
+                                        src={url} 
+                                        alt="uploaded" 
+                                        className="h-16 w-16 object-cover rounded border border-gray-300 hover:border-violet-500 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                        onError={(e) => {
+                                          console.error('Image failed to load (file not found):', url);
+                                          // If image fails to load, show a placeholder
+                                          e.target.style.display = 'none';
+                                          e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                      />
+                                      <div className="hidden h-16 w-16 flex-col items-center justify-center bg-red-50 rounded border border-red-300 text-xs text-red-600 p-1">
+                                        <span className="text-lg">🚫</span>
+                                        <span className="text-[10px] text-center">File Missing</span>
+                                      </div>
                                     </a>
                                   );
                                 }
@@ -299,19 +317,42 @@ export default function DatabasePortal() {
                                     <div className="flex items-center gap-2 flex-wrap">
                                       {filesToShow.map((file, idx) => {
                                         const url = resolveFileUrl(file);
-                                        const isImage = /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(file);
+                                        // Check if it's an image by file extension or assume it's an image
+                                        const isImage = /\.(png|jpe?g|gif|webp|bmp|svg|heic|heif|tiff?)$/i.test(file) || !file.includes('.');
                                         return isImage ? (
-                                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer">
-                                            <img src={url} alt={`file-${idx}`} className="h-10 w-10 object-cover rounded border" />
+                                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="group relative">
+                                            <img 
+                                              src={url} 
+                                              alt={`evidence-${idx}`} 
+                                              className="h-16 w-16 object-cover rounded border border-gray-300 hover:border-violet-500 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                              onError={(e) => {
+                                                console.error('Image failed to load (file not found):', url);
+                                                // If image fails to load, show a placeholder
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'flex';
+                                              }}
+                                            />
+                                            <div className="hidden h-16 w-16 flex-col items-center justify-center bg-red-50 rounded border border-red-300 text-xs text-red-600 p-1">
+                                              <span className="text-lg">🚫</span>
+                                              <span className="text-[10px] text-center">File Missing</span>
+                                            </div>
                                           </a>
                                         ) : (
-                                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                                            File
+                                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-600 rounded border border-blue-200 hover:bg-blue-100 text-sm">
+                                            📄 File
                                           </a>
                                         );
                                       })}
                                       {value.length > 3 && (
-                                        <span className="text-xs text-gray-400">+{value.length - 3} more</span>
+                                        <button
+                                          onClick={() => {
+                                            setViewAllImages(value);
+                                            setIsImageModalOpen(true);
+                                          }}
+                                          className="text-xs text-violet-600 font-medium hover:text-violet-800 hover:underline cursor-pointer"
+                                        >
+                                          +{value.length - 3} more
+                                        </button>
                                       )}
                                     </div>
                                   );
@@ -352,6 +393,47 @@ export default function DatabasePortal() {
             <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
               Delete
             </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
+        <AlertDialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <AlertDialogHeader>
+            <AlertDialogTitle>All Evidence Files</AlertDialogTitle>
+            <AlertDialogDescription>
+              Click on any image to open it in a new tab
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="grid grid-cols-3 gap-4 py-4">
+            {viewAllImages?.map((file, idx) => {
+              const url = resolveFileUrl(file);
+              const isImage = /\.(png|jpe?g|gif|webp|bmp|svg|heic|heif|tiff?)$/i.test(file) || !file.includes('.');
+              return isImage ? (
+                <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="group relative">
+                  <img 
+                    src={url} 
+                    alt={`evidence-${idx}`} 
+                    className="w-full h-32 object-cover rounded border border-gray-300 hover:border-violet-500 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="hidden w-full h-32 items-center justify-center bg-gray-100 rounded border border-gray-300 text-xs text-gray-500">
+                    Image {idx + 1}
+                  </div>
+                </a>
+              ) : (
+                <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 h-32 px-4 py-2 bg-blue-50 text-blue-600 rounded border border-blue-200 hover:bg-blue-100">
+                  <span className="text-2xl">📄</span>
+                  <span className="text-sm">File {idx + 1}</span>
+                </a>
+              );
+            })}
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

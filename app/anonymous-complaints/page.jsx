@@ -320,7 +320,14 @@ export default function AnonymousComplaintsPage() {
                     <Paperclip className="h-4 w-4" />
                     {t.form.attach}
                   </Button>
-                  <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" multiple />
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileChange} 
+                    className="hidden" 
+                    multiple 
+                    accept="image/*,application/pdf,.doc,.docx"
+                  />
                 </div>
                 {attachments.length > 0 && (
                   <div className="mt-2 space-y-2">

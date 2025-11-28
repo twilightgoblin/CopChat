@@ -54,21 +54,24 @@ const storage = multer.diskStorage({
   }
 });
 
-// File filter to accept only images and documents
+// File filter to accept all images and documents
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ];
-
-  if (allowedTypes.includes(file.mimetype)) {
+  // Accept all image types (image/*)
+  if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type. Only images and documents are allowed.'), false);
+    // Also accept common document types
+    const allowedDocTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    
+    if (allowedDocTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only images and documents are allowed.'), false);
+    }
   }
 };
 
