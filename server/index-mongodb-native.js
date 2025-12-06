@@ -159,7 +159,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/beat-police', beatPoliceRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 
-// Direct resend-otp route for testing
+// Direct resend-otp route - stores OTP in MongoDB
 app.post('/api/resend-otp', async (req, res) => {
   try {
     console.log('[Direct Route] Request received:', req.body);
@@ -181,6 +181,8 @@ app.post('/api/resend-otp', async (req, res) => {
     
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date();
+    otpExpires.setMinutes(otpExpires.getMinutes() + 10); // OTP expires in 10 minutes
     
     // Validate OTP format
     if (!/^\d{6}$/.test(otp)) {
@@ -192,8 +194,16 @@ app.post('/api/resend-otp', async (req, res) => {
     }
     
     console.log(`[Direct Route] Generated OTP: ${otp} for ${email}`);
-    console.log(`[Direct Route] OTP length: ${otp.length}`);
-    console.log(`[Direct Route] OTP type: ${typeof otp}`);
+    console.log(`[Direct Route] OTP expires: ${otpExpires}`);
+    
+    // Store OTP in MongoDB using mongoose model
+    const OTP = mongoose.model('OTP');
+    const storedOTP = await OTP.findOneAndUpdate(
+      { email },
+      { email, otp, expires: otpExpires },
+      { upsert: true, new: true }
+    );
+    console.log('[Direct Route] OTP stored in MongoDB:', storedOTP);
     
     // Send OTP email
     const sendOtpEmail = require('./sendOtpEmail');
@@ -216,7 +226,7 @@ app.post('/api/resend-otp', async (req, res) => {
   }
 });
 
-// Direct verify-otp route for testing
+// Direct verify-otp route - properly validates OTP against MongoDB
 app.post('/api/verify-otp', async (req, res) => {
   try {
     console.log('[Verify Route] Request received:', req.body);
@@ -229,16 +239,38 @@ app.post('/api/verify-otp', async (req, res) => {
     
     console.log('[Verify Route] Verifying OTP:', { email, otp });
     
-    // For now, we'll do a simple verification
-    // In production, you'd check against the stored OTP in MongoDB
-    // Since we're using the direct route, we'll accept any 6-digit OTP for testing
+    // Get the OTP model from mongoose
+    const OTP = mongoose.model('OTP');
     
-    if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-      console.log('[Verify Route] Invalid OTP format');
-      return res.status(400).json({ message: 'Invalid OTP format' });
+    // Get stored OTP from MongoDB
+    const storedOTP = await OTP.findOne({ email });
+    console.log('[Verify Route] Stored OTP:', storedOTP);
+    
+    if (!storedOTP) {
+      console.log('[Verify Route] No OTP found for email:', email);
+      return res.status(400).json({
+        message: 'Invalid OTP'
+      });
+    }
+
+    // Check if OTP has expired
+    if (storedOTP.expires < new Date()) {
+      console.log('[Verify Route] OTP expired for email:', email);
+      await OTP.deleteOne({ email });
+      return res.status(400).json({
+        message: 'OTP has expired'
+      });
+    }
+
+    // Check if OTP matches
+    if (storedOTP.otp !== otp) {
+      console.log('[Verify Route] Invalid OTP. Expected:', storedOTP.otp, 'Got:', otp);
+      return res.status(400).json({
+        message: 'Invalid OTP'
+      });
     }
     
-    console.log('[Verify Route] OTP format valid, accepting for testing');
+    console.log('[Verify Route] OTP verified successfully');
     
     // Return success with the OTP for form submission
     res.status(200).json({
@@ -246,8 +278,6 @@ app.post('/api/verify-otp', async (req, res) => {
       otp: otp,
       email: email
     });
-    
-    console.log('[Verify Route] OTP verification successful');
     
   } catch (error) {
     console.error('[Verify Route] Error:', error);
